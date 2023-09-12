@@ -1,17 +1,28 @@
 "use client"
 
-import { Button } from '@/components/ui/button'
+import { TypographyDemo } from '@/components/Typography';
+import Example from '@/components/example/Example';
+import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import useCounter from '@/stores/count-store';
+
 
 export default function Home() {
   const { counter, increaseCounter } = useCounter();
 
   return (
-    <div className='flex w-80 m-auto flex-col justify-center items-center gap-10 mt-10'>
-      <Label>Tailwind, Zustand, NextJs</Label>
+    <div className='p-10 flex flex-col gap-10 items-start relative'>
+
+      <Label>Tailwind, Zustand, NextJs, framer motion</Label>
       <h1>Count:  {counter}</h1>
-      <Button onClick={increaseCounter}>Toggle Theme</Button>
+      <Button onClick={increaseCounter}>Increase</Button>
+
+      <TypographyDemo />
+
+      <div className='mx-auto my-[100px] pb-[100px] max-w-[500px]'>
+        <Example />
+      </div>
+
     </div>
   )
 }
