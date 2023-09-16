@@ -18,7 +18,14 @@ export default function ProfilePage() {
           <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4">
             <div className="col-span-4">
               <AccountProfile 
-                user={null}
+                user={{
+                  id: "1",
+                  objectId: "1",
+                  username: "NguyenA",
+                  name: "Nguyen Van A",
+                  bio: "A is a FPT Student",
+                  image: "https://i.pravatar.cc/300?img=1",
+                }}
                 btnTitle="Update Profile"
               />
             </div>
