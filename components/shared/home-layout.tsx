@@ -1,30 +1,36 @@
 /* eslint-disable @next/next/no-img-element */
+
+import { Button } from "../ui/button";
+
 /* eslint-disable @next/next/no-html-link-for-pages */
 export default function HomeLayout() {
   return (
-    <div className="">      
-      <section className="w-full text-black">
+    <div>      
+      <section className="w-full text-white">
         <div className="max-w-8xl mx-auto flex items-end lg:items-center h-screen p-3 pt-20 lg:flex lg:flex-wrap lg:pt-4">
-          <div className="video-background absolute z-[-1] h-screen w-full top-0 left-0">
+          <div className="video-background fixed z-[-1] h-screen w-full top-0 left-0">
             <video
               autoPlay
               loop
               muted
               className="object-cover object-center w-full h-full"
-              src={"https://firebasestorage.googleapis.com/v0/b/zooma-bf129.appspot.com/o/zooma-background.mp4?alt=media&token=0dc405ad-7d82-4932-ae92-eeae82558e6e"}
+              src="https://firebasestorage.googleapis.com/v0/b/zooma-bf129.appspot.com/o/zooma-background-compress.mp4?alt=media&token=6da97cc8-c38b-4dc8-bc9c-c6174fd06063"
             />
           </div>
           
-          <div className="lg:w-3/6">
-            <h2 className="max-w-xl lg:text-[4.2em] text-3xl font-bold leading-none text-black inline-block">
+          <div className="lg:w-3/6 ml-4 mb-4 lg:mb-0 xl:ml-0">
+            <h2 className="max-w-xl lg:text-[4.2em] text-3xl font-bold leading-none text-white inline-block">
               Save the world
             </h2>
 
-            <p className="mt-6 max-w-2xl text-xl font-semibold text-[#404040]">
+            <p className="mt-6 max-w-2xl text-xl font-semibold text-white">
               Lorem ipsum urna, consectetur adipiscing elit. Urna risus
               hendrerit dignissim duis fringilla sit. Lacus porttitor neque
               ipsum.
             </p>
+            <Button variant="default" className="mt-6">
+              Order ticket
+            </Button>
           </div>
         </div>
         <div className="mt-0 bg-white lg:mt-40">
