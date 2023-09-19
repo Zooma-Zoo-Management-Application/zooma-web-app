@@ -110,3 +110,21 @@
 .max-w-9xl {
   max-width: 110rem;
 }
+
+
+@font-face {
+  font-family: 'Amsi Pro Narw Ultra';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Amsi Pro Narw Ultra'), url('../public/fonts/AmsiProNarw.woff') format('woff');
+  }
+
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  .background-texture{
+    background: url("../public/green-bg.jpg");
+    background-repeat: repeat;
+    padding: 93px 68px 1px
+  }

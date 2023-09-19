@@ -16,3 +16,4 @@ export const navLinks = [
     label: "Contact",
   },
 ]
+
