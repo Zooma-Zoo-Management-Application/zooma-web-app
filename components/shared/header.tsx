@@ -1,55 +1,83 @@
 /* eslint-disable @next/next/no-html-link-for-pages */
 
+import { navLinks } from "@/constants/landing-page";
 import Image from "next/image";
 import Link from "next/link";
+import { motion, useScroll, useSpring } from "framer-motion";
+import { useEffect, useState } from "react";
+import { UserNav } from "../user-nav";
+import AnimatedButtonWithDecoration from "../framer-motion/AnimatedButtonWithDecoration";
 
 export default function Header() {
+  const { scrollYProgress } = useScroll();
+  const [active, setActive] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 0) {
+        setActive(true);
+      } else {
+        setActive(false);
+      }
+    };
+    handleScroll();
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  },[])
+
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001
+  });
+
   return (
     <>
-      <div className="fixed w-full flex items-center justify-between sm:mx-0 sm:px-2 border-b-2 z-10">
-        <div className="mt-4 inline-block pb-4 pl-8">
-          <Link href="/" className="align-middle text-3xl font-bold text-black">
+      <div className={
+        `font-amsi fixed w-full flex items-center justify-between lg:mx-0 lg:px-2 z-10 transition-all duration-300
+        ${active ? "bg-primary" : "bg-gradient-to-b from-dark to-transparent"}
+        `
+      }>
+        <div 
+          className="mt-6 mb-3 flex items-center flex-1 pb-2 pl-6 ml-2"
+        >
+          <Link href="/" className="relative font-bold text-white">
             <Image
-              src="/Zooma_Mug.png"
+              src="/Zooma_Logo.png"
               alt="logo"
-              width={75}
-              height={50}
-              className="inline-block"
+              width={60}
+              height={60}
+              className="inline-block -translate-y-1"
             />
+            <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 text-sm">Zooma</span>
           </Link>
-          <div className="hidden pl-14 align-middle xl:inline-block">
-            <Link href="/" className="pr-12 text-xl text-black">
-              Home
-            </Link>
-            <Link href="/animals" className="pr-12 text-xl text-black">
-              Animals
-            </Link>
-            <Link href="/news" className="pr-12 text-xl text-black">
-              News
-            </Link>
-            <Link href="/contact" className="text-xl text-black">
-              Contact
-            </Link>
+          <div className="hidden pl-10 align-middle lg:flex gap-5 ml-5">
+            {
+              navLinks.map((link) => (
+                <Link key={link.label} href={link.route} className="pr-12 text-lg text-white tracking-[2px]">
+                  {link.label.toUpperCase()}
+                </Link>
+              ))
+            }
           </div>
         </div>
         <div className="flex items-center">
-          <div className="hidden py-1 text-right xl:inline-block">
+          <div className="hidden py-1 text-right lg:flex lg:items-center lg:gap-6">
             <Link
-              className="mt-2 inline-flex items-center px-12 py-3 text-lg font-semibold tracking-tighter text-black"
-              href="/"
+              className="inline-flex items-center 
+              py-3 text-base font-semibold tracking-[1px] text-white
+              transition-all duration-500
+              "
+              href="/authentication/login"
             >
               Log in
             </Link>
-            <Link
-              className="bg-blue mt-2 inline-flex items-center px-8 py-3 text-lg font-semibold tracking-tighter text-white"
-              href="/"
-            >
-              Request Link demo
-            </Link>
+            <AnimatedButtonWithDecoration text="BOOK YOUR TICKET" active={active} />
+            <UserNav />
           </div>
           <button className="pr-12 pl-4">
             <svg
-              className="mr-auto inline-block text-black xl:hidden"
+              className="mr-auto inline-block text-white lg:hidden"
               width="33"
               height="50"
               viewBox="0 0 23 30"
@@ -58,25 +86,37 @@ export default function Header() {
             >
               <path
                 d="M0.892578 10.8691H22.1058"
-                stroke="black"
+                stroke="white"
                 strokeLinecap="square"
                 strokeLinejoin="round"
               />
               <path
                 d="M0.892578 18.8691H22.1058"
-                stroke="black"
+                stroke="white"
                 strokeLinecap="square"
                 strokeLinejoin="round"
               />
               <path
                 d="M22.1066 14.8688H0.893399"
-                stroke="black"
+                stroke="white"
                 strokeLinecap="square"
                 strokeLinejoin="round"
               />
             </svg>
           </button>
         </div>
+      </div>
+      <motion.div
+        className="progress-bar fixed
+        top-[103px] left-0 right-0 h-[5px]
+        bg-green-700
+        z-1000
+        origin-bottom-left
+        "
+        style={{ scaleX }}
+      />
+      <div>
+
       </div>
     </>
   );
