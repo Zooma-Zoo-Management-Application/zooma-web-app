@@ -8,10 +8,6 @@ export const navLinks = [
     label: "News",
   },
   {
-    route: "/tickets",
-    label: "Tickets",
-  },
-  {
     route: "/contact",
     label: "Contact",
   },

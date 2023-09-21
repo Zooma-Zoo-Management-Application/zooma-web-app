@@ -41,3 +41,7 @@ export function formatThreadCount(count: number): string {
     return `${threadCount} ${threadWord}`;
   }
 }
+
+export function formatVND(n : number, currency: string = "VNĐ") {
+  return n.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,').slice(0,-3) + " " + currency;
+}

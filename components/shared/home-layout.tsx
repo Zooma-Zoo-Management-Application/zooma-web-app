@@ -170,7 +170,7 @@ export default function HomeLayout() {
         </div>
         <div className="bg-white text-black">
           <div className="mx-auto flex flex-col items-center px-5 pt-56 lg:flex-row">
-            <div className="mb-16 flex flex-col text-left lg:mb-0 lg:w-1/2 lg:flex-grow lg:items-start lg:pr-16 lg:pr-6">
+            <div className="mb-16 flex flex-col text-left lg:mb-0 lg:w-1/2 lg:flex-grow lg:items-start lg:pr-6">
               <h2 className="mb-4 text-4xl font-bold leading-none sm:text-5xl">
                 Bibendum tortor et sit convallis nec morbi.
               </h2>
@@ -190,7 +190,7 @@ export default function HomeLayout() {
               <div className="hidden lg:inline-block lg:w-full lg:max-w-xl">
                 <img src="/images/placeholder.png" alt="img" />
               </div>
-              <div className="flex flex-col pt-0 text-left lg:w-1/2 lg:flex-grow lg:items-start lg:pl-16 lg:pl-24 lg:pt-24">
+              <div className="flex flex-col pt-0 text-left lg:w-1/2 lg:flex-grow lg:items-start lg:pl-16 lg:pt-24">
                 <h2 className="mb-4 text-4xl font-bold leading-none sm:text-5xl">
                   Eu diam in magna blandit sit magna dolor proin velit.
                 </h2>
@@ -256,7 +256,7 @@ export default function HomeLayout() {
                   src="/images/placeholder1.png"
                 />
               </div>
-              <div className="items-left flex flex-col pt-16 text-left lg:w-1/2 lg:flex-grow lg:items-start lg:pl-32 lg:pl-48 lg:text-left">
+              <div className="items-left flex flex-col pt-16 text-left lg:w-1/2 lg:flex-grow lg:items-start lg:pl-32 lg:text-left">
                 <h2 className="mb-2 text-lg leading-tight text-gray-700 sm:text-lg">
                   Viverra enim diam gravida risus nisl.
                 </h2>
