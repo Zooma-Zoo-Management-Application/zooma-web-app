@@ -1,4 +1,5 @@
 /* eslint-disable @next/next/no-html-link-for-pages */
+"use client"
 
 import { navLinks } from "@/constants/landing-page";
 import Image from "next/image";
@@ -7,10 +8,12 @@ import { motion, useScroll, useSpring } from "framer-motion";
 import { useEffect, useState } from "react";
 import { UserNav } from "../user-nav";
 import AnimatedButtonWithDecoration from "../framer-motion/AnimatedButtonWithDecoration";
+import { useRouter } from "next/navigation";
 
-export default function Header() {
+export default function Header({isScrollEffect = true} : any) {
   const { scrollYProgress } = useScroll();
   const [active, setActive] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -34,12 +37,12 @@ export default function Header() {
   return (
     <>
       <div className={
-        `font-amsi fixed w-full flex items-center justify-between lg:mx-0 lg:px-2 z-10 transition-all duration-300
-        ${active ? "bg-primary" : "bg-gradient-to-b from-dark to-transparent"}
+        `font-amsi fixed top-0 w-full flex items-center justify-between lg:mx-0 lg:px-2 z-10 transition-all duration-300
+        ${active || !isScrollEffect ? "bg-primary" : "bg-gradient-to-b from-dark to-transparent"}
         `
       }>
         <div 
-          className="mt-6 mb-3 flex items-center flex-1 pb-2 pl-6 ml-2"
+          className="mt-4 mb-2 flex items-center flex-1 pb-2 pl-6 ml-2"
         >
           <Link href="/" className="relative font-bold text-white">
             <Image
@@ -72,7 +75,7 @@ export default function Header() {
             >
               Log in
             </Link>
-            <AnimatedButtonWithDecoration text="BOOK YOUR TICKET" active={active} />
+            <AnimatedButtonWithDecoration onClick={() => router.push("/tickets")} text="BOOK YOUR TICKET" active={active || !isScrollEffect} />
             <UserNav />
           </div>
           <button className="pr-12 pl-4">
@@ -107,12 +110,14 @@ export default function Header() {
         </div>
       </div>
       <motion.div
-        className="progress-bar fixed
-        top-[103px] left-0 right-0 h-[5px]
+        className={`
+        progress-bar fixed
+        top-[90px] left-0 right-0 h-[5px]
         bg-green-700
         z-1000
         origin-bottom-left
-        "
+        ${isScrollEffect ? "block" : "hidden"}
+        `}
         style={{ scaleX }}
       />
       <div>

@@ -4,7 +4,7 @@ import { Button } from '../ui/button'
 import { twMerge } from 'tailwind-merge'
 
 function AnimatedButtonWithDecoration({active = false
-  , text = "Button",
+  , text = "Button", onClick = () => {},
   className = ""
 } : any) {
   return (
@@ -20,6 +20,7 @@ function AnimatedButtonWithDecoration({active = false
         text-base tracking-[1px]
         ${active ? "bg-dark text-[#fafafa] hover:bg-slate-800" : "bg-primary text-[#fafafa]"
       } `}
+        onClick={() => onClick()}
       >
         {text}
       </Button>
