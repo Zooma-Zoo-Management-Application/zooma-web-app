@@ -134,6 +134,7 @@ function TicketsPage() {
     nextStep();
   };
 
+
   return (
     <>
       <Header isScrollEffect={false} />
@@ -236,6 +237,7 @@ function TicketsPage() {
                     </CardContent>
                 </>
               )}
+
             </Card>
           </div>
         </div>
