@@ -1,7 +1,7 @@
 import Footer from '@/components/shared/footer'
-import Header from '@/components/shared/header'
 import ScrollToTopButton from '@/components/shared/scroll-to-top-button'
 import '@/styles/globals.scss'
+import Head from './head'
 
 export default function RootLayout({
   children,
@@ -11,6 +11,7 @@ export default function RootLayout({
 
   return (
     <html lang="en">
+      <Head />
         <body>
           {children}
           <Footer />
