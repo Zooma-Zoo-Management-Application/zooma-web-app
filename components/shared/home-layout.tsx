@@ -1,24 +1,31 @@
 /* eslint-disable @next/next/no-img-element */
+"use client"
 
+import { ChevronLeft, ChevronRight, Volume2, VolumeX } from "lucide-react";
 import Image from "next/image";
-import AnimatedButtonWithDecoration from "../framer-motion/AnimatedButtonWithDecoration";
+import { useState } from "react";
 import AnimatedTextCharacters from "../framer-motion/AnimatedTextCharacters";
 import { Button } from "../ui/button";
-import RipSeparate from "./RipSeparate";
-import AnimalCard from "./AnimalCard";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 
 /* eslint-disable @next/next/no-html-link-for-pages */
 export default function HomeLayout() {
+  const [isVideoMuted, setIsVideoMuted] = useState(false);
   return (
-    <div>      
+    <div>    
+      <Button variant="default" size="icon" className="absolute bottom-7 right-5 z-50" 
+        onClick={() => {
+          setIsVideoMuted(!isVideoMuted)
+          console.log(isVideoMuted)
+        }}>
+        {isVideoMuted ? <VolumeX /> : <Volume2 /> }
+      </Button>  
       <section className="w-full text-white bg-gradient-to-r from-[#1f1f1f] from-[0%] to-[50%]">
-        <div className="max-w-8xl mx-auto flex items-end lg:items-center h-screen p-3 pt-20 lg:flex lg:flex-wrap lg:pt-4">
+        <div className="ml-2 sm:ml-10 flex items-end sm:items-center h-screen p-3 pt-20 sm:flex sm:flex-wrap sm:pt-4">
           <div className="video-background fixed z-[-1] h-full w-full top-0 left-0">
             <video
               autoPlay
               loop
-              muted
+              muted={isVideoMuted}
               className="object-cover object-center w-full h-full"
               src="https://firebasestorage.googleapis.com/v0/b/zooma-bf129.appspot.com/o/zooma-background-compress.mp4?alt=media&token=6da97cc8-c38b-4dc8-bc9c-c6174fd06063"
             />
@@ -122,9 +129,9 @@ export default function HomeLayout() {
                     <ChevronLeft className="h-4 w-4" />
                   </Button>
                   <div className="flex-1 flex justify-between">
+                    {/* <AnimalCard />
                     <AnimalCard />
-                    <AnimalCard />
-                    <AnimalCard />
+                    <AnimalCard /> */}
                   </div>
                   <Button variant="default" size="icon">
                     <ChevronRight className="h-4 w-4" />
