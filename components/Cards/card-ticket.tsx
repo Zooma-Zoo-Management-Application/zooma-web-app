@@ -21,7 +21,7 @@ function CardTicket() {
         {
           ticketTypes.map((ticketType) => (
             <div key={ticketType.label} className='grid grid-cols-3 gap-2 justify-items-center items-center py-8'>
-              <div className={`flex flex-col items-center justify-center ${ticketType.color}`}>
+              <div className={`flex flex-col items-center justify-center text-dark`}>
                 <h4 className='text-base sm:text-3xl font-amsi whitespace-nowrap'>{ticketType.label}</h4>
                 <span className='text-xs sm:text-sm font-bold whitespace-nowrap'>{ticketType.description}</span>
               </div>

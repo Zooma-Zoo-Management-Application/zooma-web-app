@@ -12,16 +12,15 @@ export default function HomeLayout() {
   const [isVideoMuted, setIsVideoMuted] = useState(false);
   return (
     <div>    
-      <Button variant="default" size="icon" className="absolute bottom-5 right-5 z-50" 
+      <Button variant="default" size="icon" className="absolute bottom-7 right-5 z-50" 
         onClick={() => {
           setIsVideoMuted(!isVideoMuted)
           console.log(isVideoMuted)
         }}>
         {isVideoMuted ? <VolumeX /> : <Volume2 /> }
-        
       </Button>  
       <section className="w-full text-white bg-gradient-to-r from-[#1f1f1f] from-[0%] to-[50%]">
-        <div className="ml-10 flex items-end sm:items-center h-screen p-3 pt-20 sm:flex sm:flex-wrap sm:pt-4">
+        <div className="ml-2 sm:ml-10 flex items-end sm:items-center h-screen p-3 pt-20 sm:flex sm:flex-wrap sm:pt-4">
           <div className="video-background fixed z-[-1] h-full w-full top-0 left-0">
             <video
               autoPlay
