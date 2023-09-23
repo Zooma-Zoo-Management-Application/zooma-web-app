@@ -4,8 +4,8 @@
 import { ChevronLeft, ChevronRight, Volume2, VolumeX } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
-import AnimatedTextCharacters from "../framer-motion/AnimatedTextCharacters";
-import { Button } from "../ui/button";
+import AnimatedTextCharacters from "@/components/framer-motion/AnimatedTextCharacters";
+import { Button } from "@/components/ui/button";
 
 /* eslint-disable @next/next/no-html-link-for-pages */
 export default function HomeLayout() {

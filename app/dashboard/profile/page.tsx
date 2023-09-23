@@ -1,5 +1,5 @@
-import CardSettings from "@/components/Cards/card-settings";
-import CardProfile from "@/components/Cards/card-profile";
+import CardSettings from "@/components/card/card-settings";
+import CardProfile from "@/components/card/card-profile";
 import { Button } from "@/components/ui/button";
 import { AccountProfile } from "@/components/AccountProfile";
 
