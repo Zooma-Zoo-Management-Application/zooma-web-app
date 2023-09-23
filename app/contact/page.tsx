@@ -1,11 +1,11 @@
-import Header from '@/components/shared/Header'
+import HeaderNav from '@/components/shared/HeaderNav'
 import { Button } from '@/components/ui/button'
 import React from 'react'
 
 function ContactPage() {
   return (
     <div>
-      <Header isScrollEffect={false}/>
+      <HeaderNav isScrollEffect={false}/>
       <section className='w-full mt-24 p-6'>
         Contact Page //Write here
         <Button>Button</Button>

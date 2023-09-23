@@ -1,10 +1,10 @@
-import Header from '@/components/shared/Header'
+import HeaderNav from '@/components/shared/HeaderNav'
 import React from 'react'
 
 function NewsPage() {
   return (
     <div>
-      <Header isScrollEffect={false}/>
+      <HeaderNav isScrollEffect={false}/>
       <section className='w-full mt-24 p-6'>
         NewsPage //Write here
       </section>

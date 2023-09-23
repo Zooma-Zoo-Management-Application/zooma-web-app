@@ -6,11 +6,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion, useScroll, useSpring } from "framer-motion";
 import { useEffect, useState } from "react";
-import { UserNav } from "../user-nav";
-import AnimatedButtonWithDecoration from "../framer-motion/AnimatedButtonWithDecoration";
+import { UserNav } from "@/components/user-nav";
+import AnimatedButtonWithDecoration from "@/components/framer-motion/AnimatedButtonWithDecoration";
 import { useRouter } from "next/navigation";
 
-export default function Header({isScrollEffect = true} : any) {
+export default function HeaderNav({isScrollEffect = true} : any) {
   const { scrollYProgress } = useScroll();
   const [active, setActive] = useState(false);
   const router = useRouter();

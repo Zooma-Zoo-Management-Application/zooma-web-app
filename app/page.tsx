@@ -1,10 +1,10 @@
 import HomeLayout from "@/components/HomeLayout";
-import Header from "@/components/shared/Header";
+import HeaderNav from "@/components/shared/HeaderNav";
 
 export default function Home() {
   return (
     <>
-      <Header />
+      <HeaderNav />
       <HomeLayout />      
     </>
   )

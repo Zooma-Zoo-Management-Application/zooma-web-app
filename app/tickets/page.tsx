@@ -6,7 +6,6 @@ import FinalStep from '@/components/form/FinalStep';
 import SideBar from '@/components/form/SidebarStep';
 import TicketChooseForm from '@/components/form/TicketChooseForm';
 import UserInfoForm from '@/components/form/UserInfoForm';
-import Header from '@/components/shared/Header';
 import { Button } from '@/components/ui/button';
 import { useMultiplestepForm } from '@/hooks/useMultiplestepForm';
 import { AnimatePresence } from 'framer-motion';
@@ -170,7 +169,6 @@ function TicketsPage() {
 
   return (
     <div className='h-screen'>
-      <Header isScrollEffect={false} />
       <section className='w-full h-full flex justify-center xl:grid xl:grid-cols-6'>
         <div className='w-full h-full wood-sand-texture flex justify-center items-center col-span-4'>
           <div
