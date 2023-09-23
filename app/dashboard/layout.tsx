@@ -1,6 +1,6 @@
 'use client'
 
-import { Sidebar } from '@/components/Sidebar'
+import { Sidebar } from '@/components/shared/Sidebar'
 import { Button } from '@/components/ui/button'
 import useUIState from '@/stores/ui-store'
 import Image from 'next/image'
