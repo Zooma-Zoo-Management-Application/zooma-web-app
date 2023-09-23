@@ -1,16 +1,13 @@
-import { cn } from "@/lib/utils";
-import { Button } from "../ui/button";
-import useUIState from "@/stores/ui-store";
-import { OverviewIcon } from "../Icons";
+import { OverviewIcon } from "@/components/Icons";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import { sidebarStaffLinks } from "@/constants/sidebar";
+import { cn } from "@/lib/utils";
+import useUIState from "@/stores/ui-store";
+import { AnimatePresence, motion } from "framer-motion";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React from "react";
-import Image from "next/image";
-import { AnimatePresence, motion } from "framer-motion";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
-import { Card } from "../ui/card";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuTrigger } from "../ui/dropdown-menu";
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
 }

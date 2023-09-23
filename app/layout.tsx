@@ -1,5 +1,5 @@
-import Footer from '@/components/shared/Footer'
-import ScrollToTopButton from '@/components/shared/scroll-to-top-button'
+import Footer from '@/components/Footer'
+import ScrollToTopButton from '@/components/scroll-to-top-button'
 import '@/styles/globals.scss'
 import Head from './head'
 

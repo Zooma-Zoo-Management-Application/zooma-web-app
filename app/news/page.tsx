@@ -1,4 +1,4 @@
-import HeaderNav from '@/components/shared/HeaderNav'
+import HeaderNav from '@/components/HeaderNav'
 import React from 'react'
 
 function NewsPage() {
