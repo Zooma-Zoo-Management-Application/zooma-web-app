@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import FormWrapper from "./FormWrapper";
 import { FormItems } from "@/app/tickets/page";
-import { Calendar } from "../ui/calendar";
+import { Calendar } from "@/components/ui/custom-calendar";
 
 type stepProps = FormItems & {
   updateForm: (fieldToUpdate: Partial<FormItems>) => void;

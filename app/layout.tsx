@@ -2,6 +2,7 @@ import Footer from '@/components/Footer'
 import ScrollToTopButton from '@/components/scroll-to-top-button'
 import '@/styles/globals.scss'
 import Head from './head'
+import { Toaster } from '@/components/ui/toaster'
 
 export default function RootLayout({
   children,
@@ -16,6 +17,7 @@ export default function RootLayout({
           {children}
           {/* <Footer /> */}
           <ScrollToTopButton />
+          <Toaster />
         </body>
     </html>
   )

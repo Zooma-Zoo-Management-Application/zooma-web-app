@@ -10,7 +10,7 @@ type stepProps = FormItems & {
   updateForm: (fieldToUpdate: Partial<FormItems>) => void;
 };
 
-const TicketChooseForm = ({ tickets, yearly, updateForm }: stepProps) => {
+const TicketChooseForm = ({ tickets, updateForm }: stepProps) => {
   function handleNumberInscrease(ticketId: number) {
     const updatedTickets = tickets.map((ticket) => {
       if (ticket.id === ticketId) {
