@@ -36,7 +36,6 @@ export type FormItems = {
   email: string;
   phone: string;
   date: Date;
-  yearly: boolean;
   tickets: Tickets[];
 };
 
@@ -45,7 +44,6 @@ const initialValues: FormItems = {
   email: "",
   phone: "",
   date: new Date(),
-  yearly: false,
   tickets: [
     {
       id: 1,

@@ -7,7 +7,7 @@ import { DateRange } from "react-day-picker"
 
 import { cn } from "@/lib/utils"
 import { Button } from "./ui/button"
-import { Calendar } from "./ui/calendar"
+import { Calendar } from "./ui/custom-calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover"
 
 export function CalendarDateRangePicker({
