@@ -26,22 +26,29 @@ import Image from "next/image"
 import { ChangeEvent, useState } from "react"
 import FirebaseService from "@/lib/FirebaseService"
 import { getDownloadURL, ref, uploadBytes,  } from "firebase/storage"
+import axios from "axios"
+import useUserState from "@/stores/user-store"
 
 type ProfileFormValues = z.infer<typeof ProfileValidation>
 
 // This can come from your database or API.
-const defaultValues: Partial<ProfileFormValues> = {
-  username: "SatoshiUy",
-  email: "lequocuyit@gmail.com",
-  fullname: "Le Quoc Uy",
-  gender: "Male",
-  dateOfBirth: new Date(),
-  avatarUrl: "",
-  phoneNumber: "0969696969",
-}
+
 
 export function ProfileForm() {
   const [files, setFiles] = useState<File[]>([]);
+
+  const { currentUser } = useUserState();
+
+  const defaultValues: Partial<ProfileFormValues> = {
+    username: currentUser?.userName,
+    email: currentUser?.email,
+    fullname: currentUser?.fullName,
+    gender: currentUser?.gender,
+    //Datetime to date
+    dateOfBirth: currentUser?.dateOfBirth ? new Date(currentUser?.dateOfBirth) : new Date(),
+    avatarUrl: currentUser?.avatarUrl,
+    phoneNumber: currentUser?.phoneNumber,
+  }
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(ProfileValidation),
@@ -82,14 +89,14 @@ export function ProfileForm() {
         getDownloadURL(imageRef)
           .then((url) => {
             values.avatarUrl = url;
-            console.log(JSON.stringify(values, null, 2))
-            toast({
-              title: "You submitted the following values:",
-              description: (
-                <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-                  <code className="text-white">{JSON.stringify(values, null, 2)}</code>
-                </pre>
-              ),
+            axios.put(`https://localhost:7128/api/Users/${currentUser?.id}`, {
+                "userName": values?.username,
+                "email": values.email,
+                "fullName": values.fullname,
+                "phoneNumber": values.phoneNumber,
+                "gender": values.gender,
+                "dateOfBirth": values.dateOfBirth,
+                "avatarUrl": values.avatarUrl
             })
           })
           .catch((error) => {
@@ -123,7 +130,7 @@ export function ProfileForm() {
                     />
                   ) : (
                     <Image
-                      src= "/Zooma_Logo.png"
+                      src= "/Zooma_Logo.svg"
                       alt="profile photo"
                       width={100}
                       height={100}

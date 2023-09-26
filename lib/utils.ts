@@ -45,3 +45,9 @@ export function formatThreadCount(count: number): string {
 export function formatVND(n : number, currency: string = "VNĐ") {
   return n.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,').slice(0,-3) + " " + currency;
 }
+
+export function getCharPerWord(text: string) {
+  let matches = text.match(/\b(\w)/g); 
+  let acronym = matches?.join(''); 
+  return acronym;
+}
