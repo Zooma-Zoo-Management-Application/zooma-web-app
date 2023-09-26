@@ -42,11 +42,11 @@ export function SidebarProfile({ className, items, ...props }: SidebarProfilePro
           {item.icon} {item.title}
         </Link>
       ))}
-      <Separator className="hidden sm:my-6" />
+      {/* <Separator className="hidden sm:my-6" />
       <Button variant="ghost" className="justify-start absolute lg:relative right-0">
         <LogOut size={16} className="mr-2" />
         Log out
-      </Button>
+      </Button> */}
     </nav>
   )
 }
