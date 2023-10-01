@@ -4,14 +4,18 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 // Import react scroll
 // import ButtonOutline from "../misc/ButtonOutline.";
-import Image from "next/image";
-import { Button } from "./ui/button";
+import useUserState from "@/stores/user-store";
 import { Newspaper, Rabbit, Ticket, UserSquare2 } from "lucide-react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { Button } from "./ui/button";
+import { UserNav } from "./user-nav";
 
 const Header = () => {
   const [activeLink, setActiveLink] = useState(null);
   const [scrollActive, setScrollActive] = useState(false);
+
+  const { currentUser } = useUserState();
 
   const router = useRouter();
 
@@ -96,17 +100,29 @@ const Header = () => {
             }
           </ul>
           <div className="col-start-10 col-end-12 font-medium flex justify-end items-center">
-            <Link href="/authentication/login">
-              <span className={"mx-2 sm:mx-4 capitalize tracking-wide hover:text-primary transition-all"
-            + (
-              scrollActive ? " text-dark" : " text-white-500"
-            )    
-          }
-              >
-                  Sign In
-              </span>
-            </Link>
-            <Button onClick={() => router.push("/authentication/signup")}>Sign Up</Button>
+            {
+              currentUser ? (
+                <>
+                  <UserNav user={currentUser} />
+                </>
+
+              ) : (
+              <>
+                <Link href="/authentication/login">
+                  <span className={"mx-2 sm:mx-4 capitalize tracking-wide hover:text-primary transition-all"
+                + (
+                  scrollActive ? " text-dark" : " text-white-500"
+                )    
+              }
+                  >
+                      Login
+                  </span>
+                </Link>
+                <Button onClick={() => router.push("/authentication/signup")}>Sign Up</Button>
+              </>
+              )
+            }
+            
           </div>
         </nav>
       </header>

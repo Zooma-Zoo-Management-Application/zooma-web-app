@@ -1,1 +1,1 @@
-export const BASE_URL = "https://localhost:7128";
+export const BASE_URL = "https://zooma-web-api.azurewebsites.net";
