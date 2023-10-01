@@ -1,5 +1,6 @@
 "use client"
 
+
 import Footer from '@/components/Footer'
 import ScrollToTopButton from '@/components/scroll-to-top-button'
 import { Toaster } from '@/components/ui/toaster'
@@ -15,6 +16,7 @@ import { Volume2, VolumeX } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import useUIState from '@/stores/ui-store'
 
+
 export default function RootLayout({
   children,
 }: {
@@ -22,6 +24,7 @@ export default function RootLayout({
 }) {
   const router = useRouter();
   const { setCurrentUser } = useUserState();
+
 
   const {isVideoMuted, setIsVideoMuted} = useUIState();
 
@@ -38,12 +41,15 @@ export default function RootLayout({
   
     // Make the GET request using the custom Axios instance
     axiosInstance
+
       .get(`${BASE_URL}/api/Users/Launch`)
+
       .then((response) => {
         console.log(response.data)
         setCurrentUser(response.data);
       })
       .catch((error) => {
+
         // toast({
         //   title: "Login Error",
         //   description: (
@@ -52,6 +58,7 @@ export default function RootLayout({
         //     </pre>
         //   ),
         // })
+
       });
   }, []);
 
