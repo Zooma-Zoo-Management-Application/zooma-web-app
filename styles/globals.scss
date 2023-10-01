@@ -1,3 +1,5 @@
+@import "slick-carousel/slick/slick.css";
+// @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -149,4 +151,30 @@
   /* Account Profile  */
 .account-form_image-label {
   @apply flex h-32 w-32 items-center justify-center rounded-full bg-dark;
+}
+
+/* Slideshow */
+.slick-dots li {
+  @apply inline-block;
+}
+.slick-dots span {
+  @apply bg-gray-500;
+}
+.slick-dots .slick-active span {
+  @apply bg-primary rounded-l-full rounded-r-full w-12;
+}
+
+// animation
+.animation-hover:after {
+  background: none repeat scroll 0 0 transparent;
+  content: "";
+  height: 2px;
+  transition: width 0.3s ease 0s, left 0.3s ease 0s;
+  @apply w-0 bg-[#16A34A] left-1/2 block bottom-0 absolute;
+}
+.animation-active:after {
+  @apply left-0 w-full;
+}
+.animation-hover:hover:after {
+  @apply left-0 w-full;
 }

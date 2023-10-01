@@ -42,9 +42,9 @@ export default function RootLayout({
             
             <div className="relative z-20 flex items-center text-lg font-medium ml-3 flex-1 justify-end">
               <Image 
-                src={"/Zooma_Mug.png"}
-                width={70}
-                height={70}
+                src={"/logos/Zooma_Black_Text.svg"}
+                width={150}
+                height={150}
                 alt="Zooma"
                 className='mr-2 cursor-pointer'
               />

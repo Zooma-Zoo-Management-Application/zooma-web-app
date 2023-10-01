@@ -17,6 +17,7 @@ import axios from "axios"
 import useUserState from "@/stores/user-store"
 import { toast } from "@/components/ui/use-toast"
 import { useRouter } from "next/navigation"
+import { BASE_URL } from '@/constants/appInfos'
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -47,7 +48,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     setIsLoading(true)
 
     // 3. Send the data somewhere
-    axios.post("https://localhost:7128/api/Users/Login", {
+    axios.post(`${BASE_URL}/api/Users/Login`, {
       email: values.email,
       password: values.password,
     })

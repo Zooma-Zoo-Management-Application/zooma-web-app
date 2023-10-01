@@ -49,7 +49,7 @@ const AnimatedTextCharacters: FC<Props> = ({
   };
 
   return (
-    <motion.div
+    <motion.span
       style={{ display: "flex", overflow: "hidden" }}
       variants={container}
       initial="hidden"
@@ -61,7 +61,7 @@ const AnimatedTextCharacters: FC<Props> = ({
           {letter === " " ? "\u00A0" : letter}
         </motion.span>
       ))}
-    </motion.div>
+    </motion.span>
   );
 };
 
