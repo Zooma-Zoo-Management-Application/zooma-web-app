@@ -1,11 +1,13 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { ChevronUp } from "lucide-react"
+import { ChevronUp, Volume2, VolumeX } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import useUIState from "@/stores/ui-store"
 
 const ScrollToTopButton = () => {
   const [isVisible, setIsVisible] = useState(false)
+  const {setIsVideoMuted, isVideoMuted} = useUIState();
 
   useEffect(() => {
     const toggleVisibility = () => {
@@ -31,14 +33,17 @@ const ScrollToTopButton = () => {
   }
 
   return (
-    <Button
-      className={`fixed bottom-4 right-4 rounded-full p-2 outline-none transition-opacity duration-200 ${
-        isVisible ? "opacity-100" : "opacity-0"
-      }`}
-      onClick={scrollToTop}
-    >
-      <ChevronUp />
-    </Button>
+      <> 
+          <Button
+          className={`fixed bottom-32 lg:bottom-[65px] right-4 rounded-full p-2 outline-none transition-opacity duration-200 ${
+            isVisible ? "opacity-100" : "opacity-0"
+          }`}
+          onClick={scrollToTop}
+        >
+          <ChevronUp />
+        </Button>
+      </>
+    
   )
 }
 

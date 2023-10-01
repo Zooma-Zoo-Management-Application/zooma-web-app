@@ -48,6 +48,11 @@ export const sidebarStaffLinks = [
         route: "/dashboard/staff/tickets",
         label: "Tickets",
       },
+      {
+        icon: "/assets/overview.svg",
+        route: "/dashboard/staff/news",
+        label: "News",
+      },
     ]
   },
 ];
