@@ -23,7 +23,7 @@ function NewViewPage() {
     .catch(err => {
       console.log(err);
     })
-  }, [])
+  }, [newId])
 
   const handleEdit = () => {
     router.push(`/dashboard/staff/news/${newId}/edit`)
