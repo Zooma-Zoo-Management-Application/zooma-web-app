@@ -1,4 +1,3 @@
-
 "use client"
 
 import BackgroundVideo from "@/components/BackgroundVideo";
@@ -6,13 +5,24 @@ import Feature from "@/components/Feature";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import Pricing from "@/components/Pricing";
-
-
+import { Button } from "@/components/ui/button";
+import useUIState from "@/stores/ui-store";
+import { Volume2, VolumeX } from "lucide-react";
 export default function Home() {
+  const {isVideoMuted, setIsVideoMuted} = useUIState();
   
   return (
     <>
-      <Header   />
+      <Button variant="default" size="icon" 
+        onClick={() => {
+          setIsVideoMuted()
+        }}
+        className=
+        "z-40 fixed bottom-20 lg:bottom-4 right-4 rounded-full p-2 outline-none transition-opacity duration-200"
+        >
+        {isVideoMuted ? <VolumeX /> : <Volume2 /> }
+      </Button> 
+      <Header />
       <Hero />
       <Feature />
       <Pricing />

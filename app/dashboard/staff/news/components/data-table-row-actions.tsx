@@ -8,18 +8,15 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
-  DropdownMenuTrigger,
+  DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
+import { useRouter } from "next/navigation"
+import axios from "axios"
+import { BASE_URL } from "@/constants/appInfos"
+import { toast } from "@/components/ui/use-toast"
 
-import { labels } from "../data/data"
-import { taskSchema } from "../data/schema"
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>
@@ -28,7 +25,31 @@ interface DataTableRowActionsProps<TData> {
 export function DataTableRowActions<TData>({
   row,
 }: DataTableRowActionsProps<TData>) {
-  const task = taskSchema.parse(row.original)
+
+  const router = useRouter();
+  const handleEdit = () => {
+    router.push(`/dashboard/staff/news/${row.getValue("id")}/edit`)
+  }
+  const handleView = () => {
+    router.push(`/dashboard/staff/news/${row.getValue("id")}/view`)
+  }
+
+  const handleDelete = () => {
+    axios
+    .delete(`${BASE_URL}/api/News/`+row.getValue("id"))
+    .then(res => {
+      toast({
+        title: "Delete Success!",
+        description: (
+          <div>
+            <p>News has been deleted.</p>
+          </div>
+        )
+      })
+      router.refresh()
+    })
+    
+    }
 
   return (
     <DropdownMenu>
@@ -42,26 +63,13 @@ export function DataTableRowActions<TData>({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[160px]">
-        <DropdownMenuItem>Edit</DropdownMenuItem>
-        <DropdownMenuItem>Make a copy</DropdownMenuItem>
-        <DropdownMenuItem>Favorite</DropdownMenuItem>
+        <DropdownMenuItem onClick={handleView}>View</DropdownMenuItem>
+        <DropdownMenuItem onClick={handleEdit}>Edit</DropdownMenuItem>
+        <DropdownMenuItem>Pin</DropdownMenuItem>
+        <DropdownMenuItem>Unpin</DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuSub>
-          <DropdownMenuSubTrigger>Labels</DropdownMenuSubTrigger>
-          <DropdownMenuSubContent>
-            <DropdownMenuRadioGroup value={task.label}>
-              {labels.map((label) => (
-                <DropdownMenuRadioItem key={label.value} value={label.value}>
-                  {label.label}
-                </DropdownMenuRadioItem>
-              ))}
-            </DropdownMenuRadioGroup>
-          </DropdownMenuSubContent>
-        </DropdownMenuSub>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem>
+        <DropdownMenuItem onClick={handleDelete}>
           Delete
-          <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

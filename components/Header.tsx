@@ -118,7 +118,14 @@ const Header = () => {
                       Login
                   </span>
                 </Link>
-                <Button onClick={() => router.push("/authentication/signup")}>Sign Up</Button>
+                <Button onClick={() => router.push("/authentication/signup")
+              }
+                className={
+                  (
+                    scrollActive ? "bg-dark" : " text-white-500"
+                  )   
+                }
+              >Sign Up</Button>
               </>
               )
             }

@@ -81,7 +81,7 @@ async function UserManagementPage() {
                 </Card>
               </div>
         <div className="flex-1 space-y-4">
-          <DataTable columns={columns} data={data} />
+          {/* <DataTable columns={columns} data={data} /> */}
         </div>
       </div>
     </div>

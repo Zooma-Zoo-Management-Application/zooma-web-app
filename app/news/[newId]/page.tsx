@@ -25,18 +25,9 @@ function NewViewPage() {
     })
   }, [])
 
-  const handleEdit = () => {
-    router.push(`/dashboard/staff/news/${newId}/edit`)
-  }
   
   return (
     <div className='p-10'>
-      <div className='flex justify-between mb-4'>
-        <h2 className="text-3xl font-bold tracking-tight">View New</h2>
-        <Button variant="default" onClick={handleEdit}>
-          Edit
-        </Button>
-      </div>
       {
         newData && (
           <>

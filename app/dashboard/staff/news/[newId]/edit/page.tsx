@@ -1,41 +1,44 @@
 "use client"
+import TipTap from '@/components/TipTap';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
+import axios from 'axios';
+import Image from 'next/image';
+import { useParams, useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
+import { NewsForm } from './NewsForm';
+import { BASE_URL } from '@/constants/appInfos';
 
 function NewViewPage() {
-  const [text, setText] = React.useState("1");
-  const [result, setResult] = React.useState("");
+  const { newId } = useParams();
+  const [newData, setNewData] = React.useState<any>(null);
+  const router = useRouter()
 
   useEffect(() => {
-    const controller = new AbortController();
+    axios.get(`${BASE_URL}/api/News/${newId}`)
+    .then(res => {
+      setNewData(res.data)
+    })
+    .catch(err => {
+      console.log(err);
+    })
+  }, [])
 
-    const delayDebounceFn = setTimeout(() => {
-      fetch("https://dummyjson.com/posts/" + text, {
-      signal: controller.signal,  
-      })
-      .then((response) => response.json())
-      .then((data) => {
-        setResult(JSON.stringify(data.id))
-      })
-      .catch((error) => {
-        console.log(error.message)
-      })
 
-      return 
-
-    }, 2000)
-
-    return () => {
-      controller.abort();
-      clearTimeout(delayDebounceFn);
-    }
-
-  }, [text])
-  
   return (
-    <div className='p-24'>
-      <Input type='number' min={0} max={70} onChange={(e) => setText(e.target.value)} />
-      <h1>{result}</h1>
+    <div className='p-10'>
+      <div>
+        <h2 className="text-3xl font-bold tracking-tight mb-4">Edit New</h2>
+      </div>
+      <div>
+        {
+          newData ? (
+            <NewsForm newParam={newData}/>
+          ) : (
+            <p>Loading...</p>
+          )
+        }
+      </div>
     </div>
   )
 }

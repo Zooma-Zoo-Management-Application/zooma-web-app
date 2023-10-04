@@ -5,6 +5,10 @@ import { Button } from '@/components/ui/button'
 import useUIState from '@/stores/ui-store'
 import Image from 'next/image'
 import { AnimatePresence, motion } from 'framer-motion'
+import { usePathname, useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import Breadcrumb from '@/components/Breadcrumb'
+import BreadcrumbItem from '@/components/BreadcrumbItem'
 
 export default function RootLayout({
   children,
@@ -12,6 +16,29 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   const { isOpenSidebar, setIsOpenSidebar } = useUIState();
+
+  const router = useRouter();
+  const [breadcrumbs, setBreadcrumbs] = useState<any>([]);
+  const pathname = usePathname()
+
+  console.log("pathname",pathname)
+
+  useEffect(() => {
+    let pathArray = pathname.split("/");
+    pathArray.shift();
+
+    pathArray = pathArray.filter((path) => path !== "");
+
+    const breadcrumbs = pathArray.map((path, index) => {
+      const href = "/" + pathArray.slice(0, index + 1).join("/");
+      return {
+        href,
+        label: path.charAt(0).toUpperCase() + path.slice(1),
+      };
+    });
+
+    setBreadcrumbs(breadcrumbs);
+  }, [pathname]);
 
   return (
     <html lang="en">
@@ -81,8 +108,19 @@ export default function RootLayout({
               exit={{
                 x: "10%"
               }}
-              className='flex-1 lg:border-l z-[1]'
+              className='flex-1 lg:border-l z-[1] w-full'
               >
+              <div>
+                <Breadcrumb>
+                  <BreadcrumbItem href="/">Home</BreadcrumbItem>
+                  {breadcrumbs &&
+                    breadcrumbs.map((breadcrumb:any) => (
+                      <BreadcrumbItem key={breadcrumb.href} href={breadcrumb.href}>
+                        {breadcrumb.label}
+                      </BreadcrumbItem>
+                    ))}
+                </Breadcrumb>
+              </div>
               {children}
             </motion.section>
           </AnimatePresence>

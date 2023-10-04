@@ -1,35 +1,44 @@
 "use client"
 
-
 import Footer from '@/components/Footer'
 import ScrollToTopButton from '@/components/scroll-to-top-button'
+import { Button } from '@/components/ui/button'
 import { Toaster } from '@/components/ui/toaster'
-import { toast } from "@/components/ui/use-toast"
 import { BASE_URL } from '@/constants/appInfos'
+import useUIState from '@/stores/ui-store'
 import useUserState from "@/stores/user-store"
-import '@/styles/globals.scss'
+import '@/styles/globals.css'
 import axios from "axios"
+import { Volume2, VolumeX } from 'lucide-react'
+import { Metadata } from 'next'
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"
-import SeoHead from './SeoHead'
-import { Volume2, VolumeX } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import useUIState from '@/stores/ui-store'
 
+export const metadata: Metadata = {
+  title: 'Zooma',
+  applicationName: 'Zooma',
+  description:
+    'Zooma is a zoo management web application that aims to transform how information is managed within the zoo facility.',
+  robots: 'follow, index',
+  authors: [{
+    name: 'UyDev',
+    url: 'lequocuyit@gmail.com'
+  }],
+  
+}
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  const router = useRouter();
   const { setCurrentUser } = useUserState();
 
 
-  const {isVideoMuted, setIsVideoMuted} = useUIState();
-
   useEffect(() => {
     const accessTokenCheck = localStorage.getItem("accessToken");
+
+    if(accessTokenCheck == null) return;
     
     // Create a custom Axios instance with headers
     const axiosInstance = axios.create({
@@ -64,20 +73,11 @@ export default function RootLayout({
 
   return (
     <html lang="en">
-      <SeoHead />
+        <title>Zooma - Landing Page</title>
         <body>
           {children}
           <Footer />
           <ScrollToTopButton />
-          <Button variant="default" size="icon" 
-              onClick={() => {
-                setIsVideoMuted()
-              }}
-              className=
-              "z-40 fixed bottom-20 lg:bottom-4 right-4 rounded-full p-2 outline-none transition-opacity duration-200"
-              >
-              {isVideoMuted ? <VolumeX /> : <Volume2 /> }
-            </Button> 
           <Toaster />
         </body>
     </html>

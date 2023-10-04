@@ -1,9 +1,7 @@
 @import "slick-carousel/slick/slick.css";
-// @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
- 
 
 @layer base {
   :root {
@@ -54,14 +52,60 @@
     --light: 0, 0%, 98%;
     --dark: 240, 6%, 10%;
   }
+
+  .tiptap > * + * {
+    margin-top: 0.5em;
+  }
+
+  ul {
+    padding: 0 1rem;
+    list-style: circle;
+    margin: 0 6px;
+  }
+  ol {
+    padding: 0 1rem;
+    list-style: decimal;
+    margin: 0 6px;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    line-height: 1.1;
+  }
+
+  h1 {
+    @apply scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl;
+  }
+
+  h2 {
+    @apply scroll-m-20  pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0;
+  }
+
+  h3 {
+    @apply scroll-m-20 text-2xl font-semibold tracking-tight;
+  }
+
+  h4 {
+    @apply scroll-m-20 text-xl font-semibold tracking-tight;
+  }
+
+  h5 {
+    @apply scroll-m-20 text-lg font-semibold tracking-tight;
+  }
+
+  h6 {
+    @apply scroll-m-20 text-base font-semibold tracking-tight;
+  }
+
+  p {
+    margin: 0
+  }
+
 }
-
-
-
-// Custom components
-@import './button';
-// @import './account-form.css'
-
 
 .svg_main {
   width: 100%;
@@ -164,7 +208,6 @@
   @apply bg-primary rounded-l-full rounded-r-full w-12;
 }
 
-// animation
 .animation-hover:after {
   background: none repeat scroll 0 0 transparent;
   content: "";
@@ -178,3 +221,4 @@
 .animation-hover:hover:after {
   @apply left-0 w-full;
 }
+
