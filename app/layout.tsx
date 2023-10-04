@@ -14,18 +14,18 @@ import { Metadata } from 'next'
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"
 
-export const metadata: Metadata = {
-  title: 'Zooma',
-  applicationName: 'Zooma',
-  description:
-    'Zooma is a zoo management web application that aims to transform how information is managed within the zoo facility.',
-  robots: 'follow, index',
-  authors: [{
-    name: 'UyDev',
-    url: 'lequocuyit@gmail.com'
-  }],
+// export const metadata: Metadata = {
+//   title: 'Zooma',
+//   applicationName: 'Zooma',
+//   description:
+//     'Zooma is a zoo management web application that aims to transform how information is managed within the zoo facility.',
+//   robots: 'follow, index',
+//   authors: [{
+//     name: 'UyDev',
+//     url: 'lequocuyit@gmail.com'
+//   }],
   
-}
+// }
 
 export default function RootLayout({
   children,
