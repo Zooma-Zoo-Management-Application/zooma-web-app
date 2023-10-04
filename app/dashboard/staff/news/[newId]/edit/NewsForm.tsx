@@ -27,14 +27,11 @@ import { ChangeEvent, useState } from "react"
 
 const formNewSchema = z.object({
   title: z.string()
-  .min(3, {message: 'Name must be at least 3 characters.'})
-  .max(30, {message: 'Name must be max 30 characters'}),
+  .min(3, {message: 'Name must be at least 3 characters.'}),
   description: z.string()
-  .min(3, {message: 'Name must be at least 3 characters.'})
-  .max(100, {message: 'Name must be max 100 characters'}),
+  .min(3, {message: 'Name must be at least 3 characters.'}),
   content: z.string()
-  .min(3, {message: 'Name must be at least 3 characters.'})
-  .max(1000, {message: 'Name must be max 1000 characters'}),
+  .min(3, {message: 'Name must be at least 3 characters.'}),
   image: z.string().url().nonempty(),
   })
   
@@ -77,6 +74,7 @@ export function NewsForm({ newParam } : any) {
       fileReader.readAsDataURL(file);
     }
   }
+
 
   async function onSubmit(values: FormNewValues) {
     console.log("submit")
@@ -193,7 +191,7 @@ export function NewsForm({ newParam } : any) {
               <FormItem>
                 <FormLabel>Content</FormLabel>
                 <FormControl>
-                  <Tiptap content={field.value}/>
+                  <Tiptap content={field.value} handleUpdate={(html) => field.onChange(html)}/>
                 </FormControl>
                 <FormMessage />
               </FormItem>

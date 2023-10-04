@@ -307,7 +307,7 @@ display: none;
 </blockquote>
 `
 
-export default function Tiptap({content = "<h2>This is a title</h2>", editable=true}) {
+export default function Tiptap({content = "<h2>This is a title</h2>", editable=true, handleUpdate=(string:string) => {}}) {
   return (
     <div className='tiptap'>
       <EditorProvider 
@@ -317,6 +317,11 @@ export default function Tiptap({content = "<h2>This is a title</h2>", editable=t
         extensions={extensions} 
         content={content}
         editable={editable}
+          onUpdate={
+            ({ editor }) => {
+              handleUpdate(editor.getHTML())
+            }
+          }
         >
       </EditorProvider>
     </div>

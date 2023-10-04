@@ -27,14 +27,11 @@ import { ChangeEvent, useState } from "react"
 
 const formNewSchema = z.object({
   title: z.string()
-  .min(3, {message: 'Name must be at least 3 characters.'})
-  .max(30, {message: 'Name must be max 30 characters'}),
+  .min(3, {message: 'Name must be at least 3 characters.'}),
   description: z.string()
-  .min(3, {message: 'Name must be at least 3 characters.'})
-  .max(100, {message: 'Name must be max 100 characters'}),
+  .min(3, {message: 'Name must be at least 3 characters.'}),
   content: z.string()
-  .min(3, {message: 'Name must be at least 3 characters.'})
-  .max(1000, {message: 'Name must be max 1000 characters'}),
+  .min(3, {message: 'Name must be at least 3 characters.'}),
   image: z.string().url().nonempty(),
   })
   
