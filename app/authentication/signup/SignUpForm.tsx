@@ -25,7 +25,7 @@ import { getDownloadURL, ref, uploadBytes, } from "firebase/storage"
 import { CalendarIcon, ChevronDownIcon } from "lucide-react"
 import Image from "next/image"
 import { ChangeEvent, useState } from "react"
-import { Icons } from "@/components/Icons"
+import { Icons } from "@/components/shared/Icons"
 import { useRouter } from "next/navigation"
 import useUserState from "@/stores/user-store"
 

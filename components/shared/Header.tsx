@@ -8,8 +8,8 @@ import useUserState from "@/stores/user-store";
 import { Newspaper, Rabbit, Ticket, UserSquare2 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Button } from "./ui/button";
-import { UserNav } from "./user-nav";
+import { Button } from "../ui/button";
+import { UserNav } from "./UserNav";
 
 const Header = () => {
   const [activeLink, setActiveLink] = useState(null);

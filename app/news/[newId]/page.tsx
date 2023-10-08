@@ -1,5 +1,5 @@
 "use client"
-import TipTap from '@/components/TipTap';
+import TipTap from '@/components/tiptap/TipTap';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';

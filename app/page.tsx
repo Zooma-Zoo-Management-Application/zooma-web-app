@@ -1,10 +1,10 @@
 "use client"
 
-import BackgroundVideo from "@/components/BackgroundVideo";
-import Feature from "@/components/Feature";
-import Header from "@/components/Header";
-import Hero from "@/components/Hero";
-import Pricing from "@/components/Pricing";
+import BackgroundVideo from "@/app/components/BackgroundVideo";
+import Feature from "@/app/components/Feature";
+import Header from "@/components/shared/Header";
+import Hero from "@/app/components/Hero";
+import Pricing from "@/app/components/Pricing";
 import { Button } from "@/components/ui/button";
 import useUIState from "@/stores/ui-store";
 import { Volume2, VolumeX } from "lucide-react";

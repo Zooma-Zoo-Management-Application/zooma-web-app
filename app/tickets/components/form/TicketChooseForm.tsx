@@ -1,9 +1,9 @@
 import { FormItems } from "@/app/tickets/page";
 import { Checkbox } from "@/components/ui/checkbox";
 import FormWrapper from "./FormWrapper";
-import { Button } from "../ui/button";
+import { Button } from "../../../../components/ui/button";
 import { Minus, Plus } from "lucide-react";
-import { Input } from "../ui/input";
+import { Input } from "../../../../components/ui/input";
 import { formatVND } from "@/lib/utils";
 
 type stepProps = FormItems & {

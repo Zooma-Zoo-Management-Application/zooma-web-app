@@ -1,6 +1,9 @@
 import { Metadata } from "next"
-import Image from "next/image"
 
+import { Overview } from "@/app/dashboard/components/Overview"
+import { RecentSales } from "@/app/dashboard/components/RecentSales"
+import { CalendarDateRangePicker } from "@/components/shared/DateTimePicker"
+import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
@@ -14,14 +17,6 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs"
-import { MainNav } from "@/components/main-nav"
-import { Overview } from "@/components/overview"
-import { RecentSales } from "@/components/recent-sales"
-import { Search } from "@/components/search"
-import TeamSwitcher from "@/components/team-switcher"
-import { UserNav } from "@/components/user-nav"
-import { CalendarDateRangePicker } from "@/components/date-time-picker"
-import { Button } from "@/components/ui/button"
 
 export const metadata: Metadata = {
   title: "Dashboard",

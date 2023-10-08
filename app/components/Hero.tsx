@@ -4,13 +4,13 @@ import React, { useMemo } from "react";
 import Image from "next/image";
 import {motion} from "framer-motion";
 import getScrollAnimation from "@/lib/utils";
-import ScrollAnimationWrapper from "./framer-motion/ScrollAnimationWrapper";
-import { Button } from "./ui/button";
-import AnimatedTextCharacters from "./framer-motion/AnimatedTextCharacters";
+import ScrollAnimationWrapper from "../../components/framer-motion/ScrollAnimationWrapper";
+import { Button } from "../../components/ui/button";
+import AnimatedTextCharacters from "../../components/framer-motion/AnimatedTextCharacters";
 import { LocateIcon, Ticket, UserIcon } from "lucide-react";
-import { Card } from "./ui/card";
-import { Calendar } from "./ui/calendar";
-import { CalendarDateRangePicker } from "./date-time-picker";
+import { Card } from "../../components/ui/card";
+import { Calendar } from "../../components/ui/calendar";
+import { CalendarDateRangePicker } from "../../components/shared/DateTimePicker";
 
 const Hero = ({
   listUser = [

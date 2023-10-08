@@ -1,27 +1,20 @@
+import { BASE_URL } from "@/constants/appInfos";
 import axios from "axios";
 
-const axiosClient = axios.create()
-
-axiosClient.interceptors.request.use(async( config: any) => {
-  config.headers = {
+export const axiosClient = axios.create({
+  baseURL: BASE_URL,
+  headers: {
     'Content-type': 'application/json',
-    ...config.headers,
   },
-
-  config.data
-
-  return config
 })
 
-axiosClient.interceptors.response.use((response) => {
-  if (response.status === 200 && response.data) {
-    return response.data
+export const handleApiError = async (error:any) => {
+  try {
+    const errorMessage =
+      error.response?.data?.message || "An unexpected error occurred.";
+    const data = null;
+    return { error: errorMessage, data };
+  } catch (err) {
+    throw new Error("An unexpected error occurred.");
   }
-
-  return response
-},
-error => {
-  console.warn(`Lỗi kết nối đến cơ sở dữ liệu, ${error.message}`)
-})
-
-export default axiosClient
+};

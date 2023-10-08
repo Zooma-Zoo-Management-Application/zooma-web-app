@@ -1,4 +1,4 @@
-import { OverviewIcon } from "@/components/Icons";
+import { OverviewIcon } from "@/components/shared/Icons";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { sidebarStaffLinks } from "@/constants/sidebar";

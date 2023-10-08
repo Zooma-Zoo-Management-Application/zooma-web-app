@@ -1,17 +1,12 @@
 "use client"
 
-import Footer from '@/components/Footer'
-import ScrollToTopButton from '@/components/scroll-to-top-button'
-import { Button } from '@/components/ui/button'
+import Footer from '@/components/shared/Footer'
+import ScrollToTopButton from '@/components/shared/ScrollToTopButton'
 import { Toaster } from '@/components/ui/toaster'
 import { BASE_URL } from '@/constants/appInfos'
-import useUIState from '@/stores/ui-store'
 import useUserState from "@/stores/user-store"
 import '@/styles/globals.css'
 import axios from "axios"
-import { Volume2, VolumeX } from 'lucide-react'
-import { Metadata } from 'next'
-import { useRouter } from "next/navigation"
 import { useEffect } from "react"
 
 export default function RootLayout({

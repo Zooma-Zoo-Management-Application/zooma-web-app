@@ -1,14 +1,14 @@
 'use client'
 
-import { Sidebar } from '@/components/Sidebar'
+import { Sidebar } from '@/app/dashboard/components/Sidebar'
 import { Button } from '@/components/ui/button'
 import useUIState from '@/stores/ui-store'
 import Image from 'next/image'
 import { AnimatePresence, motion } from 'framer-motion'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import Breadcrumb from '@/components/Breadcrumb'
-import BreadcrumbItem from '@/components/BreadcrumbItem'
+import Breadcrumb from '@/components/shared/Breadcrumb'
+import BreadcrumbItem from '@/components/shared/BreadcrumbItem'
 
 export default function RootLayout({
   children,

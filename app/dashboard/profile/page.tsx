@@ -1,7 +1,5 @@
-import CardSettings from "@/components/card/card-settings";
-import CardProfile from "@/components/card/card-profile";
 import { Button } from "@/components/ui/button";
-import { AccountProfile } from "@/components/AccountProfile";
+import { AccountProfile } from "@/app/profile/components/AccountProfile";
 
 export default function ProfilePage() {
 

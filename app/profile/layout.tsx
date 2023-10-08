@@ -1,7 +1,6 @@
 import { Metadata } from "next"
 
-import HeaderNav from "@/components/HeaderNav"
-import { SidebarProfile } from "@/components/SidebarProfile"
+import { SidebarProfile } from "@/app/profile/components/SidebarProfile"
 import { Separator } from "@/components/ui/separator"
 import { Ticket, UserCog, UserSquare2 } from "lucide-react"
 
@@ -35,7 +34,6 @@ interface SettingsLayoutProps {
 export default function SettingsLayout({ children }: SettingsLayoutProps) {
   return (
     <>
-      <HeaderNav isScrollEffect={false} />
       <div className="block space-y-6 p-10 pb-16 md:block mt-20 max-w-6xl mx-auto">
         <div className="space-y-0.5">
           <h2 className="text-3xl font-bold tracking-tight font-amsi">Your Information</h2>

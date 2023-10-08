@@ -1,7 +1,7 @@
 import Image from "next/image";
 import React, { useMemo } from "react";
 import { motion } from "framer-motion";
-import ScrollAnimationWrapper from "./framer-motion/ScrollAnimationWrapper";
+import ScrollAnimationWrapper from "../../components/framer-motion/ScrollAnimationWrapper";
 import getScrollAnimation from "@/lib/utils";
 import { CheckCircle } from "lucide-react";
 

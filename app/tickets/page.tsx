@@ -1,11 +1,10 @@
 "use client"
 
-import SuccessMessage from '@/components/SuccessMessage';
-import DateChooseForm from '@/components/form/DateChooseForm';
-import FinalStep from '@/components/form/FinalStep';
-import SideBar from '@/components/form/SidebarStep';
-import TicketChooseForm from '@/components/form/TicketChooseForm';
-import UserInfoForm from '@/components/form/UserInfoForm';
+import DateChooseForm from '@/app/tickets/components/form/DateChooseForm';
+import FinalStep from '@/app/tickets/components/form/FinalStep';
+import SideBar from '@/app/tickets/components/form/SidebarStep';
+import TicketChooseForm from '@/app/tickets/components/form/TicketChooseForm';
+import UserInfoForm from '@/app/tickets/components/form/UserInfoForm';
 import { Button } from '@/components/ui/button';
 import { useMultiplestepForm } from '@/hooks/useMultiplestepForm';
 import { AnimatePresence } from 'framer-motion';
@@ -182,7 +181,7 @@ function TicketsPage() {
             >
               {showSuccessMsg ? (
                 <AnimatePresence mode="wait">
-                  <SuccessMessage />
+                  Success
                 </AnimatePresence>
               ) : (
                 <form

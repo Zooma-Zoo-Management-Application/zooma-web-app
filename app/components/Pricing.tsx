@@ -4,9 +4,9 @@ import getScrollAnimation from "@/lib/utils";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { useMemo } from "react";
-import NewSlider from "./NewSlider";
-import ScrollAnimationWrapper from "./framer-motion/ScrollAnimationWrapper";
-import { Button } from "./ui/button";
+import NewSlider from "@/app/components/NewSlider";
+import ScrollAnimationWrapper from "@/components/framer-motion/ScrollAnimationWrapper";
+import { Button } from "@/components/ui/button";
 
 
 const Pricing = () => {

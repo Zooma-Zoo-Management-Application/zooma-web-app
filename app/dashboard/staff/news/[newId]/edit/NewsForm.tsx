@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
-import Tiptap from "@/components/TipTap"
+import Tiptap from "@/components/tiptap/TipTap"
 import { Button } from "@/components/ui/button"
 import {
   Form,

@@ -5,9 +5,9 @@ import { Suspense, useEffect, useState } from "react";
 // import react slick
 import { ArrowBigLeft, ArrowBigRight } from "lucide-react";
 import Slider from "react-slick";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "./ui/card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../../components/ui/card";
 import Image from "next/image";
-import { Button } from "./ui/button";
+import { Button } from "../../components/ui/button";
 import { BASE_URL } from "@/constants/appInfos";
 import axios from "axios";
 import { useRouter } from "next/navigation";

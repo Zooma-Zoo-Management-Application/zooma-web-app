@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation"
 
 import { cn } from "@/lib/utils"
 import { Button, buttonVariants } from "@/components/ui/button"
-import { Separator } from "./ui/separator"
+import { Separator } from "../../../components/ui/separator"
 import { LogOut } from "lucide-react"
 
 interface SidebarProfileProps extends React.HTMLAttributes<HTMLElement> {
@@ -42,11 +42,6 @@ export function SidebarProfile({ className, items, ...props }: SidebarProfilePro
           {item.icon} {item.title}
         </Link>
       ))}
-      {/* <Separator className="hidden sm:my-6" />
-      <Button variant="ghost" className="justify-start absolute lg:relative right-0">
-        <LogOut size={16} className="mr-2" />
-        Log out
-      </Button> */}
     </nav>
   )
 }

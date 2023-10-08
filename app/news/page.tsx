@@ -1,6 +1,6 @@
 "use client"
 
-import NewSlider from '@/components/NewSlider';
+import NewSlider from '@/app/components/NewSlider';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { BASE_URL } from '@/constants/appInfos';
 import axios from 'axios';

@@ -1,4 +1,4 @@
-import Header from '@/components/Header'
+import Header from '@/components/shared/Header'
 import MapChart from './MapChart'
 
 export default function Page() {
