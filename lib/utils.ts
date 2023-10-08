@@ -47,6 +47,8 @@ export function formatVND(n : number, currency: string = "VNĐ") {
 }
 
 export function getCharPerWord(text: string) {
+  if (!text) return "U";
+
   let matches = text.match(/\b(\w)/g); 
   let acronym = matches?.join(''); 
   return acronym;

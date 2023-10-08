@@ -19,20 +19,22 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { BASE_URL } from "@/constants/appInfos"
 import FirebaseService from "@/lib/FirebaseService"
 import { cn, isBase64Image } from "@/lib/utils"
-import { ProfileValidation } from "@/lib/validations/profile"
 import axios from "axios"
 import { format } from "date-fns"
 import { getDownloadURL, ref, uploadBytes, } from "firebase/storage"
 import { CalendarIcon, ChevronDownIcon } from "lucide-react"
 import Image from "next/image"
 import { ChangeEvent, useState } from "react"
+import { Icons } from "@/components/Icons"
+import { useRouter } from "next/navigation"
+import useUserState from "@/stores/user-store"
 
 // This can come from your database or API.
 
 const formSignUpSchema = z.object({
-  fullname: z.string()
-  .min(3, {message: 'Name must be at least 3 characters.'})
-  .max(30, {message: 'Name must be max 30 characters'}),
+  // fullname: z.string()
+  // .min(3, {message: 'Name must be at least 3 characters.'})
+  // .max(30, {message: 'Name must be max 30 characters'}),
   username: z.string()
   .min(3, {message: 'Username must be at least 3 characters.'})
   .max(30, {message: 'Username must be max 30 characters'}),
@@ -42,7 +44,7 @@ const formSignUpSchema = z.object({
     required_error: "A date of birth is required.",
   }),
   avatarUrl: z.string().url().nonempty(),
-  phoneNumber: z.string(),
+  // phoneNumber: z.string(),
   newPassword: z.string({
     required_error: "New Password is required",
   })
@@ -50,27 +52,34 @@ const formSignUpSchema = z.object({
   .max(30, {message: 'New Password must be max 30 characters'}),
   confirmNewPassword: z.string({}),
   })
+  .refine((data) => data.newPassword === data.confirmNewPassword, {
+    message: "Oops! New Password doesnt match",
+  })
   
 
 type SignUpFormValues = z.infer<typeof formSignUpSchema>
 
 export function SignUpForm() {
+  const [isLoading, setIsLoading] = useState<boolean>(false)
   const [files, setFiles] = useState<File[]>([]);
+
+  const { setCurrentUser } = useUserState();
+  const router = useRouter();
 
   const defaultValues: Partial<SignUpFormValues> = {
     username: "",
     email: "",
-    fullname: "",
+    // fullname: "",
     gender: "Male",
     dateOfBirth: new Date(),
     avatarUrl: "",
-    phoneNumber: "",
+    // phoneNumber: "",`
     newPassword: "",
     confirmNewPassword: "",
   }
 
   const form = useForm<SignUpFormValues>({
-    resolver: zodResolver(ProfileValidation),
+    resolver: zodResolver(formSignUpSchema),
     defaultValues,
     mode: "onChange",
   })
@@ -97,7 +106,8 @@ export function SignUpForm() {
   }
 
   async function onSubmit(values: SignUpFormValues) {
-    console.log("submit")
+    setIsLoading(true);
+
     const blob = values.avatarUrl;
 
     const hasImageChanged = isBase64Image(blob);
@@ -113,8 +123,8 @@ export function SignUpForm() {
             let user : any = {
                 "userName": values?.username,
                 "email": values.email,
-                "fullName": values.fullname,
-                "phoneNumber": values.phoneNumber,
+                "fullName": "",
+                "phoneNumber": "",
                 "gender": values.gender,
                 "dateOfBirth": values.dateOfBirth,
                 "avatarUrl": values.avatarUrl,
@@ -122,6 +132,20 @@ export function SignUpForm() {
                 "confirmPassword": values.confirmNewPassword,
             }
             axios.post(`${BASE_URL}/api/Users/sign-up`, user)
+            .then((response) => {
+              setIsLoading(false);
+              let userAndToken = response.data;
+              setCurrentUser(userAndToken.user);
+              localStorage.setItem("accessToken", response.data.accessToken);
+              // if(user.role === "Admin"){
+              //   window.location.href = "/admin";
+              // }else if(user.role === "Staff"){
+              //   window.location.href = "/user";
+              // }else{
+              //   window.location.href = "/";
+              // }
+              router.push("/");
+            })
           })
           .catch((error) => {
             console.log(error.message);
@@ -135,7 +159,7 @@ export function SignUpForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-      <FormField
+        <FormField
           control={form.control}
           name="avatarUrl"
           render={({ field }) => (
@@ -301,7 +325,12 @@ export function SignUpForm() {
             )}
           />
         </div>
-        <Button type="submit" className="w-full hover:shadow-primary-md">Create Account</Button>
+        <Button disabled={isLoading} type="submit" className="w-full hover:shadow-primary-md">
+          {isLoading && (
+            <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+          )}
+          Sign Up
+        </Button>             
       </form>
     </Form>
   )

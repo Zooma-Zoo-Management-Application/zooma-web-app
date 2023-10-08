@@ -1,4 +1,6 @@
-import { useState } from "react";
+"use client"
+
+import { Suspense, useEffect, useState } from "react";
 
 // import react slick
 import { ArrowBigLeft, ArrowBigRight } from "lucide-react";
@@ -6,47 +8,26 @@ import Slider from "react-slick";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "./ui/card";
 import Image from "next/image";
 import { Button } from "./ui/button";
+import { BASE_URL } from "@/constants/appInfos";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
-const NewSlider = ({
-  listTestimoni = [
-    {
-      name: "iezh Robert",
-      image: "/assets/people-3.png",
-      city: "Warsaw",
-      country: "Poland",
-      rating: "4.5",
-      testimoni:
-        "Wow... I am very happy to use this VPN, it turned out to be more than my expectations and so far there have been no problems. LaslesVPN always the best",
-    },
-    {
-      name: "iezh Robert",
-      image: "/assets/people-3.png",
-      city: "Warsaw",
-      country: "Poland",
-      rating: "4.5",
-      testimoni:
-        "Wow... I am very happy to use this VPN, it turned out to be more than my expectations and so far there have been no problems. LaslesVPN always the best",
-    },
-    {
-      name: "iezh Robert",
-      image: "/assets/people-3.png",
-      city: "Warsaw",
-      country: "Poland",
-      rating: "4.5",
-      testimoni:
-        "Wow... I am very happy to use this VPN, it turned out to be more than my expectations and so far there have been no problems. LaslesVPN always the best",
-    },
-    {
-      name: "iezh Robert",
-      image: "/assets/people-3.png",
-      city: "Warsaw",
-      country: "Poland",
-      rating: "4.5",
-      testimoni:
-        "Wow... I am very happy to use this VPN, it turned out to be more than my expectations and so far there have been no problems. LaslesVPN always the best",
-    },
-  ],
-}) => {
+const NewSlider = () => {
+  const [listNews, setListNews] = useState<any>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    axios.get(`${BASE_URL}/api/News`)
+    .then(res => {
+      setListNews(res.data)
+      setIsLoading(false)
+    })
+    .catch(err => {
+      console.log(err);
+    })
+  }, [])
+
+
   const settings = {
     dots: true,
     customPaging: function (i:any) {
@@ -81,44 +62,47 @@ const NewSlider = ({
   };
   const [sliderRef, setSliderRef] = useState<any>(null);
 
+  const router = useRouter();
+
   return (
     <>
       <Slider
         {...settings}
         arrows={false}
         ref={setSliderRef}
-        className="flex items-stretch justify-items-stretch"
+        className=""
       >
-        {listTestimoni.map((listTestimonis, index) => (
-          <div className="px-3 flex items-stretch" key={index}>
-            <Card  key={index} className="p-0 border-2 border-gray-500 hover:border-primary transition-all rounded-lg flex flex-col">
-              <CardHeader className="p-0">
-                <div className="relative w-full h-32 mx-auto">
-                  <Image
-                    src="https://firebasestorage.googleapis.com/v0/b/zooma-bf129.appspot.com/o/90999724_1373586466162248_652645393300979712_n.jpg?alt=media&token=023d1b85-942d-4512-90f2-20a5ee70429b"
-                    layout='fill'
-                    className="rounded-t-md"
-                    objectFit='cover'
-                    alt="News"
-                  />
-                </div>
-              </CardHeader>
-              <CardContent className="py-4 px-8 flex flex-col justify-start">
-                <h4 className="font-bold text-left mb-4 text-lg">Flooding gives gives Central Park Zoo sea lion a brief free swim</h4>
-                <p className="text-justify">
-                A Central Park Zoo sea lion named Sally had a bit of a field day thanks to the severe weather in New York. The mammal ...
-                </p>
-              </CardContent>
-              <CardFooter className="flex justify-between flex-row-reverse">
-                <Button
-                 className="hover:shadow-primary-md"
-                >
-                  View more
-                </Button>
-              </CardFooter>
-            </Card>
-          </div>
-        ))}
+          {listNews.map((listNew:any, index:any) => (
+            <div className="px-3 flex items-stretch" key={index}>
+              <Card  key={index} className="p-0 border-2 border-gray-500 hover:border-primary transition-all rounded-lg flex flex-col">
+                <CardHeader className="p-0">
+                  <div className="relative w-full h-32 mx-auto">
+                    <Image
+                      src={listNew.image}
+                      layout='fill'
+                      className="rounded-t-md"
+                      objectFit='cover'
+                      alt="News"
+                    />
+                  </div>
+                </CardHeader>
+                <CardContent className="py-4 px-8 flex flex-col justify-start">
+                  <h4 className="font-bold text-left mb-4 text-lg">{listNew.title || "Title"}</h4>
+                  <p className="text-justify">
+                  {listNew.description || "Description"}
+                  </p>
+                </CardContent>
+                <CardFooter className="flex justify-between flex-row-reverse">
+                  <Button
+                  className="hover:shadow-primary-md"
+                  onClick={() => router.push(`/news/${listNew.id}`)}
+                  >
+                    View more
+                  </Button>
+                </CardFooter>
+              </Card>
+            </div>
+          ))}
       </Slider>
       <div className="flex w-full items-center justify-end">
         <div className="flex flex-none justify-between w-auto mt-14">

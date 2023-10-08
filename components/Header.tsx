@@ -52,11 +52,13 @@ const Header = () => {
       <header
         className={
           "fixed top-0 w-full  z-30 transition-all " +
-          (scrollActive ? " shadow-md pt-0 bg-white-500" : " pt-4")
+          (scrollActive ? " shadow-md pt-0 bg-white-500" : " pt-4 bg-gradient-to-b from-dark from-0% to-transparent to-100%")
         }
       >
-        <nav className="max-w-screen-xl px-6 sm:px-8 lg:px-16 mx-auto grid grid-flow-col py-3 sm:py-4">
-          <div className="col-start-1 col-end-2 flex items-center">
+        <nav className="max-w-screen-xl px-6 sm:px-8 lg:px-16 mx-auto grid grid-flow-col py-3 sm:py-4 ">
+          <div className="col-start-1 col-end-2 flex items-center cursor-pointer"
+            onClick={() => router.push("/")}
+          >
             {
               !scrollActive ? (
                 <Image
@@ -83,11 +85,12 @@ const Header = () => {
                 return (
                   <div
                     key={navLink.label}
+                    onClick={() => router.push(navLink.route)}
                     className={
                       "px-4 py-2 mx-2 cursor-pointer animation-hover inline-block relative font-amsi font-bold tracking-wider" +
                       (false
                         ? " text-primary animation-active "
-                        : "  hover:text-primary a")
+                        : "  hover:text-primary ")
                       + (
                         scrollActive ? " text-dark" : " text-white-500"
                       )
@@ -144,11 +147,12 @@ const Header = () => {
                 return (
                   <div
                     key={navLink.label}
+                    onClick={() => router.push(navLink.route)}
                     className={
                       "mx-1 sm:mx-2 px-3 sm:px-4 py-2 flex flex-col items-center text-xs border-t-2 transition-all " +
                       (activeLink === "about"
                         ? "  border-primary text-primary"
-                        : " border-transparent")
+                        : " border-transparent ")
                     }
                   >
                     {navLink.icon}

@@ -27,11 +27,11 @@ function NewViewPage() {
 
   
   return (
-    <div className='p-10'>
+    <div className='p-10 bg-light rounded-sm'>
       {
         newData && (
           <>
-            <div className="relative w-full h-60 mx-auto">
+            <div className="relative w-full h-80 mx-auto">
             {
               newData.image ? (
                 <Image

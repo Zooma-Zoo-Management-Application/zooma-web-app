@@ -12,7 +12,7 @@ export default function RootLayout({
       <body>
         <Header />
         <div className="background-texture py-20" >
-          <div className="max-w-screen-xl mt-20 px-8 xl:px-16 mx-auto bg-white-500 mb-20 rounded-sm">
+          <div className="max-w-screen-xl mt-20 px-8 xl:px-16 mx-auto mb-20 rounded-sm">
             {children}
           </div>
         </div>

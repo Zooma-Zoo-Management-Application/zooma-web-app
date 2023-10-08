@@ -172,7 +172,6 @@
   .background-texture{
     background: url("../public/green-bg.jpg");
     background-repeat: repeat;
-    padding: 93px 68px 1px
   }
 
   input::-webkit-outer-spin-button,
@@ -222,3 +221,13 @@
   @apply left-0 w-full;
 }
 
+#zoo-map .area-path{
+  fill: #16A34A;
+  stroke: #1b263a;
+}
+
+#zoo-map .area-path:hover{
+  opacity: 0.8;
+  stroke: gray;
+  cursor: pointer;
+}
