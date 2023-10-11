@@ -58,7 +58,7 @@ export default function RootLayout({
         <title>Zooma - Landing Page</title>
         <body>
           {children}
-          <Footer />
+          {/* <Footer /> */}
           <ScrollToTopButton />
           <Toaster />
         </body>

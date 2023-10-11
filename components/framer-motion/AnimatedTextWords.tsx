@@ -44,7 +44,7 @@ const AnimatedTextWord = ({ text }: {text: string}) => {
         <motion.span
           variants={child}
           style={{ marginRight: "5px" }}
-          key={index}
+          key={word+index}
         >
           {word}
         </motion.span>

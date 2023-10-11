@@ -2,8 +2,7 @@
 
 import NewSlider from '@/app/components/NewSlider';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { BASE_URL } from '@/constants/appInfos';
-import axios from 'axios';
+import { getNews } from '@/lib/api/newAPI';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -12,16 +11,17 @@ import { useEffect, useState } from 'react';
 function NewsPage() {
   const [listNews, setListNews] = useState<any>([]);
   const router = useRouter()
-  
 
   useEffect(() => {
-    axios.get(`${BASE_URL}/api/News`)
-    .then(res => {
-      setListNews(res.data)
-    })
-    .catch(err => {
-      console.log(err);
-    })
+    const initialize = async () => {
+      try {
+        const res = await getNews();
+        setListNews(res.data);
+      } catch (err:any) {
+        console.log(err);
+      }
+    }
+    initialize();
   }, [])
 
   return (
@@ -60,7 +60,7 @@ function NewsPage() {
               <ScrollArea className="h-full w-full">
                 <div className="text-white space-y-2">
                 {listNews.map((listNew:any, index:any) => (
-                  <div key={index} className="flex justify-start gap-4">
+                  <div key={listNew.title} className="flex justify-start gap-4">
                     <div className='h-20 aspect-video'>
                       <Image
                         src={listNew?.image || '/peguin.jpg'}

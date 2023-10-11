@@ -5,7 +5,7 @@ const Breadcrumb = ({ children }: any) => {
   const childrenWtihSeperator = childrenArray.map((child, index) => {
     if (index !== childrenArray.length - 1) {
       return (
-        <Fragment  key={index}>
+        <Fragment  key={index + 23}>
           {child}
           <span>/</span>
         </Fragment>

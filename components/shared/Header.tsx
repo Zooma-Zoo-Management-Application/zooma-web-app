@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 // Import react scroll
 // import ButtonOutline from "../misc/ButtonOutline.";
 import useUserState from "@/stores/user-store";
-import { Newspaper, Rabbit, Ticket, UserSquare2 } from "lucide-react";
+import { Map, Newspaper, Rabbit, Ticket, UserSquare2 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Button } from "../ui/button";
@@ -34,6 +34,11 @@ const Header = () => {
       route: "/tickets",
       label: "Tickets",
       icon: <Ticket className="w-6 h-6" />,
+    },
+    {
+      route: "/map",
+      label: "Map",
+      icon: <Map className="w-6 h-6" />,
     },
     {
       route: "/profile",
@@ -77,7 +82,7 @@ const Header = () => {
               )
             }
           </div>
-          <ul className="hidden lg:flex col-start-4 col-end-8 text-white-500  items-center">
+          <ul className="hidden lg:flex col-start-4 col-end-9 text-white-500  items-center justify-center">
             {
               navLinks.map((navLink, index) => {
                 if(navLink.label == "Profile") return (<></>)
@@ -102,7 +107,7 @@ const Header = () => {
               })
             }
           </ul>
-          <div className="col-start-10 col-end-12 font-medium flex justify-end items-center">
+          <div className="col-start-11 col-end-12 font-medium flex justify-end items-center">
             {
               currentUser ? (
                 <>

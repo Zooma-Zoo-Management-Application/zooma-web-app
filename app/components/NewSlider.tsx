@@ -73,8 +73,8 @@ const NewSlider = () => {
         className=""
       >
           {listNews.map((listNew:any, index:any) => (
-            <div className="px-3 flex items-stretch" key={index}>
-              <Card  key={index} className="p-0 border-2 border-gray-500 hover:border-primary transition-all rounded-lg flex flex-col">
+            <div className="px-3 flex items-stretch" key={listNew.title}>
+              <Card  key={listNew.title} className="p-0 border-2 border-gray-500 hover:border-primary transition-all rounded-lg flex flex-col">
                 <CardHeader className="p-0">
                   <div className="relative w-full h-32 mx-auto">
                     <Image

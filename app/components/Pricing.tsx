@@ -1,6 +1,6 @@
 "use client"
 
-import getScrollAnimation from "@/lib/utils";
+import getScrollAnimation, { formatVND } from "@/lib/utils";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { useMemo } from "react";
@@ -8,9 +8,34 @@ import NewSlider from "@/app/components/NewSlider";
 import ScrollAnimationWrapper from "@/components/framer-motion/ScrollAnimationWrapper";
 import { Button } from "@/components/ui/button";
 
+interface IProps {
+  tickets: any[];
+}
 
-const Pricing = () => {
+const Pricing = ({tickets}: IProps) => {
   const scrollAnimation = useMemo(() => getScrollAnimation(), []);
+
+  if(!tickets) return <h1>Loading...</h1>;
+  let ticketModifed:any[] = [];
+
+  tickets.forEach((ticket, index) => {
+    switch (ticket.name) {
+      case "Child Ticket":
+        ticket.image = "/icon/child.svg";
+        ticketModifed[0] = ticket;
+        break;
+      case "Adult Ticket":
+        ticket.image = "/icon/adult.svg";
+        ticketModifed[1] = ticket;
+        break;
+      case "Senior Ticket":
+      default:
+        ticket.image = "/icon/senior.svg";
+        ticketModifed[2] = ticket;
+        break;
+    }
+
+  })
 
   return (
     <div
@@ -34,96 +59,44 @@ const Pricing = () => {
             </motion.p>
           </ScrollAnimationWrapper>
           <div className="grid grid-flow-row sm:grid-flow-col grid-cols-1 sm:grid-cols-3 gap-4 lg:gap-12 py-8 lg:py-12 px-6 sm:px-0 lg:px-6">
-            <ScrollAnimationWrapper className="flex justify-center">
-              <motion.div
-                variants={scrollAnimation}
-                className="flex flex-col justify-center items-center border-2 border-gray-500 rounded-xl py-4 px-6 lg:px-12 xl:px-20"
-                whileHover={{
-                  scale : 1.1,
-                  transition: {
-                    duration: .2
-                  }
-                }}
-              >
-                <div className="p-4 lg:p-0 mt-6 lg:mt-16">
-                  <Image
-                    src="/icon/child.svg"
-                    width={145}
-                    height={165}
-                    alt="child"
-                  />
-                </div>
-                <p className="text-lg text-black-600 font-medium capitalize my-2 sm:my-4 font-amsi">
-                  Child
-                </p>
-                <div className="flex flex-col w-full justify-center mb-8 flex-none mt-4">
-                  <p className="text-2xl text-black-600 text-center mb-4 ">
-                    Free
-                  </p>
-                  <Button>Select</Button>
-                </div>
-              </motion.div>
-            </ScrollAnimationWrapper>
-            <ScrollAnimationWrapper className="flex justify-center">
-              <motion.div
-                variants={scrollAnimation}
-                className="flex flex-col justify-center items-center border-2 border-gray-500 rounded-xl py-4 px-6 lg:px-12 xl:px-20"
-                whileHover={{
-                  scale : 1.1,
-                  transition: {
-                    duration: .2
-                  }
-                }}
-              >
-              <div className="p-4 lg:p-0 mt-6 lg:mt-16">
-                <Image
-                  src="/icon/adult.svg"
-                  width={145}
-                  height={165}
-                  alt="Adult"
-                />
-              </div>
-              <p className="text-lg text-black-600 font-medium capitalize my-2 sm:my-4 font-amsi">
-              Adult{" "}
-              </p>
-              <div className="flex flex-col w-full justify-center mb-8 flex-none mt-4">
-                <p className="text-2xl text-black-600 text-center mb-4 ">
-                  $9 <span className="text-black-500">/ day</span>
-                </p>
-                <Button>Select</Button>
-              </div>
-              </motion.div>
-            </ScrollAnimationWrapper>
-            <ScrollAnimationWrapper className="flex justify-center">
-              <motion.div
-                variants={scrollAnimation}
-                className="flex flex-col justify-center items-center border-2 border-gray-500 rounded-xl py-4 px-6 lg:px-12 xl:px-20"
-                whileHover={{
-                  scale : 1.1,
-                  transition: {
-                    duration: .2
-                  }
-                }}
-              >
-              <div className="p-4 lg:p-0 mt-6 lg:mt-16">
-                <Image
-                  src="/icon/senior.svg"
-                  width={145}
-                  height={165}
-                  alt="senior"
-                />
-              </div>
-              <p className="text-lg text-black-600 font-medium capitalize my-2 sm:my-4 font-amsi">
-                Senior{" "}
-              </p>
-              <div className="flex flex-col w-full justify-center mb-8 flex-none mt-4">
-                <p className="text-2xl text-black-600 text-center mb-4 ">
-                  $12 <span className="text-black-500">/ day</span>
-                </p>
-                <Button>Select</Button>
-              </div>
-              </motion.div>
-            </ScrollAnimationWrapper>
+            {
+              ticketModifed && ticketModifed.map((ticket, index) => (
+                <ScrollAnimationWrapper key={index} className="flex justify-center">
+                  <motion.div
+                    variants={scrollAnimation}
+                    className="flex flex-col justify-center items-center border-2 border-gray-500 rounded-xl py-4 px-6 lg:px-12 xl:px-20"
+                    whileHover={{
+                      scale : 1.1,
+                      transition: {
+                        duration: .2
+                      }
+                    }}
+                  >
+                    <div className="p-4 lg:p-0 mt-6 lg:mt-16">
+                      <Image
+                        src={ticket.image || "/icon/child.svg"}
+                        width={145}
+                        height={165}
+                        alt={ticket.name}
+                      />
+                    </div>
+                    <h2 className="text-2xl text-black-600 font-medium capitalize my-2 sm:my-4 font-amsi">
+                      {ticket.name}
+                      <p className="text-base text-gray-600 font-sans ">
+                        {ticket.description}
+                      </p>
+                    </h2>
+                    
+                    <div className="flex flex-col w-full justify-center mb-8 flex-none mt-4">
+                      <p className="text-2xl text-black-600 text-center mb-4 ">
+                        {formatVND(ticket.price)}
+                      </p>
+                      <Button>Select</Button>
+                    </div>
+                  </motion.div>
+                </ScrollAnimationWrapper>
+              ))
+            }
           </div>
         </div>
         <div className="flex flex-col w-full my-16">
@@ -150,45 +123,6 @@ const Pricing = () => {
               </div>
             </motion.div>
           </ScrollAnimationWrapper>
-          {/* <ScrollAnimationWrapper>
-            <motion.div className="w-full flex justify-evenly items-center mt-4 flex-wrap lg:flex-nowrap" variants={scrollAnimation}>
-              <Image
-                src="/Icon/amazon.png"
-                className="h-14 w-auto mt-4 lg:mt-2"
-                alt=""
-                height={50}
-                width={50}
-              />
-              <Image
-                src="/Icon/netflix.png"
-                className="h-14 w-auto mt-2 lg:mt-0"
-                alt=""
-                height={50}
-                width={50}
-              />
-              <Image
-                src="/Icon/reddit.png"
-                className="h-12 w-auto mt-2 lg:mt-0"
-                alt=""
-                height={50}
-                width={50}
-              />
-              <Image
-                src="/Icon/discord.png"
-                className="h-14 w-auto mt-2 lg:mt-0"
-                alt=""
-                height={50}
-                width={50}
-              />
-              <Image
-                src="/Icon/spotify.png"
-                className="h-12 w-auto mt-2 lg:mt-0"
-                alt=""
-                height={50}
-                width={50}
-              />
-            </motion.div>
-          </ScrollAnimationWrapper> */}
         </div>
         <div className="flex flex-col w-full my-16" id="testimoni">
           <ScrollAnimationWrapper>

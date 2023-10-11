@@ -64,7 +64,7 @@ const Hero = ({
           {listUser.map((listUsers, index) => (
             <motion.div
               className="flex items-center justify-start sm:justify-center py-4 sm:py-6 w-[80%] px-4 sm:w-auto mx-auto sm:mx-0"
-              key={index}
+              key={listUsers.name}
               custom={{duration: 2 + index}}
               variants={scrollAnimation}
             >

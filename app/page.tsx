@@ -8,8 +8,28 @@ import Pricing from "@/app/components/Pricing";
 import { Button } from "@/components/ui/button";
 import useUIState from "@/stores/ui-store";
 import { Volume2, VolumeX } from "lucide-react";
+import { useEffect, useState } from "react";
+import { getTickets } from "@/lib/api/ticketAPI";
+import { getNews } from "@/lib/api/newAPI";
 export default function Home() {
   const {isVideoMuted, setIsVideoMuted} = useUIState();
+  const [tickets, setTickets] = useState<any>([])
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const initialize = async () => {
+      try {
+        const tickets = await getTickets();
+        setTickets(tickets);
+      } catch (err:any) {
+        setError(`Error initializing the app: ${err.message}`);
+      } finally {
+        setLoading(false);
+      }
+    };
+    initialize();
+  }, [])
   
   return (
     <>
@@ -25,7 +45,7 @@ export default function Home() {
       <Header />
       <Hero />
       <Feature />
-      <Pricing />
+      <Pricing tickets={tickets.data}/>
       <BackgroundVideo />
     </>
   )

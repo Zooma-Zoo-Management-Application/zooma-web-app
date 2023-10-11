@@ -1,5 +1,5 @@
 import Header from '@/components/shared/Header'
-import MapChart from './MapChart'
+import MapChart from './components/MapChart'
 
 export default function Page() {
   return (
