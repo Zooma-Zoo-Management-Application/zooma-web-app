@@ -1,10 +1,10 @@
-import Header from '@/components/shared/Header'
+// import Header from '@/components/shared/Header'
 import MapChart from './components/MapChart'
 
 export default function Page() {
   return (
     <>
-      <Header />
+      {/* <Header /> */}
       <div className='bg-red-500 h-40 w-full'>
         qưeqưeqưewqe
       </div>

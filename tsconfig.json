@@ -23,6 +23,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "lib/FirebaseService.js", "config/firebase.config.js", "components/tiptap/ToC.jsx", "app/map/page.tsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "lib/FirebaseService.js", "config/firebase.config.js", "components/tiptap/ToC.jsx", "app/map/page.ts"],
   "exclude": ["node_modules"]
 }

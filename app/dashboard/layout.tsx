@@ -39,16 +39,17 @@ export default function RootLayout({
 
   return (
     <html lang="en">
+      <title>Zooma - Dashboard</title>
       <body>
-      <Header />
-      <main className='flex flex-row'>
-          <div className='w-fit'>
-            <LeftSidebar />
-          </div>
-          <section className="flex min-h-screen w-full flex-1 flex-col items-center max-md:pb-32 sm:px-10">
-            {children}
-          </section>
-        </main>
+        <Header />
+        <main className='flex flex-row'>
+            <div className='w-fit'>
+              <LeftSidebar />
+            </div>
+            <section className="flex min-h-screen w-full flex-1 flex-col items-center max-md:pb-32 sm:px-10">
+              {children}
+            </section>
+          </main>
       </body>
     </html>
   )

@@ -11,6 +11,17 @@ import { Volume2, VolumeX } from "lucide-react";
 import { useEffect, useState } from "react";
 import { getTickets } from "@/lib/api/ticketAPI";
 import { getNews } from "@/lib/api/newAPI";
+import { RowData } from "@tanstack/react-table";
+
+declare module '@tanstack/table-core' {
+  interface TableMeta<TData extends RowData> {
+    pinNew: (id: string) => void
+    unpinNew: (id: string) => void
+    delete: (id: string) => void
+    update: (id: string, updateData: any) => void
+  }
+}
+
 export default function Home() {
   const {isVideoMuted, setIsVideoMuted} = useUIState();
   const [tickets, setTickets] = useState<any>([])

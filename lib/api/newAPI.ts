@@ -1,6 +1,5 @@
 import { axiosClient, handleApiError } from "./axiosClient";
 
-
 interface IFormData {
   title: string;
   content: string;

@@ -1,10 +1,8 @@
 "use client"
 
-import * as React from "react"
 import {
   ColumnDef,
   ColumnFiltersState,
-  RowData,
   SortingState,
   VisibilityState,
   flexRender,
@@ -14,8 +12,9 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
-  useReactTable,
+  useReactTable
 } from "@tanstack/react-table"
+import * as React from "react"
 
 import {
   Table,
@@ -25,17 +24,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { DataTablePagination } from "./data-table-pagination"
-import { DataTableToolbar } from "./data-table-toolbar"
 import { DataTableRowActions } from "./data-table-row-actions"
-
-declare module '@tanstack/table-core' {
-  interface TableMeta<TData extends RowData> {
-    pinNew: (id: string) => void
-    unpinNew: (id: string) => void
-    delete: (id: string) => void
-  }
-}
+import { DataTableToolbar } from "./data-table-toolbar"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -76,39 +66,24 @@ export function DataTable<TData, TValue>({
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
     meta: {
-      pinNew: (id: string) => {
-        setDataState((prev) =>
-            [
-            ...prev.map((item: any) => {
-              if (item.id === id) {
-                return {
-                  ...item,
-                  status: true
-                }
-              }
-              return item
-            })
-          ]
-        )
-      },
-      unpinNew: (id: string) => {
+      pinNew: (id: string) => {},
+      unpinNew: (id: string) => {},
+      delete(id: string) {},
+      update(id: string, updateData: any) {
         setDataState((prev) =>
         [
           ...prev.map((item: any) => {
-            if (item.id === id) {
+            if (item.id == id) {
               return {
                 ...item,
-                status: false
+                ...updateData
               }
             }
             return item
           })
         ]
         )
-      },
-      delete(id: string) {
-        setDataState((prev) => prev.filter((item: any) => item.id !== id));
-      },
+      }
     }
   })
 
@@ -169,7 +144,6 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <DataTablePagination table={table} />
     </div>
   )
 }

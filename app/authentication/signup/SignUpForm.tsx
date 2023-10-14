@@ -28,6 +28,8 @@ import { ChangeEvent, useState } from "react"
 import { Icons } from "@/components/shared/Icons"
 import { useRouter } from "next/navigation"
 import useUserState from "@/stores/user-store"
+import { registerUser } from "@/lib/api/userAPI"
+import { toast } from "@/components/ui/use-toast"
 
 // This can come from your database or API.
 
@@ -69,11 +71,9 @@ export function SignUpForm() {
   const defaultValues: Partial<SignUpFormValues> = {
     username: "",
     email: "",
-    // fullname: "",
     gender: "Male",
     dateOfBirth: new Date(),
     avatarUrl: "",
-    // phoneNumber: "",`
     newPassword: "",
     confirmNewPassword: "",
   }
@@ -119,36 +119,57 @@ export function SignUpForm() {
         getDownloadURL(imageRef)
           .then((url) => {
             values.avatarUrl = url;
-
-            let user : any = {
-                "userName": values?.username,
-                "email": values.email,
-                "fullName": "",
-                "phoneNumber": "",
-                "gender": values.gender,
-                "dateOfBirth": values.dateOfBirth,
-                "avatarUrl": values.avatarUrl,
-                "password": values.newPassword,
-                "confirmPassword": values.confirmNewPassword,
-            }
-            axios.post(`${BASE_URL}/api/Users/sign-up`, user)
+            registerUser({
+              userInfo: {
+                username: values.username,
+                avatarUrl: values.avatarUrl,
+                newPassword: values.newPassword,
+                confirmNewPassword: values.confirmNewPassword,
+                dateOfBirth: values.dateOfBirth.toISOString(),
+                email: values.email,
+                gender: values.gender
+              }
+            })
             .then((response) => {
               setIsLoading(false);
-              let userAndToken = response.data;
-              setCurrentUser(userAndToken.user);
-              localStorage.setItem("accessToken", response.data.accessToken);
-              // if(user.role === "Admin"){
-              //   window.location.href = "/admin";
-              // }else if(user.role === "Staff"){
-              //   window.location.href = "/user";
-              // }else{
-              //   window.location.href = "/";
-              // }
-              router.push("/");
+              let {data, error} = response;
+
+              console.log('res', response)
+
+              if(error !== null){
+                toast({
+                  title: "Sign Up Error",
+                  description: (
+                    <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+                      <code className="text-light">{JSON.stringify(error, null, 2)}</code>
+                    </pre>
+                  )
+                })
+                setIsLoading(false);
+              } else {
+                setCurrentUser(data.user);
+                localStorage.setItem("accessToken", data.accessToken);
+                // if(user.role === "Admin"){
+                //   window.location.href = "/admin";
+                // }else if(user.role === "Staff"){
+                //   window.location.href = "/user";
+                // }else{
+                //   window.location.href = "/";
+                // }
+                router.push("/");
+              }
             })
           })
           .catch((error) => {
-            console.log(error.message);
+            toast({
+              title: "Login Error",
+              description: (
+                <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+                  <code className="text-light">{JSON.stringify(error, null, 2)}</code>
+                </pre>
+              )
+            })
+            setIsLoading(false);
             values.avatarUrl = "";
           });
       });
