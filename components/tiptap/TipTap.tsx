@@ -38,6 +38,7 @@ const MenuBar = () => {
     <>
       <div className='flex gap-2 mt-2 flex-wrap sticky top-0 bg-[#fff] z-10 py-4 px-4 border-b mb-4'>
         <Button
+          type="button"
           onClick={() => editor.chain().focus().toggleBold().run()}
           disabled={
             !editor.can()
@@ -53,6 +54,7 @@ const MenuBar = () => {
           <Bold className='w-4 h-4' />
         </Button>
         <Button
+          type="button"
           onClick={() => editor.chain().focus().toggleItalic().run()}
           disabled={
             !editor.can()
@@ -68,6 +70,7 @@ const MenuBar = () => {
           <Italic className='w-4 h-4' />
         </Button>
         <Button
+          type="button"
           onClick={() => editor.chain().focus().toggleStrike().run()}
           disabled={
             !editor.can()
@@ -83,6 +86,7 @@ const MenuBar = () => {
           <Strikethrough className='w-4 h-4' />
         </Button>
         <Button
+          type="button"
           onClick={() => editor.chain().focus().toggleCode().run()}
           disabled={
             !editor.can()
@@ -97,13 +101,17 @@ const MenuBar = () => {
         >
           <Code className='w-4 h-4' />
         </Button>
-        <Button onClick={() => editor.chain().focus().unsetAllMarks().run()}
+        <Button 
+          type="button"
+          onClick={() => editor.chain().focus().unsetAllMarks().run()}
           variant="outline"
           size="icon"
         >
           <Eraser className='w-4 h-4' />
         </Button>
-        <Button onClick={() => editor.chain().focus().clearNodes().run()}
+        <Button 
+          type="button"
+          onClick={() => editor.chain().focus().clearNodes().run()}
           variant="outline"
           size="icon"
         >
@@ -111,6 +119,7 @@ const MenuBar = () => {
         </Button>
         <Input type='color' className='w-10 p-1 rounded-sm' value="#000" onChange={(e) => editor.chain().focus().setColor(e.target.value).run()} />
         <Button
+          type="button"
           onClick={() => editor.chain().focus().setParagraph().run()}
           className={editor.isActive('paragraph') ? 'text-light bg-dark hover:text-light hover:bg-dark' : ''}
           variant="outline"
@@ -119,6 +128,7 @@ const MenuBar = () => {
           <Pilcrow className='w-4 h-4' />
         </Button>
         <Button
+          type="button"
           onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
           className={editor.isActive('heading', { level: 1 }) ? 'text-light bg-dark hover:text-light hover:bg-dark' : ''}
           variant="outline"
@@ -127,6 +137,7 @@ const MenuBar = () => {
           <Heading1 className='w-4 h-4' />
         </Button>
         <Button
+          type="button"
           onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
           className={editor.isActive('heading', { level: 2 }) ? 'text-light bg-dark hover:text-light hover:bg-dark' : ''}
           variant="outline"
@@ -135,6 +146,7 @@ const MenuBar = () => {
           <Heading2 className='w-4 h-4' />
         </Button>
         <Button
+          type="button"
           onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
           className={editor.isActive('heading', { level: 3 }) ? 'text-light bg-dark hover:text-light hover:bg-dark' : ''}
           variant="outline"
@@ -143,6 +155,7 @@ const MenuBar = () => {
           <Heading3 className='w-4 h-4' />
         </Button>
         <Button
+          type="button"
           onClick={() => editor.chain().focus().toggleHeading({ level: 4 }).run()}
           className={editor.isActive('heading', { level: 4 }) ? 'text-light bg-dark hover:text-light hover:bg-dark' : ''}
           variant="outline"
@@ -151,6 +164,7 @@ const MenuBar = () => {
           <Heading4 className='w-4 h-4' />
         </Button>
         <Button
+          type="button"
           onClick={() => editor.chain().focus().toggleHeading({ level: 5 }).run()}
           className={editor.isActive('heading', { level: 5 }) ? 'text-light bg-dark hover:text-light hover:bg-dark' : ''}
           variant="outline"
@@ -159,6 +173,7 @@ const MenuBar = () => {
           <Heading5 className='w-4 h-4' />
         </Button>
         <Button
+          type="button"
           onClick={() => editor.chain().focus().toggleHeading({ level: 6 }).run()}
           className={editor.isActive('heading', { level: 6 }) ? 'text-light bg-dark hover:text-light hover:bg-dark' : ''}
           variant="outline"
@@ -167,6 +182,7 @@ const MenuBar = () => {
           <Heading6 className='w-4 h-4' />
         </Button>
         <Button
+          type="button"
           onClick={() => editor.chain().focus().toggleBulletList().run()}
           className={editor.isActive('bulletList') ? 'text-light bg-dark hover:text-light hover:bg-dark' : ''}
           variant="outline"
@@ -175,6 +191,7 @@ const MenuBar = () => {
           <List className='w-4 h-4' />
         </Button>
         <Button
+          type="button"
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
           className={editor.isActive('orderedList') ? 'text-light bg-dark hover:text-light hover:bg-dark' : ''}
           variant="outline"
@@ -183,6 +200,7 @@ const MenuBar = () => {
           <ListOrdered className='w-4 h-4' />
         </Button>
         <Button
+          type="button"
           onClick={() => editor.chain().focus().toggleCodeBlock().run()}
           className={editor.isActive('codeBlock') ? 'text-light bg-dark hover:text-light hover:bg-dark' : ''}
           variant="outline"
@@ -191,6 +209,7 @@ const MenuBar = () => {
           <SquareCode className='w-4 h-4' />
         </Button>
         <Button
+          type="button"
           onClick={() => editor.chain().focus().toggleBlockquote().run()}
           className={editor.isActive('blockquote') ? 'text-light bg-dark hover:text-light hover:bg-dark' : ''}
           variant="outline"
@@ -198,19 +217,24 @@ const MenuBar = () => {
         >
           <TextQuote className='w-4 h-4'/>
         </Button>
-        <Button onClick={() => editor.chain().focus().setHorizontalRule().run()}
+        <Button 
+          type="button"
+          onClick={() => editor.chain().focus().setHorizontalRule().run()}
           variant="outline"
           size="icon"
         >
           <WrapText className='w-4 h-4' />
         </Button>
-        <Button onClick={() => editor.chain().focus().setHardBreak().run()}
+        <Button 
+          type="button"
+          onClick={() => editor.chain().focus().setHardBreak().run()}
           variant="outline"
           size="icon"
         >
           <CornerDownLeft className='w-4 h-4' />
         </Button>
         <Button
+          type="button"
           onClick={() => editor.chain().focus().undo().run()}
           disabled={
             !editor.can()
@@ -225,6 +249,7 @@ const MenuBar = () => {
           <Undo className='w-4 h-4' />
         </Button>
         <Button
+          type="button"
           onClick={() => editor.chain().focus().redo().run()}
           disabled={
             !editor.can()
@@ -239,6 +264,7 @@ const MenuBar = () => {
           <Redo className='w-4 h-4' />
         </Button>
         <Button
+          type="button"
           onClick={() => handleAddYoutube()}
           variant="outline"
           size="icon"

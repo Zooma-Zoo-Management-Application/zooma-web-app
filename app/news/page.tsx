@@ -25,7 +25,7 @@ function NewsPage() {
   }, [])
 
   return (
-      <div className='max-w-full mx-auto mt-16 mb-0 bg-white-500 rounded-sm p-10'>
+      <div className='max-w-full mx-auto mt-16 mb-0 bg-white-500 rounded-sm p-4 sm:p-10'>
         <div className='w-full'>
           <section className='aspect-video w-full grid grid-cols-1 md:grid-cols-8 max-h-[50vh] space-y-2 md:space-y-0 md:space-x-2'>
             {
@@ -49,8 +49,8 @@ function NewsPage() {
                     <div className="col-start-1 col-end-7 row-start-6 row-span-2 text-xl text-white-500 pt-3 px-1 flex flex-col justify-end">
                       {/* {listNews[0]?.description} */}
                       <h5>{listNews[0]?.date}</h5>
-                      <h2>{listNews[0]?.title}</h2>
-                      This is description of news. This is description of news. This is description of news. This is description of news
+                      <h2 className='text-xl sm:text-2xl'>{listNews[0]?.title}</h2>
+                      <span className='text-sm sm:text-base'>{listNews[0]?.description?.slice(0, 50)+"..."}</span>
                     </div>
                   </div>
                 </div>
@@ -71,7 +71,7 @@ function NewsPage() {
                       />
                     </div>
                     <div className="flex flex-col items-start justify-start">
-                      <h4 className='text-base'>{listNew?.title || 'title'}</h4>
+                      <h4 className='text-base'>{listNew?.title.slice(0, 40)+"..." || 'title'}</h4>
                       <h4 className='text-base text-green-500 cursor-pointer'
                         onClick={() => router.push(`/news/${listNew?.id}`)}
                       >View more</h4>
@@ -83,10 +83,10 @@ function NewsPage() {
             </div>
           </section>
         </div>
-        <div className='mt-12'>
+        {/* <div className='mt-12'>
           <h2 className='p-4 font-amsi'>News In Zooma</h2>
           <NewSlider />       
-        </div>            
+        </div>             */}
       </div>
   )
 }
