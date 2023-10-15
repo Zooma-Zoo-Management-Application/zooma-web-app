@@ -1,11 +1,15 @@
 'use client'
 
+import Breadcrumb from '@/components/shared/Breadcrumb'
+import BreadcrumbItem from '@/components/shared/BreadcrumbItem'
 import useUIState from '@/stores/ui-store'
+import useUserState from '@/stores/user-store'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import Header from './components/Header'
 import LeftSidebar from './components/LeftSidebar'
-import { Card } from '@/components/ui/card'
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
+import { UserNav } from '@/components/shared/UserNav'
 
 export default function RootLayout({
   children,
@@ -18,7 +22,7 @@ export default function RootLayout({
   const [breadcrumbs, setBreadcrumbs] = useState<any>([]);
   const pathname = usePathname()
 
-  console.log("pathname",pathname)
+  const { currentUser } = useUserState();
 
   useEffect(() => {
     let pathArray = pathname.split("/");
@@ -41,12 +45,43 @@ export default function RootLayout({
     <html lang="en">
       <title>Zooma - Dashboard</title>
       <body>
-        <Header />
-        <main className='flex flex-row'>
-            <div className='w-fit'>
+        <main className='flex flex-row items-start'>
+            <div className='w-fit custom-scrollbar sticky left-0 top-0 z-[1000]'>
               <LeftSidebar />
             </div>
-            <section className="flex min-h-screen w-full flex-1 flex-col items-center max-md:pb-32 sm:px-10">
+            <section className="flex min-h-screen w-full flex-1 flex-col items-start max-md:pb-32">
+              <div className='z-[1000] flex justify-between items-center w-full p-4 sticky top-0 mt-2 bg-white-500 border-b border-b-gray-200'>
+                <div className='flex-col'>
+                {/* <h2 className="text-3xl font-bold tracking-tight ml-5">News Management</h2> */}
+                  <Breadcrumb>
+                    {/* <BreadcrumbItem href="/">Home</BreadcrumbItem> */}
+                    {breadcrumbs &&
+                      breadcrumbs.map((breadcrumb:any) => (
+                        <BreadcrumbItem key={breadcrumb.href} href={breadcrumb.href}>
+                          {breadcrumb.label}
+                        </BreadcrumbItem>
+                      ))}
+                  </Breadcrumb>
+                </div>
+                <div className="font-medium">
+                {
+                  currentUser ? (
+                    <>
+                      <UserNav user={currentUser} />
+                    </>
+
+                  ) : (
+                    <Link href="/authentication/login">
+                      <Button className={"capitalize tracking-wide transition-all"
+                  }
+                      >
+                        Login
+                      </Button>
+                    </Link>
+                  )
+                }
+                </div>
+              </div>
               {children}
             </section>
           </main>

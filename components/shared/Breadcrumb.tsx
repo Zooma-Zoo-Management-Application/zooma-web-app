@@ -15,7 +15,7 @@ const Breadcrumb = ({ children }: any) => {
   });
 
   return (
-    <nav className="mx-4 mt-8">
+    <nav className="">
       <ul className="flex items-center space-x-4 list-none">{childrenWtihSeperator}</ul>
     </nav>
   );

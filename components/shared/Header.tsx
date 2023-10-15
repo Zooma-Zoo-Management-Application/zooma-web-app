@@ -89,7 +89,7 @@ const Header = () => {
 
                 return (
                   <div
-                    key={navLink.label}
+                    key={navLink.label+navLink.route}
                     onClick={() => router.push(navLink.route)}
                     className={
                       "px-4 py-2 mx-2 cursor-pointer animation-hover inline-block relative font-amsi font-bold tracking-wider" +
