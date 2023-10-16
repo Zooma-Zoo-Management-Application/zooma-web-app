@@ -26,8 +26,7 @@ export default function RootLayout({
 
         checkToken(accessTokenCheck)
         .then((response:any) => {
-          let {data} = response;
-          setCurrentUser(data);
+          setCurrentUser(response?.data);
         })
         .catch((err:any) => {
           console.log(err);

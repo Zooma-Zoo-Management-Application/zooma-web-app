@@ -7,6 +7,7 @@ import { useMemo } from "react";
 import NewSlider from "@/app/components/NewSlider";
 import ScrollAnimationWrapper from "@/components/framer-motion/ScrollAnimationWrapper";
 import { Button } from "@/components/ui/button";
+import ImageWithTextSkeleton from "../dashboard/components/ImageWithTextSkeleton";
 
 interface IProps {
   tickets: any[];
@@ -15,7 +16,9 @@ interface IProps {
 const Pricing = ({tickets}: IProps) => {
   const scrollAnimation = useMemo(() => getScrollAnimation(), []);
 
-  if(!tickets) return <h1>Loading...</h1>;
+  if(!tickets) return (
+    <ImageWithTextSkeleton />
+  );
   let ticketModifed:any[] = [];
 
   tickets.forEach((ticket, index) => {

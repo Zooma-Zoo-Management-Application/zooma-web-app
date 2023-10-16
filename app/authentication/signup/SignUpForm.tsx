@@ -26,7 +26,7 @@ import { CalendarIcon, ChevronDownIcon } from "lucide-react"
 import Image from "next/image"
 import { ChangeEvent, useState } from "react"
 import { Icons } from "@/components/shared/Icons"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import useUserState from "@/stores/user-store"
 import { registerUser } from "@/lib/api/userAPI"
 import { toast } from "@/components/ui/use-toast"
@@ -67,6 +67,8 @@ export function SignUpForm() {
 
   const { setCurrentUser } = useUserState();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") || "/";
 
   const defaultValues: Partial<SignUpFormValues> = {
     username: "",
@@ -156,7 +158,7 @@ export function SignUpForm() {
                 // }else{
                 //   window.location.href = "/";
                 // }
-                router.push("/");
+                router.push(callbackUrl);
               }
             })
           })

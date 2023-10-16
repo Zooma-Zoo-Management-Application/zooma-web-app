@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import { getTickets } from "@/lib/api/ticketAPI";
 import { getNews } from "@/lib/api/newAPI";
 import { RowData } from "@tanstack/react-table";
+import Footer from "@/components/shared/Footer";
 
 declare module '@tanstack/table-core' {
   interface TableMeta<TData extends RowData> {
@@ -43,7 +44,7 @@ export default function Home() {
   }, [])
   
   return (
-    <>
+    <div>
       <Button variant="default" size="icon" 
         onClick={() => {
           setIsVideoMuted()
@@ -58,6 +59,7 @@ export default function Home() {
       <Feature />
       <Pricing tickets={tickets.data}/>
       <BackgroundVideo />
-    </>
+      <Footer />
+    </div>
   )
 }

@@ -22,6 +22,7 @@ export function useMultiplestepForm(steps: number) {
     }
 
     const goTo = (index: number) => {
+        if(index<0) index = 0;
         setCurrentStepIndex(index)
     }
 

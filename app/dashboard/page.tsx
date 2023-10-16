@@ -17,6 +17,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs"
+import Footer from "@/components/shared/Footer"
 
 export const metadata: Metadata = {
   title: "Dashboard",

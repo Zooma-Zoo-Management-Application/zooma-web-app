@@ -10,7 +10,6 @@ export default function RootLayout({
     <html lang="en">
       <title>Zooma - Ticket Page</title>
       <body>
-        <Header />
         {children}
       </body>
     </html>
