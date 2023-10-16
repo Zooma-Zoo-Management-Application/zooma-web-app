@@ -2,23 +2,20 @@
 
 import * as React from "react"
 
-import { cn } from "@/lib/utils"
 import { Icons } from "@/components/shared/Icons"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { z } from "zod"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
 import { Checkbox } from "@/components/ui/checkbox"
-import Link from "next/link"
-import axios from "axios"
-import useUserState from "@/stores/user-store"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
 import { toast } from "@/components/ui/use-toast"
-import { useRouter } from "next/navigation"
-import { BASE_URL } from '@/constants/appInfos'
 import { loginUser } from "@/lib/api/userAPI"
+import { cn } from "@/lib/utils"
+import useUserState from "@/stores/user-store"
+import { zodResolver } from "@hookform/resolvers/zod"
+import Link from "next/link"
+import { useRouter, useSearchParams } from "next/navigation"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -34,6 +31,8 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
 
   const { setCurrentUser } = useUserState();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") || "/";
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof formLoginSchema>>({
@@ -51,9 +50,11 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     // 3. Send the data somewhere
     loginUser(values.email, values.password)
     .then((response) => {
-      let userAndToken = response.data;
-      setCurrentUser(userAndToken.user);
-      localStorage.setItem("accessToken", response.data.accessToken);
+      let {
+        loginResponse, message
+      } = response.data;
+      setCurrentUser(loginResponse.user);
+      localStorage.setItem("accessToken", loginResponse.accessToken);
       // if(user.role === "Admin"){
       //   window.location.href = "/admin";
       // }else if(user.role === "Staff"){
@@ -61,7 +62,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
       // }else{
       //   window.location.href = "/";
       // }
-      router.push("/");
+      router.push(callbackUrl);
     })
     .catch((error) => {
       toast({
@@ -72,6 +73,9 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
           </pre>
         )
       })
+      setIsLoading(false);
+    })
+    .finally(() => {
       setIsLoading(false);
     })
   }

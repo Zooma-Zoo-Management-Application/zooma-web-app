@@ -8,14 +8,10 @@ import { Switch } from "@/components/ui/switch";
 import FormWrapper from "./FormWrapper";
 import { FormItems } from "@/app/tickets/page";
 import { Calendar } from "@/components/ui/custom-calendar";
+import useOrder from "@/stores/order-store";
 
-type stepProps = FormItems & {
-  updateForm: (fieldToUpdate: Partial<FormItems>) => void;
-};
-
-const DateChooseForm = ({ updateForm, date }: stepProps) => {
-  const [ticketDate, setTicketDate] = useState<Date | undefined>(date)
-
+const DateChooseForm = () => {
+  const { order, setDate } = useOrder()
 
   return (
     <FormWrapper
@@ -25,8 +21,9 @@ const DateChooseForm = ({ updateForm, date }: stepProps) => {
       <div className="flex justify-center items-center">
         <Calendar
           mode="single"
-          selected={ticketDate}
-          onSelect={setTicketDate}
+          selected={order.date}
+          onSelect={(date) => setDate(date || new Date())}
+          disabled={{ before: new Date() }}
         />
       </div>
     </FormWrapper>

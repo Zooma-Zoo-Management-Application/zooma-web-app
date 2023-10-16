@@ -56,16 +56,13 @@ const sidebarLinks = [
 function LeftSidebar() {
   const pathname = usePathname();
   const router = useRouter();
-
-  console.log(pathname,'dsd')
-
   return (
     <section className='custom-scrollbar
     sticky left-0 top-0 z-20 px-6 flex w-fit flex-col justify-between overflow-auto bg-white-500 border-r border-r-gray-200 pb-5 pt-5 max-md:hidden
     '>
       <div className='flex w-full flex-1 flex-col gap-2 px-0 xl:px-6'>
         <div className="cursor-pointer relative w-full h-full mx-auto hidden items-center justify-center lg:flex"
-            onClick={() => router.push("/dashboard/overview")}
+            onClick={() => router.push("/dashboard")}
           >
           <Image
             src="/logos/Zooma_Black_Text.svg"
@@ -75,7 +72,7 @@ function LeftSidebar() {
           />
         </div>
         <div className="cursor-pointer relative w-full h-full mx-auto flex items-center justify-center lg:hidden"
-            onClick={() => router.push("/dashboard/overview")}
+            onClick={() => router.push("/dashboard")}
           >
           <Image
             src="/logos/Zooma_Black.svg"

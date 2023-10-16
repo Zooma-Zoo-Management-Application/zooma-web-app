@@ -63,7 +63,7 @@ export const getUserById = async (id : number) => {
 
 export const getStaffs = async () => {
   try {
-    const { data } = await axiosClient.get(`/users/staffs`);
+    const { data } = await axiosClient.get(`/Accounts/staffs`);
     return { error: null, data };
   } catch (error) {
     return handleApiError(error);
@@ -72,7 +72,7 @@ export const getStaffs = async () => {
 
 export const getZooTrainers = async () => {
   try {
-    const { data } = await axiosClient.get(`/users/zoo-trainers`);
+    const { data } = await axiosClient.get(`/Accounts/zoo-trainers`);
     return { error: null, data };
   } catch (error) {
     return handleApiError(error);
