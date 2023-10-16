@@ -1,6 +1,6 @@
 'use client'
 
-import { LandPlot, LayoutDashboard, Newspaper, Rabbit, Ticket, User } from 'lucide-react'
+import { LandPlot, LayoutDashboard, Newspaper, Rabbit, Ticket, User, UtensilsCrossed } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
@@ -40,6 +40,11 @@ const sidebarLinks = [
     icon: <Rabbit className="w-6 h-6"/>,
     route: '/dashboard/animals',
     label: 'Animals'
+  },
+  {
+    icon: <UtensilsCrossed className="w-6 h-6"/>,
+    route: '/dashboard/diets',
+    label: 'Diets'
   },
   {
     icon: <Ticket className="w-6 h-6"/>,
