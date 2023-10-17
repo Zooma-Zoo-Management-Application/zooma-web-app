@@ -8,6 +8,7 @@ import NewSlider from "@/app/components/NewSlider";
 import ScrollAnimationWrapper from "@/components/framer-motion/ScrollAnimationWrapper";
 import { Button } from "@/components/ui/button";
 import ImageWithTextSkeleton from "../dashboard/components/ImageWithTextSkeleton";
+import { useRouter } from "next/navigation";
 
 interface IProps {
   tickets: any[];
@@ -15,6 +16,8 @@ interface IProps {
 
 const Pricing = ({tickets}: IProps) => {
   const scrollAnimation = useMemo(() => getScrollAnimation(), []);
+
+  const router = useRouter()
 
   if(!tickets) return (
     <ImageWithTextSkeleton />
@@ -37,7 +40,6 @@ const Pricing = ({tickets}: IProps) => {
         ticketModifed[2] = ticket;
         break;
     }
-
   })
 
   return (
@@ -156,7 +158,9 @@ const Pricing = ({tickets}: IProps) => {
                   </h5>
                   <p>Let&apos;s book with us and find the fun.</p>
                 </div>
-                <Button className="lg:py-6 px-12 lg:px-12 text-lg text-white-500 font-semibold py-4 rounded-lg hover:shadow-primary-md transition-all outline-none">Booking Now!</Button>
+                <Button className="lg:py-6 px-12 lg:px-12 text-lg text-white-500 font-semibold py-4 rounded-lg hover:shadow-primary-md transition-all outline-none"
+                  onClick={() => router.push('/tickets')}
+                >Booking Now!</Button>
               </div>
               <div
                 className="absolute bg-black-600 opacity-5 w-11/12 roudned-lg h-60 sm:h-56 top-0 mt-8 mx-auto left-0 right-0"

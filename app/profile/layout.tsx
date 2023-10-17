@@ -3,6 +3,7 @@ import { Metadata } from "next"
 import { SidebarProfile } from "@/app/profile/components/SidebarProfile"
 import { Separator } from "@/components/ui/separator"
 import { Ticket, UserCog, UserSquare2 } from "lucide-react"
+import { Fragment } from "react"
 
 export const metadata: Metadata = {
   title: "Forms",
@@ -33,7 +34,7 @@ interface SettingsLayoutProps {
 
 export default function SettingsLayout({ children }: SettingsLayoutProps) {
   return (
-    <>
+    <Fragment>
       <div className="block space-y-6 p-10 pb-16 md:block mt-20 max-w-6xl mx-auto">
         <div className="space-y-0.5">
           <h2 className="text-3xl font-bold tracking-tight font-amsi">Your Information</h2>
@@ -54,6 +55,6 @@ export default function SettingsLayout({ children }: SettingsLayoutProps) {
           </div>
         </div>
       </div>
-    </>
+    </Fragment>
   )
 }

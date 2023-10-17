@@ -5,7 +5,7 @@ import BreadcrumbItem from '@/components/shared/BreadcrumbItem'
 import useUIState from '@/stores/ui-store'
 import useUserState from '@/stores/user-store'
 import { usePathname, useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import LeftSidebar from './components/LeftSidebar'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
@@ -63,12 +63,12 @@ export default function RootLayout({
                       ))}
                   </Breadcrumb>
                 </div>
-                <div className="font-medium">
+                <div className="font-medium mr-4">
                 {
                   currentUser ? (
-                    <>
+                    <Fragment>
                       <UserNav user={currentUser} />
-                    </>
+                    </Fragment>
 
                   ) : (
                     <Link href="/authentication/login">

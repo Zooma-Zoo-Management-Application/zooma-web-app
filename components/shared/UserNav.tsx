@@ -21,6 +21,7 @@ import Link from "next/link"
 import { profileLinks } from "@/constants/landing-page"
 import { getCharPerWord } from "@/lib/utils"
 import useUserState from "@/stores/user-store"
+import { Fragment } from "react"
 
 interface IUserNavProps{
   user?: {
@@ -47,11 +48,11 @@ export function UserNav({user = null, isMobile = false} : IUserNavProps) {
   }
 
   if(!user) return (
-    <></>
+    <Fragment></Fragment>
   )
 
   return (
-    <>
+    <Fragment>
       {
         !isMobile ? (
           <DropdownMenu>
@@ -113,6 +114,6 @@ export function UserNav({user = null, isMobile = false} : IUserNavProps) {
           </div>
         )
       }
-    </>
+    </Fragment>
   )
 }

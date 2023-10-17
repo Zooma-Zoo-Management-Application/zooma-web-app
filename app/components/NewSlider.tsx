@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 
 // import react slick
 import { getNews } from "@/lib/api/newAPI";
@@ -72,7 +72,7 @@ const NewSlider = () => {
   const router = useRouter();
 
   return (
-    <>
+    <Fragment>
           {
             isLoading ? (
               <div>
@@ -100,7 +100,6 @@ const NewSlider = () => {
                 </div>
               </div>
             ) : (
-              <>
               <Slider
                 {...settings}
                 arrows={false}
@@ -139,7 +138,6 @@ const NewSlider = () => {
                   </div>
                 ))}
                 </Slider>
-              </>
             )
           }
       
@@ -159,7 +157,7 @@ const NewSlider = () => {
           </div>
         </div>
       </div>
-    </>
+    </Fragment>
   );
 };
 

@@ -1,7 +1,7 @@
 'use client'
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 // Import react scroll
 // import ButtonOutline from "../misc/ButtonOutline.";
 import useUserState from "@/stores/user-store";
@@ -53,8 +53,8 @@ const Header = () => {
     });
   }, []);
   return (
-    <>
-      <header
+    <div>
+      <div
         className={
           "fixed top-0 w-full  z-30 transition-all " +
           (scrollActive ? " shadow-md pt-0 bg-white-500" : " pt-4 bg-gradient-to-b from-dark from-0% to-transparent to-100%")
@@ -85,7 +85,7 @@ const Header = () => {
           <ul className="hidden lg:flex col-start-4 col-end-9 text-white-500  items-center justify-center">
             {
               navLinks.map((navLink, index) => {
-                if(navLink.label == "Profile") return (<></>)
+                if(navLink.label == "Profile") return (<Fragment></Fragment>)
 
                 return (
                   <div
@@ -110,12 +110,12 @@ const Header = () => {
           <div className="col-start-11 col-end-12 font-medium flex justify-end items-center">
             {
               currentUser ? (
-                <>
+                <Fragment>
                   <UserNav user={currentUser} />
-                </>
+                </Fragment>
 
               ) : (
-              <>
+              <Fragment>
                 <Link href="/authentication/login">
                   <span className={"mx-2 sm:mx-4 capitalize tracking-wide hover:text-primary transition-all"
                 + (
@@ -134,13 +134,13 @@ const Header = () => {
                   )   
                 }
               >Sign Up</Button>
-              </>
+              </Fragment>
               )
             }
             
           </div>
         </nav>
-      </header>
+      </div>
       {/* Mobile Navigation */}
 
       <nav className="fixed lg:hidden bottom-0 left-0 right-0 z-20 px-4 sm:px-8 shadow-t ">
@@ -170,7 +170,7 @@ const Header = () => {
         </div>
       </nav>
       {/* End Mobile Navigation */}
-    </>
+    </div>
   );
 };
 

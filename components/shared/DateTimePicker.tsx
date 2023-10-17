@@ -8,11 +8,12 @@ import { cn } from "@/lib/utils"
 import { Button } from "../ui/button"
 import { Calendar } from "../ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
+import useOrder from "@/stores/order-store"
 
 export function CalendarDateRangePicker({
   className,
 }: React.HTMLAttributes<HTMLDivElement>) {
-  const [date, setDate] = React.useState<Date | undefined>(new Date())
+  const { order, setDate } = useOrder()
 
   return (
     <div className={cn("grid gap-2", className)}>
@@ -23,14 +24,14 @@ export function CalendarDateRangePicker({
             variant={"outline"}
             className={cn(
               "w-[200px] justify-start text-left font-normal rounded-e-none",
-              !date && "text-muted-foreground"
+              !order.date && "text-muted-foreground"
             )}
           >
             <CalendarIcon className="mr-2 h-4 w-4" />
-            {date ? (
-              <>
-                {format(date, "LLLL dd, y")}
-              </>
+            {order.date ? (
+              <React.Fragment>
+                {format(order.date, "LLLL dd, y")}
+              </React.Fragment>
             ) : (
               <span>Pick a date</span>
             )}
@@ -40,8 +41,8 @@ export function CalendarDateRangePicker({
           <Calendar
             initialFocus
             // mode="range"
-            defaultMonth={date}
-            selected={date}
+            defaultMonth={order.date}
+            selected={order.date}
             onDayClick={(day) => setDate(day)}
             disabled={{ before: new Date() }}
             // numberOfMonths={2}

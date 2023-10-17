@@ -1,16 +1,14 @@
 "use client"
 
-import React, { useMemo } from "react";
-import Image from "next/image";
-import {motion} from "framer-motion";
 import getScrollAnimation from "@/lib/utils";
-import ScrollAnimationWrapper from "../../components/framer-motion/ScrollAnimationWrapper";
-import { Button } from "../../components/ui/button";
-import AnimatedTextCharacters from "../../components/framer-motion/AnimatedTextCharacters";
+import { motion } from "framer-motion";
 import { LocateIcon, Ticket, UserIcon } from "lucide-react";
-import { Card } from "../../components/ui/card";
-import { Calendar } from "../../components/ui/calendar";
+import { useRouter } from "next/navigation";
+import { useMemo } from "react";
+import AnimatedTextCharacters from "../../components/framer-motion/AnimatedTextCharacters";
+import ScrollAnimationWrapper from "../../components/framer-motion/ScrollAnimationWrapper";
 import { CalendarDateRangePicker } from "../../components/shared/DateTimePicker";
+import { Button } from "../../components/ui/button";
 
 const Hero = ({
   listUser = [
@@ -29,6 +27,7 @@ const Hero = ({
   ],
 }) => {
   const scrollAnimation = useMemo(() => getScrollAnimation(), []);
+  const router = useRouter()
 
   return (
     <div
@@ -50,7 +49,9 @@ const Hero = ({
               </p>
               <div className="flex lg:mt-14">
                 <CalendarDateRangePicker /> 
-                <Button className="rounded-s-none hover:shadow-primary-md">
+                <Button className="rounded-s-none hover:shadow-primary-md"
+                  onClick={() => router.push("/tickets")}
+                >
                   Buy Tickets
                 </Button>
               </div>
