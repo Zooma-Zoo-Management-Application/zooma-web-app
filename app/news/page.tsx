@@ -59,7 +59,7 @@ function NewsPage() {
             <div className=" col-span-3 max-h-[50vh]">
               <ScrollArea className="h-full w-full">
                 <div className="text-white space-y-2">
-                {listNews.map((listNew:any, index:any) => (
+                {listNews?.map((listNew:any, index:any) => (
                   <div key={listNew.title} className="flex justify-start gap-4">
                     <div className='h-20 aspect-video'>
                       <Image

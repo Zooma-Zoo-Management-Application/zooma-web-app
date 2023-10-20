@@ -88,7 +88,7 @@ const Header = () => {
                 if(navLink.label == "Profile") return (<Fragment></Fragment>)
 
                 return (
-                  <div
+                  <li
                     key={navLink.label+navLink.route}
                     onClick={() => router.push(navLink.route)}
                     className={
@@ -102,7 +102,7 @@ const Header = () => {
                     }
                   >
                     {navLink.label}
-                  </div>
+                  </li>
                 )
               })
             }

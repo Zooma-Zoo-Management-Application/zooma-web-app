@@ -1,9 +1,7 @@
-import { Metadata } from "next"
+"use client"
 
 import { Overview } from "@/app/dashboard/components/Overview"
 import { RecentSales } from "@/app/dashboard/components/RecentSales"
-import { CalendarDateRangePicker } from "@/components/shared/DateTimePicker"
-import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
@@ -11,21 +9,40 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { Skeleton } from "@/components/ui/skeleton"
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs"
-import Footer from "@/components/shared/Footer"
-import { Fragment } from "react"
-
-export const metadata: Metadata = {
-  title: "Dashboard",
-  description: "Example dashboard app built using the components.",
-}
+import { getSixmonthsAbalysis } from "@/lib/api/analysis"
+import { formatVND } from "@/lib/utils"
+import { Fragment, useEffect, useState } from "react"
 
 export default function DashboardPage() {
+  const [data, setData] = useState<any>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState("")
+
+  useEffect(() => {
+    const initialize = async () => {
+      try {
+        const res = await getSixmonthsAbalysis();
+        const { data } = res;
+        // data.list.sort((a:any, b:any) => {
+        //   return a.month - b.month;
+        // });
+        setData(data);
+      } catch (err:any) {
+        setError(`Error initializing the app: ${err.message}`);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    initialize();
+  }, [data])
+
   return (
     <Fragment>
       <div className="md:hidden">
@@ -70,10 +87,13 @@ export default function DashboardPage() {
                     </svg>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold">$45,231.89</div>
-                    <p className="text-xs text-muted-foreground">
-                      +20.1% from last month
-                    </p>
+                    {
+                      isLoading ? (
+                        <Skeleton className="w-full h-7" />
+                      ) : (
+                        <div className="text-2xl font-bold">{formatVND(data.totalRevenue)}</div>
+                      )
+                    }
                   </CardContent>
                 </Card>
                 <Card>
@@ -159,18 +179,18 @@ export default function DashboardPage() {
                     <CardTitle>Overview</CardTitle>
                   </CardHeader>
                   <CardContent className="pl-2">
-                    <Overview />
+                    <Overview data={data.revenue} isLoading={isLoading}/>
                   </CardContent>
                 </Card>
                 <Card className="col-span-3">
                   <CardHeader>
-                    <CardTitle>Recent Sales</CardTitle>
-                    <CardDescription>
+                    <CardTitle>Recent Orders</CardTitle>
+                    {/* <CardDescription>
                       You made 265 sales this month.
-                    </CardDescription>
+                    </CardDescription> */}
                   </CardHeader>
                   <CardContent>
-                    <RecentSales />
+                    <RecentSales data={data.recentOrders} isLoading={isLoading}/>
                   </CardContent>
                 </Card>
               </div>

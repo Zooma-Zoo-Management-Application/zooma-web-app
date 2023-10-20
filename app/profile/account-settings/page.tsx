@@ -2,7 +2,9 @@ import React from 'react'
 
 function AccountSettings() {
   return (
-    <div>AccountSettings</div>
+    <div className='min-h-[50vh]'>
+      w
+    </div>
   )
 }
 

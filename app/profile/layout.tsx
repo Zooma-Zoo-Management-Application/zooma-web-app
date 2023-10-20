@@ -4,6 +4,7 @@ import { SidebarProfile } from "@/app/profile/components/SidebarProfile"
 import { Separator } from "@/components/ui/separator"
 import { Ticket, UserCog, UserSquare2 } from "lucide-react"
 import { Fragment } from "react"
+import Header from "@/components/shared/Header"
 
 export const metadata: Metadata = {
   title: "Forms",
@@ -23,7 +24,7 @@ const sidebarNavItems = [
   },
   {
     icon: <Ticket className="h-4 w-4 mr-2" />,
-    title: "Order History",
+    title: "Your ticket",
     href: "/profile/order-history",
   },
 ]
@@ -34,8 +35,9 @@ interface SettingsLayoutProps {
 
 export default function SettingsLayout({ children }: SettingsLayoutProps) {
   return (
-    <Fragment>
-      <div className="block space-y-6 p-10 pb-16 md:block mt-20 max-w-6xl mx-auto">
+    <div className="background-texture py-10">
+      <Header />
+      <div className="rounded-sm bg-white-500 block space-y-6 p-10 pb-16 md:block mt-20 max-w-6xl mx-auto">
         <div className="space-y-0.5">
           <h2 className="text-3xl font-bold tracking-tight font-amsi">Your Information</h2>
           <p className="text-muted-foreground font-amsi">
@@ -47,14 +49,11 @@ export default function SettingsLayout({ children }: SettingsLayoutProps) {
           <aside className="-mx-4 lg:w-1/5">
             <SidebarProfile items={sidebarNavItems} />
           </aside>
-          <div className="flex-1 lg:max-w-2xl">
-            <div>
-
-            </div>
+          <div className="flex-1">
             {children}
           </div>
         </div>
       </div>
-    </Fragment>
+    </div>
   )
 }

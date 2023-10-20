@@ -1,45 +1,29 @@
 "use client"
 
-import { getSixmonthsRevenues } from "@/lib/api/analysis"
+import { Skeleton } from "@/components/ui/skeleton"
 import { formatVND } from "@/lib/utils"
 import { Fragment, useEffect, useState } from "react"
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts"
+import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
 
 
-export function Overview() {
-  const [data, setData] = useState<any>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState("")
-
-  useEffect(() => {
-    const initialize = async () => {
-      try {
-        const res = await getSixmonthsRevenues();
-        const { data } = res;
-        //sort data.list
-        data.list.sort((a:any, b:any) => {
-          return a.month - b.month;
-        });
-
-        setData(data);
-      } catch (err:any) {
-        setError(`Error initializing the app: ${err.message}`);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    initialize();
-  }, [data])
-
-
+export function Overview({data, isLoading}: {data: any, isLoading: boolean}) {
   return (
     <Fragment>
       {
         isLoading ? (
-          <div>Loading...</div>
+          <div className="grid grid-cols-6 h-80 gap-x-2 w-full">
+            <Skeleton className="col-span-1 w-full h-full" />
+            <Skeleton className="col-span-1 w-full h-full" />
+            <Skeleton className="col-span-1 w-full h-full" />
+            <Skeleton className="col-span-1 w-full h-full" />
+            <Skeleton className="col-span-1 w-full h-full" />
+            <Skeleton className="col-span-1 w-full h-full" />
+          </div>
         ) : (
           <ResponsiveContainer width="100%" height={350}>
-            <BarChart data={data.list}>
+            <BarChart data={data.sort(
+              (a:any, b:any) => a.month - b.month
+            )}>
               <XAxis
                 dataKey="month"
                 stroke="#888888"
@@ -56,7 +40,11 @@ export function Overview() {
                 tickFormatter={(value: any) => `${formatVND(value)}`}
                 className="whitespace-nowrap"
               />
-              <Bar dataKey="revenue" fill="#adfa1d" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="revenue" fill="#16A34A" radius={[4, 4, 0, 0]} />
+              <Tooltip 
+              labelFormatter={(value) => `${getMonthName(value)}`}
+              formatter={(value, name, props) => [formatVND(+value), "Total In-Month Revenue: "]}
+              />
             </BarChart>
           </ResponsiveContainer>
         )

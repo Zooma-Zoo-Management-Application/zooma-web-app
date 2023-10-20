@@ -71,3 +71,27 @@ export default function getScrollAnimation() {
   })
 
 }
+
+export const getImageOfTicket = (ticketName: string) => {
+  if(ticketName.toLowerCase().includes("child")){
+    return "/icon/child.svg"
+  } else if(ticketName.toLowerCase().includes("adult")){
+    return "/icon/adult.svg"
+  } else if(ticketName.toLowerCase().includes("senior")){
+    return "/icon/senior.svg"
+  } else {
+    return "/icon/child.svg"
+  }
+}
+
+export const getImageOfTicketById = (ticketId: number) => {
+  if(ticketId === 1){
+    return "/icon/child.svg"
+  } else if(ticketId === 2){
+    return "/icon/adult.svg"
+  } else if(ticketId === 3){
+    return "/icon/senior.svg"
+  } else {
+    return "/icon/child.svg"
+  }
+}
