@@ -5,7 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 
-const sidebarLinks = [
+const adminSidebarLinks = [
   {
     icon: <LayoutDashboard className="w-6 h-6"/>,
     route: '/dashboard',
@@ -13,13 +13,26 @@ const sidebarLinks = [
   },
   {
     icon: <User className="w-6 h-6"/>,
-    route: '/dashboard/visitor',
-    label: 'Visitor'
+    route: '/dashboard/visitors',
+    label: 'Visitors'
   },
   {
     icon: <User className="w-6 h-6"/>,
-    route: '/dashboard/users',
-    label: 'Users'
+    route: '/dashboard/staffs',
+    label: 'Staffs'
+  },
+  {
+    icon: <User className="w-6 h-6"/>,
+    route: '/dashboard/zoo-trainers',
+    label: 'Zoo Trainers'
+  }
+]
+
+const staffSidebarLinks = [
+  {
+    icon: <LayoutDashboard className="w-6 h-6"/>,
+    route: '/dashboard',
+    label: 'Overview'
   },
   {
     icon: <User className="w-6 h-6"/>,
@@ -42,11 +55,6 @@ const sidebarLinks = [
     label: 'Animals'
   },
   {
-    icon: <UtensilsCrossed className="w-6 h-6"/>,
-    route: '/dashboard/diets',
-    label: 'Diets'
-  },
-  {
     icon: <Ticket className="w-6 h-6"/>,
     route: '/dashboard/tickets',
     label: 'Tickets'
@@ -63,9 +71,28 @@ const sidebarLinks = [
   }
 ]
 
-function LeftSidebar() {
+const zooTrainerSidebarLinks = [
+  {
+    icon: <LayoutDashboard className="w-6 h-6"/>,
+    route: '/dashboard',
+    label: 'Overview'
+  },
+  {
+    icon: <UtensilsCrossed className="w-6 h-6"/>,
+    route: '/dashboard/diets',
+    label: 'Diets'
+  },
+]
+
+
+
+function LeftSidebar({ role="admin" }) {
   const pathname = usePathname();
   const router = useRouter();
+  const sidebarLinks = role === "admin" 
+  ? adminSidebarLinks : role === "staff" 
+  ? staffSidebarLinks : role === "zoo-trainer" 
+  ? zooTrainerSidebarLinks : [];
   return (
     <section className='custom-scrollbar
     sticky left-0 top-0 z-20 px-6 flex w-fit flex-col justify-between overflow-auto bg-white-500 border-r border-r-gray-200 pb-5 pt-5 max-md:hidden
