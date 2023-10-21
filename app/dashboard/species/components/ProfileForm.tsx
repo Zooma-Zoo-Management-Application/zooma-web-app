@@ -9,79 +9,48 @@ import { Calendar } from "@/components/ui/calendar"
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage
+  FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { BASE_URL } from "@/constants/appInfos"
-import FirebaseService from "@/lib/FirebaseService"
+import { toast } from "@/components/ui/use-toast"
 import { cn, isBase64Image } from "@/lib/utils"
-import axios from "axios"
+import { ProfileValidation } from "@/lib/validations/profile"
 import { format } from "date-fns"
-import { getDownloadURL, ref, uploadBytes, } from "firebase/storage"
 import { CalendarIcon, ChevronDownIcon } from "lucide-react"
 import Image from "next/image"
 import { ChangeEvent, useState } from "react"
-import { Icons } from "@/components/shared/Icons"
-import { useRouter, useSearchParams } from "next/navigation"
+import FirebaseService from "@/lib/FirebaseService"
+import { getDownloadURL, ref, uploadBytes,  } from "firebase/storage"
+import axios from "axios"
 import useUserState from "@/stores/user-store"
-import { registerUser } from "@/lib/api/userAPI"
-import { toast } from "@/components/ui/use-toast"
+import { updateUserInfo } from "@/lib/api/userAPI"
+
+type ProfileFormValues = z.infer<typeof ProfileValidation>
 
 // This can come from your database or API.
 
-const formSignUpSchema = z.object({
-  // fullname: z.string()
-  // .min(3, {message: 'Name must be at least 3 characters.'})
-  // .max(30, {message: 'Name must be max 30 characters'}),
-  username: z.string()
-  .min(3, {message: 'Username must be at least 3 characters.'})
-  .max(30, {message: 'Username must be max 30 characters'}),
-  email: z.string().email({message: 'Please enter a valid email address.'}),
-  gender: z.string().nonempty(),
-  dateOfBirth: z.date({
-    required_error: "A date of birth is required.",
-  }),
-  avatarUrl: z.string().url().nonempty(),
-  // phoneNumber: z.string(),
-  newPassword: z.string({
-    required_error: "New Password is required",
-  })
-  .min(3, {message: 'New Password must be at least 6 characters.'})
-  .max(30, {message: 'New Password must be max 30 characters'}),
-  confirmNewPassword: z.string({}),
-  })
-  .refine((data) => data.newPassword === data.confirmNewPassword, {
-    message: "Oops! New Password doesnt match",
-  })
-  
 
-type SignUpFormValues = z.infer<typeof formSignUpSchema>
-
-export function SignUpForm() {
-  const [isLoading, setIsLoading] = useState<boolean>(false)
+export function ProfileForm({userId, values, setOpen}: any) {
   const [files, setFiles] = useState<File[]>([]);
 
-  const { setCurrentUser } = useUserState();
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || "/";
-
-  const defaultValues: Partial<SignUpFormValues> = {
-    username: "",
-    email: "",
-    gender: "Male",
-    dateOfBirth: new Date(),
-    avatarUrl: "",
-    newPassword: "",
-    confirmNewPassword: "",
+  const defaultValues: Partial<ProfileFormValues> = {
+    username: values?.userName,
+    email: values?.email,
+    fullname: values?.fullName,
+    gender: values?.gender,
+    //Datetime to date
+    dateOfBirth: values?.dateOfBirth ? new Date(values?.dateOfBirth) : new Date(),
+    avatarUrl: values?.avatarUrl,
+    phoneNumber: values?.phoneNumber,
   }
 
-  const form = useForm<SignUpFormValues>({
-    resolver: zodResolver(formSignUpSchema),
+  const form = useForm<ProfileFormValues>({
+    resolver: zodResolver(ProfileValidation),
     defaultValues,
     mode: "onChange",
   })
@@ -107,9 +76,7 @@ export function SignUpForm() {
     }
   }
 
-  async function onSubmit(values: SignUpFormValues) {
-    setIsLoading(true);
-
+  async function onSubmit(values: ProfileFormValues) {
     const blob = values.avatarUrl;
 
     const hasImageChanged = isBase64Image(blob);
@@ -121,68 +88,53 @@ export function SignUpForm() {
         getDownloadURL(imageRef)
           .then((url) => {
             values.avatarUrl = url;
-            registerUser({
-              userInfo: {
-                username: values.username,
-                avatarUrl: values.avatarUrl,
-                newPassword: values.newPassword,
-                confirmNewPassword: values.confirmNewPassword,
-                dateOfBirth: values.dateOfBirth.toISOString(),
-                email: values.email,
-                gender: values.gender
-              }
+            updateUserInfo(userId, {
+                "userName": values?.username,
+                "email": values.email,
+                "fullName": values.fullname,
+                "phoneNumber": values.phoneNumber,
+                "gender": values.gender,
+                "dateOfBirth": values.dateOfBirth,
+                "avatarUrl": values.avatarUrl
             })
-            .then((response) => {
-              setIsLoading(false);
-              let {data, error} = response;
-
-              console.log('res', response)
-
-              if(error !== null){
-                toast({
-                  title: "Sign Up Error",
-                  description: (
-                    <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-                      <code className="text-light">{JSON.stringify(error, null, 2)}</code>
-                    </pre>
-                  )
-                })
-                setIsLoading(false);
-              } else {
-                setCurrentUser(data.user);
-                localStorage.setItem("accessToken", data.accessToken);
-                // if(user.role === "Admin"){
-                //   window.location.href = "/admin";
-                // }else if(user.role === "Staff"){
-                //   window.location.href = "/user";
-                // }else{
-                //   window.location.href = "/";
-                // }
-                router.push(callbackUrl);
-              }
+            .then((res) => {
+              toast({
+                title: "Profile updated",
+                description: "Profile has been updated successfully.",
+              });
+              setOpen(false);
             })
           })
           .catch((error) => {
-            toast({
-              title: "Login Error",
-              description: (
-                <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-                  <code className="text-light">{JSON.stringify(error, null, 2)}</code>
-                </pre>
-              )
-            })
-            setIsLoading(false);
+            console.log(error);
             values.avatarUrl = "";
           });
       });
+    } else {
+      updateUserInfo(userId, {
+        "userName": values?.username,
+        "email": values.email,
+        "fullName": values.fullname,
+        "phoneNumber": values.phoneNumber,
+        "gender": values.gender,
+        "dateOfBirth": values.dateOfBirth,
+        "avatarUrl": values.avatarUrl
+      })
+      .then((res) => {
+        toast({
+          title: "Profile updated",
+          description: "Profile has been updated successfully.",
+        });
+        setOpen(false);
+      })
     }
     
   }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <FormField
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <FormField
           control={form.control}
           name="avatarUrl"
           render={({ field }) => (
@@ -239,13 +191,16 @@ export function SignUpForm() {
           />
           <FormField
             control={form.control}
-            name="email"
+            name="fullname"  
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <FormLabel>Fullname</FormLabel>
                 <FormControl>
-                  <Input placeholder="Your email" {...field} />
+                  <Input placeholder="Your Full Name" {...field} />
                 </FormControl>
+                <FormDescription>
+                  This is your public display name.
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -254,25 +209,28 @@ export function SignUpForm() {
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 justify-items-stretch">
           <FormField
             control={form.control}
-            name="newPassword"
+            name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Password</FormLabel>
+                <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input type="password" placeholder="Your Password" {...field} />
+                  <Input placeholder="Your email" {...field} />
                 </FormControl>
+                <FormDescription>
+                  We will never share your email with anyone else.
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
           <FormField
             control={form.control}
-            name="confirmNewPassword"
+            name="phoneNumber"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Confirm Password</FormLabel>
+                <FormLabel>Phone Number</FormLabel>
                 <FormControl>
-                  <Input type="password" placeholder="Confirm Password" {...field} />
+                  <Input placeholder="Your phone number" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -310,7 +268,7 @@ export function SignUpForm() {
             control={form.control}
             name="dateOfBirth"
             render={({ field }) => (
-              <FormItem className="flex flex-col mt-2 justify-start  gap-0">
+              <FormItem className="flex flex-col mt-2 justify-between">
                 <FormLabel>Date of birth</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
@@ -348,12 +306,7 @@ export function SignUpForm() {
             )}
           />
         </div>
-        <Button disabled={isLoading} type="submit" className="w-full hover:shadow-primary-md">
-          {isLoading && (
-            <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-          )}
-          Sign Up
-        </Button>             
+        <Button type="submit">Update profile</Button>
       </form>
     </Form>
   )

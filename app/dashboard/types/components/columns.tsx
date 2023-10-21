@@ -1,12 +1,12 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
-import { Ticket } from "../data/schema"
 import { DataTableColumnHeader } from "./data-table-column-header"
-import { formatVND, getImageOfTicketById } from "@/lib/utils"
-import Image from "next/image"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { format } from "date-fns"
+import { Types } from "../data/schema"
 
-export const columns: ColumnDef<Ticket>[] = [
+export const columns: ColumnDef<Types>[] = [
   {
     accessorKey: "id",
     header: ({ column }) => (
@@ -17,23 +17,18 @@ export const columns: ColumnDef<Ticket>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "Image",
+    accessorKey: "imageUrl",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Name" />
+      <DataTableColumnHeader column={column} title="Image" />
     ),
     cell: ({ row }) => {
-      // const label = labels.find((label) => label.value === row.original.label)
-
       return (
         <div className="flex space-x-2">
-          {/* {label && <Badge variant="outline">{label.label}</Badge>} */}
-          <span className="max-w-[500px] truncate font-medium">
-            <Image
-              src={getImageOfTicketById(row.getValue("id"))}
-              width={100}
-              height={100}
-              alt="ticket image"
-            />
+          <span className="max-w-[500px] h-20 w-20 truncate font-medium">
+          <Avatar className="h-20 w-20">
+            <AvatarImage src={row.getValue("imageUrl")} />
+            <AvatarFallback>{row.getValue("name")?.toString().slice(0,2)}</AvatarFallback>
+          </Avatar>
           </span>
         </div>
       )
@@ -45,11 +40,8 @@ export const columns: ColumnDef<Ticket>[] = [
       <DataTableColumnHeader column={column} title="Name" />
     ),
     cell: ({ row }) => {
-      // const label = labels.find((label) => label.value === row.original.label)
-
       return (
         <div className="flex space-x-2">
-          {/* {label && <Badge variant="outline">{label.label}</Badge>} */}
           <span className="max-w-[500px] truncate font-medium">
             {row.getValue("name")}
           </span>
@@ -67,21 +59,6 @@ export const columns: ColumnDef<Ticket>[] = [
         <div className="flex space-x-2">
           <span className="max-w-[500px] truncate font-medium">
             {row.getValue("description")}
-          </span>
-        </div>
-      )
-    },
-  },
-  {
-    accessorKey: "price",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Price" />
-    ),
-    cell: ({ row }) => {
-      return (
-        <div className="flex space-x-2">
-          <span className="max-w-[500px] truncate font-medium">
-            {formatVND(row.getValue("price"))}
           </span>
         </div>
       )

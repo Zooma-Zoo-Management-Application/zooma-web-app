@@ -10,18 +10,19 @@ import { columns } from "./components/columns";
 import { DataTable } from "./components/data-table";
 import { RefreshCcw } from "lucide-react";
 import useRefresh from "@/stores/refresh-store";
+import { getTypes } from "@/lib/api/typeAPI";
 
 function UserManagementPage() {
-  const [zooTrainer, setZooTrainer] = useState<any>([])
+  const [types, setTypes] = useState<any>([])
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [open, setOpen] = useState<boolean>(false)
 
   const refresh = async () => {
     try {
-      const res = await getZooTrainers();
+      const res = await getTypes();
       const { data } = res;
-      setZooTrainer(data);
+      setTypes(data);
     } catch (err:any) {
       setError(`Error initializing the app: ${err.message}`);
     } finally {
@@ -33,9 +34,9 @@ function UserManagementPage() {
   useEffect(() => {
     const initialize = async () => {
       try {
-        const res = await getZooTrainers();
+        const res = await getTypes();
         const { data } = res;
-        setZooTrainer(data);
+        setTypes(data);
         setRefresh(refresh)
       } catch (err:any) {
         setError(`Error initializing the app: ${err.message}`);
@@ -50,11 +51,8 @@ function UserManagementPage() {
     <div className="hidden flex-col md:flex w-full">
       <div className="flex-1 space-y-4 p-8 pt-8">
         <div className="flex items-center justify-between space-y-2">
-          <h2 className="text-3xl font-bold tracking-tight">Zoo Trainer Management</h2>
+          <h2 className="text-3xl font-bold tracking-tight">Animal Types Management</h2>
             <div className="flex items-center justify-center gap-4">
-              <Button variant="default" onClick={() => setOpen(true)}>
-                Create
-              </Button>
               <Button onClick={refresh} variant={"outline"} size="icon" className="self-end">
                 <RefreshCcw />
               </Button>
@@ -65,7 +63,7 @@ function UserManagementPage() {
             isLoading ? (
               <DataTableSkeleton />
             ) : (
-              <DataTable columns={columns} data={zooTrainer} />
+              <DataTable columns={columns} data={types} />
             )
           }
         </div>
