@@ -95,3 +95,38 @@ export const getImageOfTicketById = (ticketId: number) => {
     return "/icon/child.svg"
   }
 }
+
+export const getStatus = (status: number) => {
+  switch (status) {
+    case 0:
+      return {
+        text: "Unsuccessful",
+        color: "bg-red-100 text-red-800",
+        ring: "ring-red-400 bg-red-400"
+      }
+    case 1:
+      return {
+        text: "Pending",
+        color: "bg-yellow-100 text-yellow-800",
+        ring: "ring-yellow-400 bg-yellow-400"
+      }
+    case 2:
+      return {
+        text: "Successful",
+        color: "bg-green-100 text-green-800",
+        ring: "ring-green-400 bg-green-400"
+      }
+    case 3:
+      return {
+        text: "Refunded",
+        color: "bg-gray-100 text-gray-800",
+        ring: "ring-gray-400 bg-gray-400"
+      }
+    default:
+      return {
+        text: "Unknown",
+        color: "bg-black-100 text-black-800",
+        ring: "ring-black-400 bg-black-400"
+      }
+  }
+}

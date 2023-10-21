@@ -28,7 +28,7 @@ import { ChangeEvent, useState } from "react"
 import { Icons } from "@/components/shared/Icons"
 import { useRouter, useSearchParams } from "next/navigation"
 import useUserState from "@/stores/user-store"
-import { registerUser } from "@/lib/api/userAPI"
+import { registerUser, registerUserBasedRole } from "@/lib/api/userAPI"
 import { toast } from "@/components/ui/use-toast"
 
 // This can come from your database or API.
@@ -61,14 +61,10 @@ const formSignUpSchema = z.object({
 
 type SignUpFormValues = z.infer<typeof formSignUpSchema>
 
-export function SignUpForm() {
+export function UserCreateForm({setOpen}: {setOpen: (value: boolean) => void}) {
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [files, setFiles] = useState<File[]>([]);
-
-  const { setCurrentUser } = useUserState();
-  const router = useRouter();
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || "/";
 
   const defaultValues: Partial<SignUpFormValues> = {
     username: "",
@@ -115,13 +111,12 @@ export function SignUpForm() {
     const hasImageChanged = isBase64Image(blob);
 
     if(hasImageChanged) {
-      // const imgRes = await startUpload(files);
       const imageRef = ref(FirebaseService.storage, `images/${values.email}`);
       uploadBytes(imageRef, files[0]).then(() => {
         getDownloadURL(imageRef)
           .then((url) => {
             values.avatarUrl = url;
-            registerUser({
+            registerUserBasedRole({
               userInfo: {
                 username: values.username,
                 avatarUrl: values.avatarUrl,
@@ -130,35 +125,25 @@ export function SignUpForm() {
                 dateOfBirth: values.dateOfBirth.toISOString(),
                 email: values.email,
                 gender: values.gender
-              }
+              },
+              roleId: 2
             })
             .then((response) => {
-              setIsLoading(false);
-              let {data, error} = response;
-
-              console.log('res', response)
-
-              if(error !== null){
+              console.log("responseasdasd", response);
+              if(response.data !== null) {
                 toast({
-                  title: "Sign Up Error",
-                  description: (
-                    <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-                      <code className="text-light">{JSON.stringify(error, null, 2)}</code>
-                    </pre>
-                  )
+                  title: "Create User Success",
+                  description: "Create User Success",
                 })
                 setIsLoading(false);
+                setOpen(false);
               } else {
-                setCurrentUser(data.user);
-                localStorage.setItem("accessToken", data.accessToken);
-                // if(user.role === "Admin"){
-                //   window.location.href = "/admin";
-                // }else if(user.role === "Staff"){
-                //   window.location.href = "/user";
-                // }else{
-                //   window.location.href = "/";
-                // }
-                router.push(callbackUrl);
+                toast({
+                  title: "Create User Failed",
+                  description: JSON.stringify(response.error),
+                })
+                setIsLoading(false);
+                values.avatarUrl = "";
               }
             })
           })
@@ -352,7 +337,7 @@ export function SignUpForm() {
           {isLoading && (
             <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
           )}
-          Sign Up
+          Create
         </Button>             
       </form>
     </Form>

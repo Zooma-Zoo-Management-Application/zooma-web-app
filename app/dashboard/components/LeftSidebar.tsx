@@ -1,6 +1,6 @@
 'use client'
 
-import { LandPlot, LayoutDashboard, Newspaper, Rabbit, ShoppingBag, Ticket, User, UtensilsCrossed } from 'lucide-react'
+import { LandPlot, LayoutDashboard, Newspaper, PawPrint, Rabbit, ShoppingBag, Ticket, User, UtensilsCrossed } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
@@ -45,14 +45,19 @@ const staffSidebarLinks = [
     label: 'Areas'
   },
   {
-    icon: <LayoutDashboard className="w-6 h-6"/>,
-    route: '/dashboard/cages',
-    label: 'Cages'
+    icon: <PawPrint className="w-6 h-6"/>,
+    route: '/dashboard/types',
+    label: 'Animal Types'
   },
   {
     icon: <Rabbit className="w-6 h-6"/>,
     route: '/dashboard/animals',
     label: 'Animals'
+  },
+  {
+    icon: <ShoppingBag className="w-6 h-6"/>,
+    route: '/dashboard/species',
+    label: 'Species'
   },
   {
     icon: <Ticket className="w-6 h-6"/>,
@@ -86,7 +91,7 @@ const zooTrainerSidebarLinks = [
 
 
 
-function LeftSidebar({ role="admin" }) {
+function LeftSidebar({ role="staff" }) {
   const pathname = usePathname();
   const router = useRouter();
   const sidebarLinks = role === "admin" 

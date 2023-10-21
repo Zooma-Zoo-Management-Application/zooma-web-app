@@ -14,12 +14,11 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { toast } from "@/components/ui/use-toast"
 import { deleteNewById } from "@/lib/api/newAPI"
-import { format } from "date-fns"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
-import { ProfileForm } from "./ProfileForm"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { UpdateForm } from "./UpdateForm"
+import useRefresh from "@/stores/refresh-store"
 
 
 interface DataTableRowActionsProps<TData> {
@@ -36,6 +35,13 @@ export function DataTableRowActions<TData>({
 
   const [viewOpen, setViewOpen] = useState(false)
   const [updateOpen, setUpdateOpen] = useState(false)
+
+  const { refresh } = useRefresh()
+
+  const handleUpdate = (value: boolean) => {
+    setUpdateOpen(value)
+    refresh()
+  }
 
   const handleDelete = () => {
     deleteNewById(row.getValue("id"))
@@ -72,12 +78,9 @@ export function DataTableRowActions<TData>({
           <DropdownMenuItem onSelect={() => setUpdateOpen(true)}>
             Update
           </DropdownMenuItem>
-          <DropdownMenuItem onSelect={handleDelete}>
-            Ban
-          </DropdownMenuItem>
         </DropdownMenuGroup>
       </DropdownMenuContent>
-      <UpdateFormDialog open={updateOpen} setOpen={setUpdateOpen} row={row} table={table}/>
+      <UpdateFormDialog open={updateOpen} setOpen={handleUpdate} row={row} table={table}/>
       <ViewFormDialog open={viewOpen} setOpen={setViewOpen} row={row} table={table}/>
     </DropdownMenu>
   )
@@ -97,43 +100,16 @@ const ViewFormDialog = ({ open, setOpen, row, table }:{
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
-        <DialogHeader>View Profile</DialogHeader>
+        <DialogHeader>View Animal Types</DialogHeader>
         <div className="flex flex-col items-center justify-center space-y-2">
-          <Avatar className="h-8 w-8">
-            <AvatarImage src={(row.getValue("user") as any)?.avatarUrl || "/peguin.jpg"} alt={(row.getValue("user") as any)?.userName} />
-            <AvatarFallback>{(row.getValue("user") as any)?.userName.slice(0,2)}</AvatarFallback>
-          </Avatar>
-          <div className="text-lg font-semibold">{row.getValue("userName")}</div>
-          <div className="text-sm">{row.getValue("userName")}</div>
+          <Image src={row.getValue("imageUrl")} width={130} height={130} className=" rounded-full" alt="profile"/>
+          <div className="text-lg font-semibold">{row.getValue("name")}</div>
+          {/* <div className="text-sm">{row.getValue("description")}</div> */}
         </div>
-        <div className="flex gap-4">
-          <div className="flex-1">
-            <div>
-              <div className="text-sm font-semibold">Email</div>
-              <div className="text-sm">{row.getValue("email")}</div>
-            </div>
-            <div>
-              <div className="text-sm font-semibold">Phone Number</div>
-              <div className="text-sm">{row.getValue("phoneNumber")}</div>
-            </div>
-            <div>
-              <div className="text-sm font-semibold">Date Of Birth</div>
-              <div className="text-sm">{format(new Date(row.getValue("dateOfBirth")), "dd/MM/yyyy")}</div>
-            </div>
-          </div>
-          <div className="flex-1">
-            <div>
-              <div className="text-sm font-semibold">Phone Number</div>
-              <div className="text-sm">{row.getValue("phoneNumber")}</div>
-            </div>
-            <div>
-              <div className="text-sm font-semibold">Full Name</div>
-              <div className="text-sm">{row.getValue("fullName")}</div>
-            </div>
-            <div>
-              <div className="text-sm font-semibold">Gender</div>
-              <div className="text-sm">{row.getValue("gender")}</div>
-            </div>
+        <div className="">
+          <div>
+            <div className="text-sm font-semibold">Description</div>
+            <div className="text-sm">{row.getValue("description")}</div>
           </div>
         </div>
       </DialogContent>
@@ -153,20 +129,16 @@ const UpdateFormDialog = ({ open, setOpen, row, table }:{
   }
 
   const values = {
-    userName: row.getValue("userName"),
-    email: row.getValue("email"),
-    fullName: row.getValue("fullName"),
-    gender: row.getValue("gender"),
-    dateOfBirth: row.getValue("dateOfBirth"),
-    avatarUrl: row.getValue("avatarUrl"),
-    phoneNumber: row.getValue("phoneNumber"),
+    name: row.getValue("name"),
+    description: row.getValue("description"),
+    imageUrl: row.getValue("imageUrl"),
   }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
         <DialogHeader>Update Profile</DialogHeader>
-        <ProfileForm userId={row.getValue("id")} values={values} setOpen={setOpen}/>
+        <UpdateForm id={row.getValue("id")} values={values} setOpen={setOpen}/>
       </DialogContent>
     </Dialog>
   )

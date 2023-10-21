@@ -19,7 +19,6 @@ import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { ProfileForm } from "./ProfileForm"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 
 interface DataTableRowActionsProps<TData> {
@@ -99,11 +98,8 @@ const ViewFormDialog = ({ open, setOpen, row, table }:{
       <DialogContent>
         <DialogHeader>View Profile</DialogHeader>
         <div className="flex flex-col items-center justify-center space-y-2">
-          <Avatar className="h-8 w-8">
-            <AvatarImage src={(row.getValue("user") as any)?.avatarUrl || "/peguin.jpg"} alt={(row.getValue("user") as any)?.userName} />
-            <AvatarFallback>{(row.getValue("user") as any)?.userName.slice(0,2)}</AvatarFallback>
-          </Avatar>
-          <div className="text-lg font-semibold">{row.getValue("userName")}</div>
+          <Image src={row.getValue("avatarUrl")} width={130} height={130} className=" rounded-full" alt="profile"/>
+          <div className="text-lg font-semibold">{row.getValue("fullName")}</div>
           <div className="text-sm">{row.getValue("userName")}</div>
         </div>
         <div className="flex gap-4">
