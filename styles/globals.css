@@ -255,3 +255,8 @@
   stroke: gray;
   cursor: pointer;
 }
+
+#zoo-map .area-path-animal{
+  fill: #ecf71f;
+  stroke: #1b263a;
+}

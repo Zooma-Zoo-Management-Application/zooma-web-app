@@ -1,12 +1,11 @@
 "use client"
 
-import { ColumnDef } from "@tanstack/react-table"
-import { DataTableColumnHeader } from "./data-table-column-header"
-import { User } from "../data/schema"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { format } from "date-fns"
+import { ColumnDef } from "@tanstack/react-table"
+import { Species } from "../data/schema"
+import { DataTableColumnHeader } from "./data-table-column-header"
 
-export const columns: ColumnDef<User>[] = [
+export const columns: ColumnDef<Species>[] = [
   {
     accessorKey: "id",
     header: ({ column }) => (
@@ -17,17 +16,17 @@ export const columns: ColumnDef<User>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "avatarUrl",
+    accessorKey: "imageUrl",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Avatar" />
+      <DataTableColumnHeader column={column} title="Image" />
     ),
     cell: ({ row }) => {
       return (
         <div className="flex space-x-2">
-          <span className="max-w-[500px] truncate font-medium">
-          <Avatar>
-            <AvatarImage src={row.getValue("avatarUrl")} />
-            <AvatarFallback>{row.getValue("userName")?.toString().slice(0,2)}</AvatarFallback>
+          <span className="max-w-[500px] h-20 w-20 truncate font-medium">
+          <Avatar className="w-full h-full">
+            <AvatarImage src={row.getValue("imageUrl")} className="bg-cover bg-center"/>
+            <AvatarFallback>{row.getValue("name")?.toString().slice(0,2)}</AvatarFallback>
           </Avatar>
           </span>
         </div>
@@ -35,93 +34,48 @@ export const columns: ColumnDef<User>[] = [
     },
   },
   {
-    accessorKey: "userName",
+    accessorKey: "name",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Username" />
+      <DataTableColumnHeader column={column} title="Name" />
     ),
     cell: ({ row }) => {
       return (
         <div className="flex space-x-2">
           <span className="max-w-[500px] truncate font-medium">
-            {row.getValue("userName")}
+            {row.getValue("name")}
           </span>
         </div>
       )
     },
   },
   {
-    accessorKey: "email",
+    accessorKey: "description",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Email" />
+      <DataTableColumnHeader column={column} title="Description" />
     ),
     cell: ({ row }) => {
       return (
         <div className="flex space-x-2">
           <span className="max-w-[500px] truncate font-medium">
-            {row.getValue("email")}
+            {row.getValue("description")}
           </span>
         </div>
       )
     },
   },
   {
-    accessorKey: "dateOfBirth",
+    accessorKey: "typeId",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Date Of Birth" />
+      <DataTableColumnHeader column={column} title="Type" />
     ),
     cell: ({ row }) => {
       return (
         <div className="flex space-x-2">
           <span className="max-w-[500px] truncate font-medium">
-            {format(new Date(row.getValue("dateOfBirth")), "dd/MM/yyyy")}
+            {row.getValue("typeId")}
           </span>
         </div>
       )
     },
   },
-  {
-    accessorKey: "phoneNumber",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Phone Number" />
-    ),
-    cell: ({ row }) => {
-      return (
-        <div className="flex space-x-2">
-          <span className="max-w-[500px] truncate font-medium">
-            {row.getValue("phoneNumber")}
-          </span>
-        </div>
-      )
-    },
-  },
-  {
-    accessorKey: "fullName",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Full Name" />
-    ),
-    cell: ({ row }) => {
-      return (
-        <div className="flex space-x-2">
-          <span className="max-w-[500px] truncate font-medium">
-            {row.getValue("fullName")}
-          </span>
-        </div>
-      )
-    },
-  },
-  {
-    accessorKey: "gender",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Gender" />
-    ),
-    cell: ({ row }) => {
-      return (
-        <div className="flex space-x-2">
-          <span className="max-w-[500px] truncate font-medium">
-            {row.getValue("gender")}
-          </span>
-        </div>
-      )
-    },
-  }
 ]

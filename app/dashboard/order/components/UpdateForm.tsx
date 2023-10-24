@@ -119,25 +119,25 @@ export function UpdateForm({id, values, setOpen}: any) {
                   </FormControl>
                   <SelectContent>
                     <SelectItem value="0">
-                      <div className={twMerge("text-sm font-medium mr-2 px-2.5 py-0.5 rounded ml-3 self-start", 
+                      <div className={twMerge("text-sm font-medium mr-2 px-2.5 py-0.5 rounded ml-3 self-start bg-red-100 text-red-800", 
                         getStatus(0).color)}>{
                         getStatus(0).text
                       }</div>
                     </SelectItem>
                     <SelectItem value="1">
-                      <div className={twMerge("text-sm font-medium mr-2 px-2.5 py-0.5 rounded ml-3 self-start", 
+                      <div className={twMerge("text-sm font-medium mr-2 px-2.5 py-0.5 rounded ml-3 self-start bg-yellow-100 text-yellow-800", 
                         getStatus(1).color)}>{
                         getStatus(1).text
                       }</div>
                     </SelectItem>
                     <SelectItem value="2">
-                      <div className={twMerge("text-sm font-medium mr-2 px-2.5 py-0.5 rounded ml-3 self-start", 
+                      <div className={twMerge("text-sm font-medium mr-2 px-2.5 py-0.5 rounded ml-3 self-start bg-green-100 text-green-800", 
                         getStatus(2).color)}>{
                         getStatus(2).text
                       }</div>
                     </SelectItem>
                     <SelectItem value="3">
-                      <div className={twMerge("text-sm font-medium mr-2 px-2.5 py-0.5 rounded ml-3 self-start", 
+                      <div className={twMerge("text-sm font-medium mr-2 px-2.5 py-0.5 rounded ml-3 self-start bg-gray-100 text-gray-800", 
                         getStatus(3).color)}>{
                         getStatus(3).text
                       }</div>

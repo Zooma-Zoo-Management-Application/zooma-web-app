@@ -17,8 +17,10 @@ import { deleteNewById } from "@/lib/api/newAPI"
 import { format } from "date-fns"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { ProfileForm } from "./ProfileForm"
+import { getTypes } from "@/lib/api/typeAPI"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 
 interface DataTableRowActionsProps<TData> {
@@ -35,6 +37,20 @@ export function DataTableRowActions<TData>({
 
   const [viewOpen, setViewOpen] = useState(false)
   const [updateOpen, setUpdateOpen] = useState(false)
+  const [types, setTypes] = useState<any>([])
+
+  useEffect(() => {
+    const initialize = async () => {
+      try {
+        const res = await getTypes();
+        const { data } = res;
+        setTypes(data);
+      } catch (err:any) {
+      } finally {
+      }
+    };
+    initialize();
+  }, [])
 
   const handleDelete = () => {
     deleteNewById(row.getValue("id"))
@@ -54,6 +70,12 @@ export function DataTableRowActions<TData>({
     .finally(() => {
       meta?.delete(row.getValue("id"))
     })
+  }
+
+  const handleTypeRow = (typeId: string) => {
+    if(!types.length) return (<></>)
+    const type = types.find((type:any) => type.id === +typeId)
+    return type?.name || typeId
   }
 
   return (
@@ -76,17 +98,18 @@ export function DataTableRowActions<TData>({
           </DropdownMenuItem>
         </DropdownMenuGroup>
       </DropdownMenuContent>
-      <UpdateFormDialog open={updateOpen} setOpen={setUpdateOpen} row={row} table={table}/>
-      <ViewFormDialog open={viewOpen} setOpen={setViewOpen} row={row} table={table}/>
+      {/* <UpdateFormDialog open={updateOpen} setOpen={setUpdateOpen} row={row} table={table}/> */}
+      <ViewFormDialog open={viewOpen} setOpen={setViewOpen} row={row} table={table} typeName={handleTypeRow(row.getValue("typeId"))}/>
     </DropdownMenu>
   )
 }
 
-const ViewFormDialog = ({ open, setOpen, row, table }:{
+const ViewFormDialog = ({ open, setOpen, row, table, typeName }:{
   open: boolean,
   setOpen: (value: boolean) => void,
   row: Row<any>,
-  table: Table<any>
+  table: Table<any>,
+  typeName: string
 }) => {
 
   const handleClose = () => {
@@ -96,42 +119,25 @@ const ViewFormDialog = ({ open, setOpen, row, table }:{
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
-        <DialogHeader>View Profile</DialogHeader>
-        <div className="flex flex-col items-center justify-center space-y-2">
-          <Image src={row.getValue("avatarUrl")} width={130} height={130} className=" rounded-full" alt="profile"/>
-          <div className="text-lg font-semibold">{row.getValue("fullName")}</div>
-          <div className="text-sm">{row.getValue("userName")}</div>
-        </div>
-        <div className="flex gap-4">
-          <div className="flex-1">
+        <DialogHeader>View Species</DialogHeader>
+          <div className="flex flex-col items-center justify-center space-y-2">
+            <Avatar className="w-28 h-28">
+              <AvatarImage src={row.getValue("imageUrl")} className="bg-cover bg-center"/>
+              <AvatarFallback>{row.getValue("name")?.toString().slice(0,2)}</AvatarFallback>
+            </Avatar>
+            <div className="text-lg font-semibold">{row.getValue("name")}</div>
+            {/* <div className="text-sm">{row.getValue("description")}</div> */}
+          </div>
+          <div className="">
             <div>
-              <div className="text-sm font-semibold">Email</div>
-              <div className="text-sm">{row.getValue("email")}</div>
+              <div className="text-sm font-semibold">Animal Type</div>
+              <div className="text-sm">{typeName}</div>
             </div>
             <div>
-              <div className="text-sm font-semibold">Phone Number</div>
-              <div className="text-sm">{row.getValue("phoneNumber")}</div>
-            </div>
-            <div>
-              <div className="text-sm font-semibold">Date Of Birth</div>
-              <div className="text-sm">{format(new Date(row.getValue("dateOfBirth")), "dd/MM/yyyy")}</div>
+              <div className="text-sm font-semibold">Description</div>
+              <div className="text-sm">{row.getValue("description")}</div>
             </div>
           </div>
-          <div className="flex-1">
-            <div>
-              <div className="text-sm font-semibold">Phone Number</div>
-              <div className="text-sm">{row.getValue("phoneNumber")}</div>
-            </div>
-            <div>
-              <div className="text-sm font-semibold">Full Name</div>
-              <div className="text-sm">{row.getValue("fullName")}</div>
-            </div>
-            <div>
-              <div className="text-sm font-semibold">Gender</div>
-              <div className="text-sm">{row.getValue("gender")}</div>
-            </div>
-          </div>
-        </div>
       </DialogContent>
     </Dialog>
   )

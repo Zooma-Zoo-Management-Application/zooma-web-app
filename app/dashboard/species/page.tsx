@@ -2,26 +2,26 @@
 
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
-import { getZooTrainers } from "@/lib/api/userAPI";
+import { getSpecies } from "@/lib/api/speciesAPI";
+import useRefresh from "@/stores/refresh-store";
+import { RefreshCcw } from "lucide-react";
 import { useEffect, useState } from "react";
 import DataTableSkeleton from '../components/DataTableSkeleton';
 import { UserCreateForm } from "./components/UserCreateForm";
 import { columns } from "./components/columns";
 import { DataTable } from "./components/data-table";
-import { RefreshCcw } from "lucide-react";
-import useRefresh from "@/stores/refresh-store";
 
 function UserManagementPage() {
-  const [zooTrainer, setZooTrainer] = useState<any>([])
+  const [species, setSpecies] = useState<any>([])
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [open, setOpen] = useState<boolean>(false)
 
   const refresh = async () => {
     try {
-      const res = await getZooTrainers();
+      const res = await getSpecies();
       const { data } = res;
-      setZooTrainer(data);
+      setSpecies(data);
     } catch (err:any) {
       setError(`Error initializing the app: ${err.message}`);
     } finally {
@@ -33,9 +33,10 @@ function UserManagementPage() {
   useEffect(() => {
     const initialize = async () => {
       try {
-        const res = await getZooTrainers();
+        const res = await getSpecies();
         const { data } = res;
-        setZooTrainer(data);
+        if(data == null) return;
+        setSpecies(data);
         setRefresh(refresh)
       } catch (err:any) {
         setError(`Error initializing the app: ${err.message}`);
@@ -50,7 +51,7 @@ function UserManagementPage() {
     <div className="hidden flex-col md:flex w-full">
       <div className="flex-1 space-y-4 p-8 pt-8">
         <div className="flex items-center justify-between space-y-2">
-          <h2 className="text-3xl font-bold tracking-tight">Zoo Trainer Management</h2>
+          <h2 className="text-3xl font-bold tracking-tight">Species Management</h2>
             <div className="flex items-center justify-center gap-4">
               <Button variant="default" onClick={() => setOpen(true)}>
                 Create
@@ -62,10 +63,10 @@ function UserManagementPage() {
         </div>
         <div className="flex-1 space-y-4">
           {
-            isLoading ? (
+            isLoading && species.length != 0 ? (
               <DataTableSkeleton />
             ) : (
-              <DataTable columns={columns} data={zooTrainer} />
+              <DataTable columns={columns} data={species} />
             )
           }
         </div>

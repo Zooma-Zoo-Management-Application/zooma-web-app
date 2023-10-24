@@ -53,6 +53,7 @@ export function DataTable<TData, TValue>({
     state: {
       sorting,
       columnVisibility: {
+        ...columnVisibility,
         orderDetails: false,
         notes: false,
       },

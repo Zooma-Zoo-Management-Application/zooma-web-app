@@ -145,7 +145,7 @@ export const columns: ColumnDef<Order>[] = [
                     TicketId: {orderDetail.ticketId}
                   </span>
                   <span className="max-w-[500px] truncate font-medium">
-                    quantity: {orderDetail.quantity}
+                    Quantity: {orderDetail.quantity}
                   </span>
                 </div>
               </div>
