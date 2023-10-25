@@ -17,7 +17,7 @@ function UserManagementPage() {
       try {
         const res = await getNews();
         setNews(res.data);
-      } catch (err:any) {
+      } catch (err: any) {
         setError(`Error initializing the app: ${err.message}`);
       } finally {
         setIsLoading(false);
@@ -31,11 +31,11 @@ function UserManagementPage() {
       <div className="flex-1 space-y-4 p-8 pt-8">
         <div className="flex items-center justify-between space-y-2">
           <h2 className="text-3xl font-bold tracking-tight">Diet Management</h2>
-            <a href="/dashboard/news/create">
-              <Button variant="default">
-                Create
-              </Button>
-            </a>
+          <a href="/dashboard/news/create">
+            <Button variant="default">
+              Create
+            </Button>
+          </a>
         </div>
         <div className="flex-1 space-y-4">
           {
