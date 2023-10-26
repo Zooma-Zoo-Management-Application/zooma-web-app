@@ -4,51 +4,42 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
-import { Icons } from "@/components/shared/Icons"
-import { Button, buttonVariants } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
+import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage
+  FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/components/ui/use-toast"
 import FirebaseService from "@/lib/FirebaseService"
-import { getTypes } from "@/lib/api/typeAPI"
-import { registerUserBasedRole } from "@/lib/api/userAPI"
-import { cn, isBase64Image } from "@/lib/utils"
-import { format } from "date-fns"
+import { getTypes, updateType } from "@/lib/api/typeAPI"
+import { isBase64Image } from "@/lib/utils"
 import { getDownloadURL, ref, uploadBytes, } from "firebase/storage"
-import { CalendarIcon, ChevronDownIcon } from "lucide-react"
 import Image from "next/image"
-import { useSearchParams } from "next/navigation"
 import { ChangeEvent, useEffect, useState } from "react"
-import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { createSpecies } from "@/lib/api/speciesAPI"
+import { updateSpecies } from "@/lib/api/speciesAPI"
 import useRefresh from "@/stores/refresh-store"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
-// This can come from your database or API.
+const UpdateValidation = z.object({
+  name: z.string(),
+  description: z.string()
+    .min(10, "Description must be at least 10 characters long"),
+  imageUrl: z.string(),
+  typeId: z.string(),
+});
 
-const formSignUpSchema = z.object({
-    name: z.string().min(3, "Name must be at least 3 characters"),
-    description: z.string().min(10, "Description must be at least 10 characters"),
-    imageUrl: z.string().url("Please enter a valid URL"),
-    typeId: z.string(),
-  })
-  
 
-type SignUpFormValues = z.infer<typeof formSignUpSchema>
+type UpdateFormValues = z.infer<typeof UpdateValidation>
 
-export function UserCreateForm({setOpen}: {setOpen: (value: boolean) => void}) {
-  const [isLoading, setIsLoading] = useState<boolean>(false)
+export function UpdateForm({id, values, setOpen}: any) {
   const [files, setFiles] = useState<File[]>([]);
-  const searchParams = useSearchParams();
   const [types, setTypes] = useState<any>([])
 
   const { refresh } = useRefresh()
@@ -65,15 +56,15 @@ export function UserCreateForm({setOpen}: {setOpen: (value: boolean) => void}) {
     initialize();
   }, [])
 
-  const defaultValues: Partial<SignUpFormValues> = {
-    name: "",
-    description: "",
-    imageUrl: "",
-    typeId: "1",
+  const defaultValues: Partial<UpdateFormValues> = {
+    name: values?.name,
+    description: values?.description,
+    imageUrl: values?.imageUrl,
+    typeId: values?.typeId
   }
 
-  const form = useForm<SignUpFormValues>({
-    resolver: zodResolver(formSignUpSchema),
+  const form = useForm<UpdateFormValues>({
+    resolver: zodResolver(UpdateValidation),
     defaultValues,
     mode: "onChange",
   })
@@ -99,68 +90,62 @@ export function UserCreateForm({setOpen}: {setOpen: (value: boolean) => void}) {
     }
   }
 
-  async function onSubmit(values: SignUpFormValues) {
-    setIsLoading(true);
-
+  async function onSubmit(values: UpdateFormValues) {
     const blob = values.imageUrl;
 
     const hasImageChanged = isBase64Image(blob);
 
     if(hasImageChanged) {
-      const imageRef = ref(FirebaseService.storage, `images/${values.name + "hello"}`);
+      // const imgRes = await startUpload(files);
+      const imageRef = ref(FirebaseService.storage, `images/animal-types/${id}`);
       uploadBytes(imageRef, files[0]).then(() => {
         getDownloadURL(imageRef)
           .then((url) => {
             values.imageUrl = url;
-            createSpecies({
+            updateSpecies(id, {
               "name": values.name,
               "description": values.description,
               "imageUrl": values.imageUrl,
-              "typeId": values.typeId,
+              "typeId": +values.typeId,
             })
-            .then((response) => {
-              if(response.data !== null) {
-                toast({
-                  title: "Create Species Success",
-                  description: "Create Species Success",
-                })
-                setIsLoading(false);
-                setOpen(false);
-              } else {
-                toast({
-                  title: "Create Species Failed",
-                  description: JSON.stringify(response.error),
-                })
-                setIsLoading(false);
-                values.imageUrl = "";
-              }
+            .then((res) => {
+              toast({
+                title: "Animal type updated",
+                description: "Animal type has been updated successfully.",
+              });
+              setOpen(false);
             })
           })
           .catch((error) => {
-            toast({
-              title: "Login Error",
-              description: (
-                <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-                  <code className="text-light">{JSON.stringify(error, null, 2)}</code>
-                </pre>
-              )
-            })
-            setIsLoading(false);
+            console.log(error);
             values.imageUrl = "";
-          })
-          .finally(() => {
-            setTimeout(() => {
-              refresh();
-            }, 1000);
           });
       });
+    } else {
+      updateSpecies(id, {
+        "name": values.name,
+        "description": values.description,
+        "imageUrl": values.imageUrl,
+        "typeId": +values.typeId,
+      })
+      .then((res) => {
+        toast({
+          title: "Animal type updated",
+          description: "Animal type has been updated successfully.",
+        });
+        setOpen(false);
+      })
     }
+    
+    setTimeout(() => {
+      refresh();
+    }, 1000);
   }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <FormField
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <FormField
           control={form.control}
           name="imageUrl"
           render={({ field }) => (
@@ -201,6 +186,7 @@ export function UserCreateForm({setOpen}: {setOpen: (value: boolean) => void}) {
             </FormItem>
           )}
         />
+          <div className="grid grid-cols-2 gap-2">
           <FormField
             control={form.control}
             name="name"
@@ -208,7 +194,7 @@ export function UserCreateForm({setOpen}: {setOpen: (value: boolean) => void}) {
               <FormItem>
                 <FormLabel>Name</FormLabel>
                 <FormControl>
-                  <Input placeholder="Species name" {...field} />
+                  <Input placeholder="Name" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -239,25 +225,24 @@ export function UserCreateForm({setOpen}: {setOpen: (value: boolean) => void}) {
               </FormItem>
             )}
           />
+          </div>
           <FormField
             control={form.control}
-            name="description"
+            name="description"  
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Descripiton</FormLabel>
+                <FormLabel>Description</FormLabel>
                 <FormControl>
-                  <Textarea rows={10} placeholder="Species description" {...field} />
+                  <Textarea rows={5} placeholder="Animal Types" {...field} />
                 </FormControl>
+                <FormDescription>
+                  This is animal type description.
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
-        <Button disabled={isLoading} type="submit" className="w-full hover:shadow-primary-md">
-          {isLoading && (
-            <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-          )}
-          Create
-        </Button>             
+        <Button type="submit">Update type</Button>
       </form>
     </Form>
   )

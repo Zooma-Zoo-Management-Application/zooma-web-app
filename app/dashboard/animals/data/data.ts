@@ -1,8 +1,8 @@
 import { Pin, PinOff} from "lucide-react"
-export const statuses = [
+export const roles = [
   {
     value: true,
-    label: "Is Pin",
+    label: "",
     icon: Pin,
   },
   {

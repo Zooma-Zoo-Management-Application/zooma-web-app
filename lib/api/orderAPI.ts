@@ -30,3 +30,12 @@ export const updateOrder = async (id: number, values: any) => {
     return handleApiError(error);
   }
 }
+
+export const updateOrderQuantity = async (id: number, values: any) => {
+  try {
+    const { data } = await axiosClient.put(`/Orders/${id}/update-used-tickets`, values);
+    return { error: null, data };
+  } catch (error) {
+    return handleApiError(error);
+  }
+}

@@ -28,6 +28,10 @@ import {
 import { DataTablePagination } from "./data-table-pagination"
 import { DataTableToolbar } from "./data-table-toolbar"
 import { DataTableRowActions } from "./data-table-row-actions"
+import { RefreshCcw } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import useRefresh from "@/stores/refresh-store"
+import { getTypes } from "@/lib/api/typeAPI"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -47,12 +51,31 @@ export function DataTable<TData, TValue>({
   )
   const [sorting, setSorting] = React.useState<SortingState>([])
 
+  const [types, setTypes] = React.useState<any>([])
+
+  React.useEffect(() => {
+    const initialize = async () => {
+      try {
+        const res = await getTypes();
+        const { data } = res;
+        setTypes(data);
+      } catch (err:any) {
+      } finally {
+      }
+    };
+    initialize();
+  }, [data])
+
   const table = useReactTable({
-    data: dataState,
+    data: data,
     columns,
     state: {
       sorting,
-      columnVisibility,
+      columnVisibility: {
+        ...columnVisibility,
+        // description: false,
+        // typeId: false,
+      },
       rowSelection,
       columnFilters,
     },
@@ -120,6 +143,12 @@ export function DataTable<TData, TValue>({
     }
   })
 
+  const handleTypeRow = (typeId: string) => {
+    if(!types.length) return (<></>)
+    const type = types.find((type:any) => type.id === +typeId)
+    return <>{type?.name || typeId}</>
+  }
+
   return (
     <div className="space-y-4">
       <DataTableToolbar table={table} />
@@ -140,6 +169,7 @@ export function DataTable<TData, TValue>({
                     </TableHead>
                   )
                 })}
+                <TableHead>Type</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
             ))}
@@ -159,6 +189,11 @@ export function DataTable<TData, TValue>({
                       )}
                     </TableCell>
                   ))}
+                  <TableCell>
+                    {
+                      handleTypeRow(row.getValue("typeId"))
+                    }
+                  </TableCell>
                   <TableCell>
                     <DataTableRowActions row={row} table={table} />
                   </TableCell>

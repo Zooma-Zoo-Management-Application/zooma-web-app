@@ -3,8 +3,9 @@
 import { DotsHorizontalIcon } from "@radix-ui/react-icons"
 import { Row, Table, TableMeta } from "@tanstack/react-table"
 
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,13 +15,13 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { toast } from "@/components/ui/use-toast"
 import { deleteNewById } from "@/lib/api/newAPI"
-import { format } from "date-fns"
-import Image from "next/image"
+import { getTypes } from "@/lib/api/typeAPI"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
-import { ProfileForm } from "./ProfileForm"
-import { getTypes } from "@/lib/api/typeAPI"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { UpdateForm } from "./UpdateForm"
+import { DialogClose } from "@radix-ui/react-dialog"
+import { deleteSpecies } from "@/lib/api/speciesAPI"
+import useRefresh from "@/stores/refresh-store"
 
 
 interface DataTableRowActionsProps<TData> {
@@ -37,6 +38,7 @@ export function DataTableRowActions<TData>({
 
   const [viewOpen, setViewOpen] = useState(false)
   const [updateOpen, setUpdateOpen] = useState(false)
+  const [deleteOpen, setDeleteOpen] = useState(false)
   const [types, setTypes] = useState<any>([])
 
   useEffect(() => {
@@ -93,13 +95,14 @@ export function DataTableRowActions<TData>({
           <DropdownMenuItem onSelect={() => setUpdateOpen(true)}>
             Update
           </DropdownMenuItem>
-          <DropdownMenuItem onSelect={handleDelete}>
-            Ban
+          <DropdownMenuItem onSelect={() => setDeleteOpen(true)}>
+            Delete
           </DropdownMenuItem>
         </DropdownMenuGroup>
       </DropdownMenuContent>
-      {/* <UpdateFormDialog open={updateOpen} setOpen={setUpdateOpen} row={row} table={table}/> */}
       <ViewFormDialog open={viewOpen} setOpen={setViewOpen} row={row} table={table} typeName={handleTypeRow(row.getValue("typeId"))}/>
+      <UpdateFormDialog open={updateOpen} setOpen={setUpdateOpen} row={row} table={table}/>
+      <DeleteFormDialog open={deleteOpen} setOpen={setDeleteOpen} row={row} />
     </DropdownMenu>
   )
 }
@@ -155,21 +158,68 @@ const UpdateFormDialog = ({ open, setOpen, row, table }:{
   }
 
   const values = {
-    userName: row.getValue("userName"),
-    email: row.getValue("email"),
-    fullName: row.getValue("fullName"),
-    gender: row.getValue("gender"),
-    dateOfBirth: row.getValue("dateOfBirth"),
-    avatarUrl: row.getValue("avatarUrl"),
-    phoneNumber: row.getValue("phoneNumber"),
+    name: row.getValue("name"),
+    description: row.getValue("description"),
+    imageUrl: row.getValue("imageUrl"),
+    typeId: row.getValue("typeId")
   }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
-        <DialogHeader>Update Profile</DialogHeader>
-        <ProfileForm userId={row.getValue("id")} values={values} setOpen={setOpen}/>
+        <DialogHeader>Update Species</DialogHeader>
+        <UpdateForm id={row.getValue("id")} values={values} setOpen={setOpen}/>
       </DialogContent>
+    </Dialog>
+  )
+}
+
+const DeleteFormDialog = ({ open, setOpen, row }:{
+  open: boolean,
+  setOpen: (value: boolean) => void,
+  row: Row<any>,
+}) => {
+
+  const { refresh } = useRefresh()
+
+  const handleDelete = async () => {
+    deleteSpecies(row.getValue("id"))
+    .then(res => {
+      toast({
+        title: "Delete Success!",
+        description: "Species has been deleted."
+      })
+      
+      setTimeout(() => {
+        setOpen(false)
+        refresh()
+      }, 1000)
+    })
+    .catch(err => {
+      toast({
+        title: "Delete Failed!",
+        description: "Something went wrong.",
+        variant: "destructive"
+      })
+    })
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogContent>
+      <DialogHeader>
+        <DialogTitle>Are you sure absolutely sure?</DialogTitle>
+        <DialogDescription>
+          This action cannot be undone. Are you sure you want to permanently
+          delete this new from our servers?
+        </DialogDescription>
+      </DialogHeader>
+      <DialogFooter>
+        <DialogClose asChild>
+          <Button variant="destructive" onClick={handleDelete}>Confirm</Button>
+        </DialogClose>
+      </DialogFooter>
+    </DialogContent>
     </Dialog>
   )
 }

@@ -41,6 +41,8 @@ function TicketsPage() {
   const searchParams = useSearchParams();
   const callbackStepUrl = searchParams.get("step") || "0";
 
+  const [link, setLink] = useState<string>("/profile/order-history")
+
 
   const {
     previousStep,
@@ -86,7 +88,11 @@ function TicketsPage() {
     if(isLastStep){
       checkoutTicket(order)
       .then((res) => {
-        console.log(res)
+        const { data } = res;
+        console.log("sadasdasd data",data)
+        setLink(data.url)
+
+
       })
       .catch((error : any) => {
         console.log(error)
@@ -121,7 +127,21 @@ function TicketsPage() {
             >
               {showSuccessMsg ? (
                 <AnimatePresence mode="wait">
-                  Success
+                  <div>
+                    <div className="flex flex-col items-center justify-center">
+                      <h1 className="text-3xl font-semibold text-center">
+                        Thank you for your order!
+                      </h1>
+                      <div className="text-lg text-center">
+                        Please 
+                         <Link href={link}> checkout </Link>
+                        to complete your order.
+                      </div>
+                      <div>
+                        Go to <Link href="/orders">Orders</Link> to see your orders.
+                      </div>
+                      </div>
+                  </div>
                 </AnimatePresence>
               ) : (
                 <form
