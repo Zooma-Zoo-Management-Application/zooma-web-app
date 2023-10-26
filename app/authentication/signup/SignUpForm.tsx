@@ -259,7 +259,7 @@ export function SignUpForm() {
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input placeholder="Your Password" {...field} />
+                  <Input type="password" placeholder="Your Password" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -272,7 +272,7 @@ export function SignUpForm() {
               <FormItem>
                 <FormLabel>Confirm Password</FormLabel>
                 <FormControl>
-                  <Input placeholder="Confirm Password" {...field} />
+                  <Input type="password" placeholder="Confirm Password" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -295,9 +295,9 @@ export function SignUpForm() {
                       )}
                       {...field}
                     >
-                      <option value="inter">Male</option>
-                      <option value="manrope">Female</option>
-                      <option value="system">Other</option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                      <option value="Other">Other</option>
                     </select>
                   </FormControl>
                   <ChevronDownIcon className="absolute right-3 top-2.5 h-4 w-4 opacity-50" />

@@ -5,9 +5,10 @@ import { statuses } from "../data/data"
 import { Order } from "../data/schema"
 import { DataTableColumnHeader } from "./data-table-column-header"
 import { format } from "date-fns"
-import { formatVND } from "@/lib/utils"
+import { formatVND, getStatus } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { twMerge } from "tailwind-merge"
 
 export const columns: ColumnDef<Order>[] = [
   // {
@@ -54,9 +55,9 @@ export const columns: ColumnDef<Order>[] = [
           <span className="max-w-[500px] truncate font-medium">
             <div className="flex gap-2 items-center">
             <Avatar className="h-8 w-8">
-                <AvatarImage src={(row.getValue("user") as Order["user"]).avatarUrl} alt={(row.getValue("user") as Order["user"]).userName} />
-                <AvatarFallback>{(row.getValue("user") as Order["user"]).userName.slice(0,2)}</AvatarFallback>
-              </Avatar>
+              <AvatarImage src={(row.getValue("user") as Order["user"]).avatarUrl} alt={(row.getValue("user") as Order["user"]).userName} />
+              <AvatarFallback>{(row.getValue("user") as Order["user"]).userName.slice(0,2)}</AvatarFallback>
+            </Avatar>
             {(row.getValue("user") as Order["user"]).userName}
             </div>
           </span>
@@ -114,23 +115,56 @@ export const columns: ColumnDef<Order>[] = [
     },
   },
   {
+    accessorKey: "notes",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Notes" />
+    ),
+    cell: ({ row }) => {
+      return (
+        <div className="flex space-x-2">
+          <span className="max-w-[500px] truncate font-medium">
+            {row.getValue("notes")}
+          </span>
+        </div>
+      )
+    },
+  },
+  {
+    accessorKey: "orderDetails",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Ticket" />
+    ),
+    cell: ({ row }) => {
+      return (
+        <div className="flex space-x-2">
+          <span className="max-w-[500px] truncate font-medium">
+            { (row.getValue("orderDetails") as any[]).map((orderDetail: any) => (
+              <div key={orderDetail.id + orderDetail.ticketDate} className="flex flex-col">
+                <div className="flex space-x-2">
+                  <span className="max-w-[500px] truncate font-medium">
+                    TicketId: {orderDetail.ticketId}
+                  </span>
+                  <span className="max-w-[500px] truncate font-medium">
+                    Quantity: {orderDetail.quantity}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </span>
+        </div>
+      )
+    },
+  },
+  {
     accessorKey: "status",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Status" />
     ),
     cell: ({ row }) => {
-      const status = statuses.find(
-        (status) => status.value === row.getValue("status")
-      )
-
-      if (!status) {
-        return null
-      }
-
       return (
-        <div className="flex w-[100px] items-center">
-          <Badge className={status.color}>{status.label}</Badge>
-        </div>
+          <span className={twMerge("text-sm font-medium mr-2 px-2.5 py-0.5 rounded ml-3", getStatus(row.getValue("status")).color)}>{
+                          getStatus(row.getValue("status")).text
+          }</span>
       )
     },
     filterFn: (row, id, value) => {

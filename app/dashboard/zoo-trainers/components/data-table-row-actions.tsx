@@ -4,18 +4,22 @@ import { DotsHorizontalIcon } from "@radix-ui/react-icons"
 import { Row, Table, TableMeta } from "@tanstack/react-table"
 
 import { Button } from "@/components/ui/button"
+import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog"
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
 import { toast } from "@/components/ui/use-toast"
-import { deleteNewById, pinNews, unpinNews } from "@/lib/api/newAPI"
+import { deleteNewById } from "@/lib/api/newAPI"
+import { format } from "date-fns"
+import Image from "next/image"
 import { useRouter } from "next/navigation"
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { DialogClose } from "@radix-ui/react-dialog"
+import { useState } from "react"
+import { ProfileForm } from "./ProfileForm"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 
 interface DataTableRowActionsProps<TData> {
@@ -30,64 +34,20 @@ export function DataTableRowActions<TData>({
   const router = useRouter();
   const meta : TableMeta<TData> | undefined = table.options.meta;
 
-  const handleEdit = () => {
-    router.push(`/dashboard/news/${row.getValue("id")}/edit`)
-  }
-  const handleView = () => {
-    router.push(`/dashboard/news/${row.getValue("id")}/view`)
-  }
-
-  const handlePin = () => {
-    pinNews(row.getValue("id"))
-    .then(res => {
-      toast({
-        title: "Pin Success!",
-        description: "News has been pinned."
-      })
-    })
-    .catch(err => {
-      toast({
-        title: "Pin Failed!",
-        description: "Something went wrong.",
-        variant: "destructive"
-      })
-    })
-    .finally(() => {
-      meta?.pinNew(row.getValue("id"))
-    })
-  }
-
-  const handleUnPin = () => {
-    unpinNews(row.getValue("id"))
-    .then(res => {
-      toast({
-        title: "Unpin Success!",
-        description: "News has been unpinned."
-      })
-    })
-    .catch(err => {
-      toast({
-        title: "Unpin Failed!",
-        description: "Something went wrong.",
-        variant: "destructive"
-      })
-    })
-    .finally(() => {
-      meta?.unpinNew(row.getValue("id"))
-    })
-  }
+  const [viewOpen, setViewOpen] = useState(false)
+  const [updateOpen, setUpdateOpen] = useState(false)
 
   const handleDelete = () => {
     deleteNewById(row.getValue("id"))
     .then(res => {
       toast({
-        title: "Delete Success!",
-        description: "News has been deleted."
+        title: "Ban Success!",
+        description: "Zoo Trainer has been banned."
       })
     })
     .catch(err => {
       toast({
-        title: "Delete Failed!",
+        title: "Ban Failed!",
         description: "Something went wrong.",
         variant: "destructive"
       })
@@ -98,49 +58,116 @@ export function DataTableRowActions<TData>({
   }
 
   return (
-    <Dialog>
-      <DropdownMenu>
+    <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button
-          variant="ghost"
-          className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
-        >
-          <DotsHorizontalIcon className="h-4 w-4" />
-          <span className="sr-only">Open menu</span>
+        <Button variant="ghost" size="icon">
+          <DotsHorizontalIcon className="w-5 h-5"/>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-[160px]">
-        <DropdownMenuItem onClick={handleView}>View</DropdownMenuItem>
-        <DropdownMenuItem onClick={handleEdit}>Edit</DropdownMenuItem>
-        {
-          row.getValue("status") === true ? (
-            <DropdownMenuItem onClick={handleUnPin}>Unpin</DropdownMenuItem>
-          ) : (
-            <DropdownMenuItem onClick={handlePin}>Pin</DropdownMenuItem>
-          )
-        }
-        <DropdownMenuSeparator />
-        <DialogTrigger asChild>
-          <DropdownMenuItem>
-            Delete
+      <DropdownMenuContent sideOffset={5} alignOffset={-5}>
+        <DropdownMenuGroup>
+          <DropdownMenuItem onSelect={() => setViewOpen(true)}>
+            View
           </DropdownMenuItem>
-        </DialogTrigger>
+          <DropdownMenuItem onSelect={() => setUpdateOpen(true)}>
+            Update
+          </DropdownMenuItem>
+          <DropdownMenuItem onSelect={handleDelete}>
+            Ban
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
       </DropdownMenuContent>
+      <UpdateFormDialog open={updateOpen} setOpen={setUpdateOpen} row={row} table={table}/>
+      <ViewFormDialog open={viewOpen} setOpen={setViewOpen} row={row} table={table}/>
     </DropdownMenu>
-    <DialogContent>
-      <DialogHeader>
-        <DialogTitle>Are you sure absolutely sure?</DialogTitle>
-        <DialogDescription>
-          This action cannot be undone. Are you sure you want to permanently
-          delete this new from our servers?
-        </DialogDescription>
-      </DialogHeader>
-      <DialogFooter>
-        <DialogClose asChild>
-          <Button variant="destructive" onClick={handleDelete}>Confirm</Button>
-        </DialogClose>
-      </DialogFooter>
-    </DialogContent>
+  )
+}
+
+const ViewFormDialog = ({ open, setOpen, row, table }:{
+  open: boolean,
+  setOpen: (value: boolean) => void,
+  row: Row<any>,
+  table: Table<any>
+}) => {
+
+  const handleClose = () => {
+    setOpen(false)
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogContent>
+        <DialogHeader>View Profile</DialogHeader>
+        <div className="flex flex-col items-center justify-center space-y-2">
+          <Avatar className="h-8 w-8">
+            <AvatarImage src={(row.getValue("user") as any)?.avatarUrl || "/peguin.jpg"} alt={(row.getValue("user") as any)?.userName} />
+            <AvatarFallback>{(row.getValue("user") as any)?.userName.slice(0,2)}</AvatarFallback>
+          </Avatar>
+          <div className="text-lg font-semibold">{row.getValue("userName")}</div>
+          <div className="text-sm">{row.getValue("userName")}</div>
+        </div>
+        <div className="flex gap-4">
+          <div className="flex-1">
+            <div>
+              <div className="text-sm font-semibold">Email</div>
+              <div className="text-sm">{row.getValue("email")}</div>
+            </div>
+            <div>
+              <div className="text-sm font-semibold">Phone Number</div>
+              <div className="text-sm">{row.getValue("phoneNumber")}</div>
+            </div>
+            <div>
+              <div className="text-sm font-semibold">Date Of Birth</div>
+              <div className="text-sm">{format(new Date(row.getValue("dateOfBirth")), "dd/MM/yyyy")}</div>
+            </div>
+          </div>
+          <div className="flex-1">
+            <div>
+              <div className="text-sm font-semibold">Phone Number</div>
+              <div className="text-sm">{row.getValue("phoneNumber")}</div>
+            </div>
+            <div>
+              <div className="text-sm font-semibold">Full Name</div>
+              <div className="text-sm">{row.getValue("fullName")}</div>
+            </div>
+            <div>
+              <div className="text-sm font-semibold">Gender</div>
+              <div className="text-sm">{row.getValue("gender")}</div>
+            </div>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  )
+}
+
+const UpdateFormDialog = ({ open, setOpen, row, table }:{
+  open: boolean,
+  setOpen: (value: boolean) => void,
+  row: Row<any>,
+  table: Table<any>
+}) => {
+
+  const handleClose = () => {
+    setOpen(false)
+  }
+
+  const values = {
+    userName: row.getValue("userName"),
+    email: row.getValue("email"),
+    fullName: row.getValue("fullName"),
+    gender: row.getValue("gender"),
+    dateOfBirth: row.getValue("dateOfBirth"),
+    avatarUrl: row.getValue("avatarUrl"),
+    phoneNumber: row.getValue("phoneNumber"),
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogContent>
+        <DialogHeader>Update Profile</DialogHeader>
+        <ProfileForm userId={row.getValue("id")} values={values} setOpen={setOpen}/>
+      </DialogContent>
     </Dialog>
   )
 }

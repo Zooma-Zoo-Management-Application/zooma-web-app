@@ -4,7 +4,6 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
-import { Icons } from "@/components/shared/Icons"
 import Tiptap from "@/components/tiptap/TipTap"
 import { Button } from "@/components/ui/button"
 import {
@@ -16,13 +15,15 @@ import {
   FormMessage
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { BASE_URL } from "@/constants/appInfos"
 import FirebaseService from "@/lib/FirebaseService"
-import { editNew } from "@/lib/api/newAPI"
 import { isBase64Image } from "@/lib/utils"
+import axios from "axios"
 import { getDownloadURL, ref, uploadBytes, } from "firebase/storage"
 import Image from "next/image"
-import { useRouter } from "next/navigation"
 import { ChangeEvent, useState } from "react"
+import { createNew } from "@/lib/api/newAPI"
+import { useRouter } from "next/navigation"
 
 // This can come from your database or API.
 
@@ -39,17 +40,15 @@ const formNewSchema = z.object({
 
 type FormNewValues = z.infer<typeof formNewSchema>
 
-export function NewsForm({ newParam } : any) {
+export function NewsForm() {
   const [files, setFiles] = useState<File[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-
   const router = useRouter()
 
   const defaultValues: Partial<FormNewValues> = {
-    title: newParam.title || "",
-    description: newParam.description || "",
-    content: newParam.content || "",
-    image: newParam.image || "",
+    title: "",
+    description: "",
+    content: "<h1>Heading 1</h1><h2>Heading 2</h2>",
+    image: "",
   }
 
   const form = useForm<FormNewValues>({
@@ -79,9 +78,7 @@ export function NewsForm({ newParam } : any) {
     }
   }
 
-
   async function onSubmit(values: FormNewValues) {
-    setIsLoading(true);
     console.log("submit")
     const blob = values.image;
 
@@ -105,31 +102,16 @@ export function NewsForm({ newParam } : any) {
               image: values.image,
               userId: 1
             };
-            editNew(newParam.id, newsbody)
+            createNew(newsbody)
           })
           .catch((error) => {
             console.log(error.message);
             values.image = "";
           })
           .finally(() => {
-            setIsLoading(false);
-            router.push(`/dashboard/news/${newParam.id}/view`);
+            router.push(`/dashboard/news`);
           })
-          ;
       });
-    } else {
-      let newsbody : any = {
-        title: values.title,
-        description: values.description,
-        content: values.content,
-        image: values.image,
-        userId: 1
-      };
-      editNew(newParam.id, newsbody)
-      .finally(() => {
-        setIsLoading(false);
-        router.push(`/dashboard/news/${newParam.id}/view`);
-      })
     }
     
   }
@@ -214,21 +196,13 @@ export function NewsForm({ newParam } : any) {
               <FormItem>
                 <FormLabel>Content</FormLabel>
                 <FormControl>
-                  <Tiptap content={field.value} handleUpdate={(html) => field.onChange(html)}/>
+                  <Tiptap content={field.value}/>
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-        <Button type="submit" disabled={isLoading}
-         className="w-full hover:shadow-primary-md">
-          {isLoading ? (
-            <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-          ) : (
-            <>Edit New</>
-          )
-          }
-          </Button>
+        <Button type="submit" className="w-full hover:shadow-primary-md">Create New</Button>
       </form>
     </Form>
   )
