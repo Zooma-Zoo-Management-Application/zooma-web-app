@@ -99,7 +99,7 @@ const CreateFormDialog = ({ open, setOpen }:{
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
-        <DialogHeader>Create Species</DialogHeader>
+        <DialogHeader>Create Animal</DialogHeader>
         <UserCreateForm setOpen={setOpen}/>
       </DialogContent>
     </Dialog>

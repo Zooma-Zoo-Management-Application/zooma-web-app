@@ -75,4 +75,34 @@ export const columns: ColumnDef<Animal>[] = [
       )
     },
   },
+  {
+    accessorKey: "height",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Height" />
+    ),
+    cell: ({ row }) => {
+      return (
+        <div className="flex space-x-2">
+          <span className="max-w-[500px] truncate font-medium">
+            {row.getValue("height")}
+          </span>
+        </div>
+      )
+    },
+  },
+  {
+    accessorKey: "weight",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Weight" />
+    ),
+    cell: ({ row }) => {
+      return (
+        <div className="flex space-x-2">
+          <span className="max-w-[500px] truncate font-medium">
+            {row.getValue("weight")}
+          </span>
+        </div>
+      )
+    },
+  },
 ]

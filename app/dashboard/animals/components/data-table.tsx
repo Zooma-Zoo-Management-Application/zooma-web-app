@@ -53,18 +53,18 @@ export function DataTable<TData, TValue>({
 
   const [types, setTypes] = React.useState<any>([])
 
-  React.useEffect(() => {
-    const initialize = async () => {
-      try {
-        const res = await getTypes();
-        const { data } = res;
-        setTypes(data);
-      } catch (err:any) {
-      } finally {
-      }
-    };
-    initialize();
-  }, [data])
+  // React.useEffect(() => {
+  //   const initialize = async () => {
+  //     try {
+  //       const res = await getTypes();
+  //       const { data } = res;
+  //       setTypes(data);
+  //     } catch (err:any) {
+  //     } finally {
+  //     }
+  //   };
+  //   initialize();
+  // }, [data])
 
   const table = useReactTable({
     data: data,
@@ -169,7 +169,6 @@ export function DataTable<TData, TValue>({
                     </TableHead>
                   )
                 })}
-                <TableHead>Type</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
             ))}
@@ -189,11 +188,11 @@ export function DataTable<TData, TValue>({
                       )}
                     </TableCell>
                   ))}
-                  <TableCell>
+                  {/* <TableCell>
                     {
                       handleTypeRow(row.getValue("typeId"))
                     }
-                  </TableCell>
+                  </TableCell> */}
                   <TableCell>
                     <DataTableRowActions row={row} table={table} />
                   </TableCell>

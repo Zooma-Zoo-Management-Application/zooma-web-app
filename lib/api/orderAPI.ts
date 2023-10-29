@@ -39,3 +39,12 @@ export const updateOrderQuantity = async (id: number, values: any) => {
     return handleApiError(error);
   }
 }
+
+export const returnVNPay = async (params: any) => {
+  try {
+    const { data } = await axiosClient.get(`/Payment/vnpay-return?`+params);
+    return { error: null, data };
+  } catch (error) {
+    return handleApiError(error);
+  }
+}

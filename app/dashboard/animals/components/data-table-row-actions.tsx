@@ -3,7 +3,6 @@
 import { DotsHorizontalIcon } from "@radix-ui/react-icons"
 import { Row, Table, TableMeta } from "@tanstack/react-table"
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import {
@@ -14,14 +13,16 @@ import {
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
 import { toast } from "@/components/ui/use-toast"
+import { deleteAnimal } from "@/lib/api/animalAPI"
+import { getDiets } from "@/lib/api/dietAPI"
 import { deleteNewById } from "@/lib/api/newAPI"
+import { getSpecies } from "@/lib/api/speciesAPI"
 import { getTypes } from "@/lib/api/typeAPI"
+import useRefresh from "@/stores/refresh-store"
+import { DialogClose } from "@radix-ui/react-dialog"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { UpdateForm } from "./UpdateForm"
-import { DialogClose } from "@radix-ui/react-dialog"
-import { deleteSpecies } from "@/lib/api/speciesAPI"
-import useRefresh from "@/stores/refresh-store"
 
 
 interface DataTableRowActionsProps<TData> {
@@ -115,32 +116,54 @@ const ViewFormDialog = ({ open, setOpen, row, table, typeName }:{
   typeName: string
 }) => {
 
-  const handleClose = () => {
-    setOpen(false)
-  }
+  const [species, setSpecies] = useState<any>([])
+  const [diets, setDiets] = useState<any>([])
+
+  useEffect(() => {
+    const initialize = async () => {
+      try {
+        const res = await getSpecies();
+        const { data } = res;
+        setSpecies(data);
+      } catch (err:any) {
+      } 
+    };
+    initialize();
+  }, [])
+
+  useEffect(() => {
+    const initialize = async () => {
+      try {
+        const res = await getDiets();
+        const { data } = res;
+        setDiets(data);
+      } catch (err:any) {
+      } 
+    };
+    initialize();
+  }, [])
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
-        <DialogHeader>View Species</DialogHeader>
-          <div className="flex flex-col items-center justify-center space-y-2">
-            <Avatar className="w-28 h-28">
-              <AvatarImage src={row.getValue("imageUrl")} className="bg-cover bg-center"/>
-              <AvatarFallback>{row.getValue("name")?.toString().slice(0,2)}</AvatarFallback>
-            </Avatar>
-            <div className="text-lg font-semibold">{row.getValue("name")}</div>
-            {/* <div className="text-sm">{row.getValue("description")}</div> */}
-          </div>
-          <div className="">
-            <div>
-              <div className="text-sm font-semibold">Animal Type</div>
-              <div className="text-sm">{typeName}</div>
+        <DialogHeader>View Animal</DialogHeader>
+        <div className="w-full">
+          <div className="grid grid-cols-4 gap-4">
+            <div className="col-span-2">
+              <div className="text-sm font-semibold">Name</div>
+              <div className="text-sm">{row.getValue("name")}</div>
             </div>
-            <div>
-              <div className="text-sm font-semibold">Description</div>
-              <div className="text-sm">{row.getValue("description")}</div>
+            <div className="col-span-1">
+              <div className="text-sm font-semibold">Height</div>
+              <div className="text-sm">{row.getValue("height")}</div>
+            </div>
+            <div className="col-span-1">
+              <div className="text-sm font-semibold">Weight</div>
+              <div className="text-sm">{row.getValue("weight")}</div>
             </div>
           </div>
+        </div>
+
       </DialogContent>
     </Dialog>
   )
@@ -159,9 +182,15 @@ const UpdateFormDialog = ({ open, setOpen, row, table }:{
 
   const values = {
     name: row.getValue("name"),
+    arrivalDate: new Date(row.getValue("arrivalDate")),
+    dateOfBirth: new Date(row.getValue("dateOfBirth")),
+    height: row.getValue("height"),
+    weight: row.getValue("weight"),
     description: row.getValue("description"),
-    imageUrl: row.getValue("imageUrl"),
-    typeId: row.getValue("typeId")
+    speciesId: row.getValue("speciesId"),
+    dietId: row.getValue("dietId"),
+    cageId: row.getValue("cageId"),
+    trainingPlanId: row.getValue("trainingPlanId"),
   }
 
   return (
@@ -183,7 +212,7 @@ const DeleteFormDialog = ({ open, setOpen, row }:{
   const { refresh } = useRefresh()
 
   const handleDelete = async () => {
-    deleteSpecies(row.getValue("id"))
+    deleteAnimal(row.getValue("id"))
     .then(res => {
       toast({
         title: "Delete Success!",

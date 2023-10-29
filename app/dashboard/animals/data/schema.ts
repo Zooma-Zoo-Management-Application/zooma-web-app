@@ -13,7 +13,6 @@ export const animalSchema = z.object({
   speciesId: z.number(),
   dietId: z.number(),
   cageId: z.number(),
-
 })
 
 export type Animal = z.infer<typeof animalSchema>

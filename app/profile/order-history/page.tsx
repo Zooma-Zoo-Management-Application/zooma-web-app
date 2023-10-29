@@ -91,13 +91,13 @@ function OrderHistory() {
                                     />
                                   </div>
                                   <div className='flex-1'>
-                                    <h4 className='flex items-center'>{orderDetail.quantity}x {orderDetail.ticket.name}
+                                    <h4 className='flex items-center'>{orderDetail?.quantity}x {orderDetail?.ticket?.name}
                                       <span className="bg-green-100 text-green-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300 ml-3">{orderDetail.usedTicket}/{orderDetail.quantity}</span>
                                     </h4>
-                                    <span>{orderDetail.ticket.description}</span>
+                                    <span>{orderDetail?.ticket?.description}</span>
                                   </div>
                                   <div>
-                                  {formatVND(orderDetail.ticket.price * orderDetail.quantity)}
+                                  {formatVND(orderDetail?.ticket?.price * orderDetail?.quantity)}
                                   </div>
                                 </div>
                               )

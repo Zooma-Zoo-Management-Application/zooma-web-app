@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form"
 import * as z from "zod"
 
 import { Icons } from "@/components/shared/Icons"
-import { Button, buttonVariants } from "@/components/ui/button"
+import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import {
   Form,
@@ -17,29 +17,35 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/components/ui/use-toast"
-import FirebaseService from "@/lib/FirebaseService"
-import { getTypes } from "@/lib/api/typeAPI"
-import { registerUserBasedRole } from "@/lib/api/userAPI"
-import { cn, isBase64Image } from "@/lib/utils"
+import { createAnimal } from "@/lib/api/animalAPI"
+import { getDiets } from "@/lib/api/dietAPI"
+import { getSpecies } from "@/lib/api/speciesAPI"
+import { cn } from "@/lib/utils"
+import useRefresh from "@/stores/refresh-store"
 import { format } from "date-fns"
-import { getDownloadURL, ref, uploadBytes, } from "firebase/storage"
-import { CalendarIcon, ChevronDownIcon } from "lucide-react"
-import Image from "next/image"
+import { CalendarIcon } from "lucide-react"
 import { useSearchParams } from "next/navigation"
 import { ChangeEvent, useEffect, useState } from "react"
-import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { createSpecies } from "@/lib/api/speciesAPI"
-import useRefresh from "@/stores/refresh-store"
 
 // This can come from your database or API.
-
 const formSignUpSchema = z.object({
     name: z.string().min(3, "Name must be at least 3 characters"),
-    description: z.string().min(10, "Description must be at least 10 characters"),
-    imageUrl: z.string().url("Please enter a valid URL"),
-    typeId: z.string(),
+    arrivalDate: z.date().refine((date) => date <= new Date(), {
+      message: "Arrival date must be in the past",
+    }),
+    dateOfBirth: z.date().refine((date) => date <= new Date(), {
+      message: "Date of birth must be in the past",
+    }),
+    height: z.number().min(0, "Height must be greater than 0"),
+    weight: z.number().min(0, "Weight must be greater than 0"),
+    description: z.string().min(3, "Description must be at least 3 characters"),
+    speciesId: z.string(),
+    dietId: z.string().nullable(),
+    cageId: z.string().nullable(),
+    trainingPlanId: z.string().nullable(),
   })
   
 
@@ -49,16 +55,29 @@ export function UserCreateForm({setOpen}: {setOpen: (value: boolean) => void}) {
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [files, setFiles] = useState<File[]>([]);
   const searchParams = useSearchParams();
-  const [types, setTypes] = useState<any>([])
+  const [species, setSpecies] = useState<any>([])
+  const [diets, setDiets] = useState<any>([])
 
   const { refresh } = useRefresh()
 
   useEffect(() => {
     const initialize = async () => {
       try {
-        const res = await getTypes();
+        const res = await getSpecies();
         const { data } = res;
-        setTypes(data);
+        setSpecies(data);
+      } catch (err:any) {
+      } 
+    };
+    initialize();
+  }, [])
+
+  useEffect(() => {
+    const initialize = async () => {
+      try {
+        const res = await getDiets();
+        const { data } = res;
+        setDiets(data);
       } catch (err:any) {
       } 
     };
@@ -67,9 +86,15 @@ export function UserCreateForm({setOpen}: {setOpen: (value: boolean) => void}) {
 
   const defaultValues: Partial<SignUpFormValues> = {
     name: "",
+    arrivalDate: new Date(),
+    dateOfBirth: new Date(),
+    height: 0,
+    weight: 0,
     description: "",
-    imageUrl: "",
-    typeId: "1",
+    speciesId: "1",
+    dietId: null,
+    cageId: null,
+    trainingPlanId: null,
   }
 
   const form = useForm<SignUpFormValues>({
@@ -102,143 +127,236 @@ export function UserCreateForm({setOpen}: {setOpen: (value: boolean) => void}) {
   async function onSubmit(values: SignUpFormValues) {
     setIsLoading(true);
 
-    const blob = values.imageUrl;
-
-    const hasImageChanged = isBase64Image(blob);
-
-    if(hasImageChanged) {
-      const imageRef = ref(FirebaseService.storage, `images/${values.name + "hello"}`);
-      uploadBytes(imageRef, files[0]).then(() => {
-        getDownloadURL(imageRef)
-          .then((url) => {
-            values.imageUrl = url;
-            createSpecies({
-              "name": values.name,
-              "description": values.description,
-              "imageUrl": values.imageUrl,
-              "typeId": values.typeId,
-            })
-            .then((response) => {
-              if(response.data !== null) {
-                toast({
-                  title: "Create Species Success",
-                  description: "Create Species Success",
-                })
-                setIsLoading(false);
-                setOpen(false);
-              } else {
-                toast({
-                  title: "Create Species Failed",
-                  description: JSON.stringify(response.error),
-                })
-                setIsLoading(false);
-                values.imageUrl = "";
-              }
-            })
-          })
-          .catch((error) => {
-            toast({
-              title: "Login Error",
-              description: (
-                <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-                  <code className="text-light">{JSON.stringify(error, null, 2)}</code>
-                </pre>
-              )
-            })
-            setIsLoading(false);
-            values.imageUrl = "";
-          })
-          .finally(() => {
-            setTimeout(() => {
-              refresh();
-            }, 1000);
-          });
-      });
-    }
+    createAnimal({
+      "name": values.name,
+      "arrivalDate": values.arrivalDate.toISOString(),
+      "dateOfBirth": values.dateOfBirth.toISOString(),
+      "height": values.height,
+      "weight": values.weight,
+      "description": values.description,
+      "status": true,
+      "speciesId": values.speciesId,
+      "dietId": values.dietId,
+      "cageId": values.cageId,
+      "trainingPlanId": values.trainingPlanId,
+    })
+    .then((response) => {
+      if(response.data !== null) {
+        toast({
+          title: "Create Animal Success",
+          description: "Create Animal Success",
+        })
+        setIsLoading(false);
+        setOpen(false);
+      } else {
+        toast({
+          title: "Create Animal Failed",
+          description: JSON.stringify(response.error),
+        })
+        setIsLoading(false);
+      }
+    })
+    .finally(() => {
+      setTimeout(() => {
+        refresh();
+      }, 1000);
+    });
   }
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <FormField
-          control={form.control}
-          name="imageUrl"
-          render={({ field }) => (
-            <FormItem className="flex items-center gap-3">
-              <FormLabel className="account-form_image-label">
-                {field.value ? (
-                    <Image
-                      src={
-                          field.value
-                      }
-                      alt="profile photo"
-                      width={100}
-                      height={100}
-                      priority
-                      className="rounded-full object-cover h-full w-full"
-                    />
-                  ) : (
-                    <Image
-                      src= "/Zooma_Logo.svg"
-                      alt="profile photo"
-                      width={100}
-                      height={100}
-                      priority
-                      className="object-contain"
-                    />
-                  )}
-              </FormLabel>
-              <FormControl className="flex-1 text-base-semibold text-gray-500">
-                <Input 
-                  type="file"
-                  accept="image/*"
-                  placeholder="Upload a photo" 
-                  className="account-form_image-input"
-                  onChange={e => handleImage(e, field.onChange)}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="Species name" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="typeId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Species Type</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value.toString()}>
+          <div className="grid grid-cols-4 gap-4">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem className="col-span-2">
+                  <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Species Types" />
-                    </SelectTrigger>
+                    <Input placeholder="Animal name" {...field} />
                   </FormControl>
-                  <SelectContent>
-                    {
-                      types && types.map((type: any) => (
-                        <SelectItem key={type.id+type.name} value={type.id.toString()}>{type.name}</SelectItem>
-                      ))
-                    }
-                    
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="weight"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Weight</FormLabel>
+                  <FormControl>
+                    <Input type="number" min={0} 
+                      placeholder="Animal weight" {...field} 
+                      onChange={event => field.onChange(+event.target.value)}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="height"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Height</FormLabel>
+                  <FormControl>
+                    <Input type="number" min={0} 
+                      {...field} 
+                      placeholder="Animal height" 
+                      onChange={event => field.onChange(+event.target.value)}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <FormField
+              control={form.control}
+              name="arrivalDate"
+              render={({ field }) => (
+                <FormItem className="flex flex-col mt-2 justify-start  gap-0">
+                  <FormLabel>Arrival Date</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "w-full pl-3 text-left font-normal",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          {field.value ? (
+                            format(field.value, "PPP")
+                          ) : (
+                            <span>Pick a date</span>
+                          )}
+                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        disabled={(date) =>
+                          date > new Date() || date < new Date("1900-01-01")
+                        }
+                        initialFocus
+                        captionLayout="dropdown-buttons"
+                        fromYear={1960}
+                        toYear={2023}
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="dateOfBirth"
+              render={({ field }) => (
+                <FormItem className="flex flex-col mt-2 justify-start  gap-0">
+                  <FormLabel>Date Of Birth</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "w-full pl-3 text-left font-normal",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          {field.value ? (
+                            format(field.value, "PPP")
+                          ) : (
+                            <span>Pick a date</span>
+                          )}
+                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        disabled={(date) =>
+                          date > new Date() || date < new Date("1900-01-01")
+                        }
+                        initialFocus
+                        captionLayout="dropdown-buttons"
+                        fromYear={1960}
+                        toYear={2023}
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <FormField
+              control={form.control}
+              name="speciesId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Species Type</FormLabel>
+                  <Select onValueChange={(value) => field.onChange(value.toString())} defaultValue={(field.value ?? undefined)?.toString()}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Species Types" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent className="overflow-y-scroll z-[1000] h-[200px]">
+                      {
+                        species && species.map((specie: any) => (
+                          <SelectItem key={specie.id+specie.name} value={specie.id.toString()}>{specie.name}</SelectItem>
+                        ))
+                      }
+                      
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="dietId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Diet</FormLabel>
+                  <Select onValueChange={(value) => field.onChange(value.toString())} defaultValue={(field.value ?? undefined)?.toString()}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select Diet" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent className="overflow-y-scroll z-[1000] h-[200px]">
+                      {
+                        diets && diets.map((diet: any) => (
+                          <SelectItem key={diet.id+diet.name} value={diet.id.toString()}>{diet.name}</SelectItem>
+                        ))
+                      }
+                      
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          
           <FormField
             control={form.control}
             name="description"
@@ -246,7 +364,7 @@ export function UserCreateForm({setOpen}: {setOpen: (value: boolean) => void}) {
               <FormItem>
                 <FormLabel>Descripiton</FormLabel>
                 <FormControl>
-                  <Textarea rows={10} placeholder="Species description" {...field} />
+                  <Textarea rows={3} placeholder="Species description" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

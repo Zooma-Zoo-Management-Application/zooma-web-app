@@ -260,3 +260,7 @@
   fill: #ecf71f;
   stroke: #1b263a;
 }
+
+.rdp-vhidden {
+  @apply hidden;
+}

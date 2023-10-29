@@ -55,14 +55,20 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
       } = response.data;
       setCurrentUser(loginResponse.user);
       localStorage.setItem("accessToken", loginResponse.accessToken);
-      // if(user.role === "Admin"){
-      //   window.location.href = "/admin";
-      // }else if(user.role === "Staff"){
-      //   window.location.href = "/user";
-      // }else{
-      //   window.location.href = "/";
-      // }
-      router.push(callbackUrl);
+      // amdin
+      if(loginResponse.user.roleId === 4 ){
+        window.location.href = "/dashboard";
+      }
+      // staff
+      else if(loginResponse.user.roleId === 1){
+        window.location.href = "/dashboard";
+      }
+      // zookeeper
+      else if(loginResponse.user.roleId === 2){
+        window.location.href = "/dashboard";
+      }else{
+        router.push(callbackUrl);
+      }
     })
     .catch((error) => {
       toast({
