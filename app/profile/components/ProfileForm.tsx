@@ -28,6 +28,7 @@ import FirebaseService from "@/lib/FirebaseService"
 import { getDownloadURL, ref, uploadBytes,  } from "firebase/storage"
 import axios from "axios"
 import useUserState from "@/stores/user-store"
+import { updateUserInfo } from "@/lib/api/userAPI"
 
 type ProfileFormValues = z.infer<typeof ProfileValidation>
 
@@ -89,7 +90,7 @@ export function ProfileForm() {
         getDownloadURL(imageRef)
           .then((url) => {
             values.avatarUrl = url;
-            axios.put(`https://localhost:7128/api/Users/${currentUser?.id}`, {
+            updateUserInfo(currentUser.id, {
                 "userName": values?.username,
                 "email": values.email,
                 "fullName": values.fullname,
@@ -98,14 +99,35 @@ export function ProfileForm() {
                 "dateOfBirth": values.dateOfBirth,
                 "avatarUrl": values.avatarUrl
             })
+            .then((res) => {
+              toast({
+                title: "Profile updated",
+                description: "Profile has been updated successfully.",
+              });
+            })
           })
           .catch((error) => {
             console.log(error);
             values.avatarUrl = "";
           });
       });
+    } else {
+      updateUserInfo(currentUser.id, {
+        "userName": values?.username,
+        "email": values.email,
+        "fullName": values.fullname,
+        "phoneNumber": values.phoneNumber,
+        "gender": values.gender,
+        "dateOfBirth": values.dateOfBirth,
+        "avatarUrl": values.avatarUrl
+      })
+      .then((res) => {
+        toast({
+          title: "Profile updated",
+          description: "Profile has been updated successfully.",
+        });
+      })
     }
-    
   }
 
   return (
@@ -230,9 +252,9 @@ export function ProfileForm() {
                       )}
                       {...field}
                     >
-                      <option value="inter">Male</option>
-                      <option value="manrope">Female</option>
-                      <option value="system">Other</option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                      <option value="Other">Other</option>
                     </select>
                   </FormControl>
                   <ChevronDownIcon className="absolute right-3 top-2.5 h-4 w-4 opacity-50" />

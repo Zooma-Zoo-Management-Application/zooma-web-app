@@ -17,3 +17,16 @@ export const getOrdersByUserId = async (id: number) => {
     return handleApiError(error);
   }
 };
+
+export const updateOrder = async (id: number, values: any) => {
+  try {
+    const { data } = await axiosClient.put(`/Orders/update-paymethod/${id}`, { 
+      "paymentMethod": values.paymentMethod || "VNPay",
+      "notes": values.notes,
+      "status": values.status || 0,
+     });
+    return { error: null, data };
+  } catch (error) {
+    return handleApiError(error);
+  }
+}

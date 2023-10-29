@@ -41,6 +41,58 @@ export const registerUser = async ({userInfo}:{
     return handleApiError(error);
   }
 };
+// 1 staff
+// 2 zoo trainer
+// 3 visitor
+// 4 admin
+export const registerUserBasedRole = async ({userInfo, roleId}:{
+  userInfo: {
+    username: string,
+    email: string,
+    gender: string,
+    dateOfBirth: string,
+    avatarUrl: string,
+    newPassword: string,
+    confirmNewPassword: string,
+  },
+  roleId: number
+}) => {
+  try {
+    const res = await axiosClient.post(`/Accounts/create-account`, {
+      "userName": userInfo?.username,
+      "email": userInfo.email,
+      "fullName": "",
+      "phoneNumber": "",
+      "gender": userInfo.gender,
+      "dateOfBirth": userInfo.dateOfBirth,
+      "avatarUrl": userInfo.avatarUrl,
+      "password": userInfo.newPassword,
+      "confirmPassword": userInfo.confirmNewPassword,
+      "roleId": roleId
+  });
+    return { error: null, data: res.data };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
+
+export const updateUserInfo = async (id:number, userInfo:any) => {
+  try {
+    const { data } = await axiosClient.put(`/users/${id}`, userInfo);
+    return { error: null, data };
+  } catch (error) {
+    return handleApiError(error);
+  }
+}
+
+export const banUser = async (id:number) => {
+  try {
+    const { data } = await axiosClient.put(`/Accounts/ban-user/${id}`);
+    return { error: null, data };
+  } catch (error) {
+    return handleApiError(error);
+  }
+}
 
 export const checkToken = async (token:string) => {
   try {

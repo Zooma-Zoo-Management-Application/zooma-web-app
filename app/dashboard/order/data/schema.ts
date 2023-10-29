@@ -9,6 +9,8 @@ export const orderSchema = z.object({
   paymentMethod: z.string().nullish(),
   status: z.boolean(),
   user: z.any(),
+  notes: z.string().nullish(),
+  orderDetails: z.array(z.any()),
 })
 
 export type Order = z.infer<typeof orderSchema>

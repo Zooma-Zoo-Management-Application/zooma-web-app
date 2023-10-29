@@ -4,6 +4,7 @@ import { ColumnDef } from "@tanstack/react-table"
 import { DataTableColumnHeader } from "./data-table-column-header"
 import { User } from "../data/schema"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { format } from "date-fns"
 
 export const columns: ColumnDef<User>[] = [
   {
@@ -58,6 +59,66 @@ export const columns: ColumnDef<User>[] = [
         <div className="flex space-x-2">
           <span className="max-w-[500px] truncate font-medium">
             {row.getValue("email")}
+          </span>
+        </div>
+      )
+    },
+  },
+  {
+    accessorKey: "dateOfBirth",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Date Of Birth" />
+    ),
+    cell: ({ row }) => {
+      return (
+        <div className="flex space-x-2">
+          <span className="max-w-[500px] truncate font-medium">
+            {format(new Date(row.getValue("dateOfBirth")), "dd/MM/yyyy")}
+          </span>
+        </div>
+      )
+    },
+  },
+  {
+    accessorKey: "phoneNumber",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Phone Number" />
+    ),
+    cell: ({ row }) => {
+      return (
+        <div className="flex space-x-2">
+          <span className="max-w-[500px] truncate font-medium">
+            {row.getValue("phoneNumber")}
+          </span>
+        </div>
+      )
+    },
+  },
+  {
+    accessorKey: "fullName",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Full Name" />
+    ),
+    cell: ({ row }) => {
+      return (
+        <div className="flex space-x-2">
+          <span className="max-w-[500px] truncate font-medium">
+            {row.getValue("fullName")}
+          </span>
+        </div>
+      )
+    },
+  },
+  {
+    accessorKey: "gender",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Gender" />
+    ),
+    cell: ({ row }) => {
+      return (
+        <div className="flex space-x-2">
+          <span className="max-w-[500px] truncate font-medium">
+            {row.getValue("gender")}
           </span>
         </div>
       )
