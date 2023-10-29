@@ -50,7 +50,7 @@ export default function RootLayout({
               <LeftSidebar />
             </div>
             <div className="flex min-h-screen w-full flex-1 flex-col items-start max-md:pb-32">
-              <div className='z-[1000] flex justify-between items-center w-full p-4 sticky top-0 mt-2 bg-white-500 border-b border-b-gray-200'>
+              <div className='z-[1] flex justify-between items-center w-full p-4 sticky top-0 mt-2 bg-white-500 border-b border-b-gray-200'>
                 <div className='flex-col'>
                 {/* <h2 className="text-3xl font-bold tracking-tight ml-5">News Management</h2> */}
                   <Breadcrumb>

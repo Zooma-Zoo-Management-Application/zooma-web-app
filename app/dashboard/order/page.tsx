@@ -8,11 +8,16 @@ import { DataTable } from "./components/data-table";
 import { columns } from "./components/columns";
 import useRefresh from "@/stores/refresh-store";
 import { RefreshCcw } from "lucide-react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 function UserManagementPage() {
   const [orders, setOrders] = useState<any>([])
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+
+  // const searchParams = useSearchParams()
+
+  // console.log("searchParams")
 
   const refresh = async () => {
     try {

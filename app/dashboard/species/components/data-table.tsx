@@ -64,7 +64,7 @@ export function DataTable<TData, TValue>({
       }
     };
     initialize();
-  }, [])
+  }, [data])
 
   const table = useReactTable({
     data: data,

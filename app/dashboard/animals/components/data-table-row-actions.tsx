@@ -4,18 +4,25 @@ import { DotsHorizontalIcon } from "@radix-ui/react-icons"
 import { Row, Table, TableMeta } from "@tanstack/react-table"
 
 import { Button } from "@/components/ui/button"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
 import { toast } from "@/components/ui/use-toast"
-import { deleteNewById, pinNews, unpinNews } from "@/lib/api/newAPI"
-import { useRouter } from "next/navigation"
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { deleteAnimal } from "@/lib/api/animalAPI"
+import { getDiets } from "@/lib/api/dietAPI"
+import { deleteNewById } from "@/lib/api/newAPI"
+import { getSpecies } from "@/lib/api/speciesAPI"
+import { getTypes } from "@/lib/api/typeAPI"
+import useRefresh from "@/stores/refresh-store"
 import { DialogClose } from "@radix-ui/react-dialog"
+import { useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
+import { UpdateForm } from "./UpdateForm"
 
 
 interface DataTableRowActionsProps<TData> {
@@ -30,64 +37,35 @@ export function DataTableRowActions<TData>({
   const router = useRouter();
   const meta : TableMeta<TData> | undefined = table.options.meta;
 
-  const handleEdit = () => {
-    router.push(`/dashboard/news/${row.getValue("id")}/edit`)
-  }
-  const handleView = () => {
-    router.push(`/dashboard/news/${row.getValue("id")}/view`)
-  }
+  const [viewOpen, setViewOpen] = useState(false)
+  const [updateOpen, setUpdateOpen] = useState(false)
+  const [deleteOpen, setDeleteOpen] = useState(false)
+  const [types, setTypes] = useState<any>([])
 
-  const handlePin = () => {
-    pinNews(row.getValue("id"))
-    .then(res => {
-      toast({
-        title: "Pin Success!",
-        description: "News has been pinned."
-      })
-    })
-    .catch(err => {
-      toast({
-        title: "Pin Failed!",
-        description: "Something went wrong.",
-        variant: "destructive"
-      })
-    })
-    .finally(() => {
-      meta?.pinNew(row.getValue("id"))
-    })
-  }
-
-  const handleUnPin = () => {
-    unpinNews(row.getValue("id"))
-    .then(res => {
-      toast({
-        title: "Unpin Success!",
-        description: "News has been unpinned."
-      })
-    })
-    .catch(err => {
-      toast({
-        title: "Unpin Failed!",
-        description: "Something went wrong.",
-        variant: "destructive"
-      })
-    })
-    .finally(() => {
-      meta?.unpinNew(row.getValue("id"))
-    })
-  }
+  useEffect(() => {
+    const initialize = async () => {
+      try {
+        const res = await getTypes();
+        const { data } = res;
+        setTypes(data);
+      } catch (err:any) {
+      } finally {
+      }
+    };
+    initialize();
+  }, [])
 
   const handleDelete = () => {
     deleteNewById(row.getValue("id"))
     .then(res => {
       toast({
-        title: "Delete Success!",
-        description: "News has been deleted."
+        title: "Ban Success!",
+        description: "Zoo Trainer has been banned."
       })
     })
     .catch(err => {
       toast({
-        title: "Delete Failed!",
+        title: "Ban Failed!",
         description: "Something went wrong.",
         variant: "destructive"
       })
@@ -97,37 +75,167 @@ export function DataTableRowActions<TData>({
     })
   }
 
+  const handleTypeRow = (typeId: string) => {
+    if(!types.length) return (<></>)
+    const type = types.find((type:any) => type.id === +typeId)
+    return type?.name || typeId
+  }
+
   return (
-    <Dialog>
-      <DropdownMenu>
+    <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button
-          variant="ghost"
-          className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
-        >
-          <DotsHorizontalIcon className="h-4 w-4" />
-          <span className="sr-only">Open menu</span>
+        <Button variant="ghost" size="icon">
+          <DotsHorizontalIcon className="w-5 h-5"/>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-[160px]">
-        <DropdownMenuItem onClick={handleView}>View</DropdownMenuItem>
-        <DropdownMenuItem onClick={handleEdit}>Edit</DropdownMenuItem>
-        {
-          row.getValue("status") === true ? (
-            <DropdownMenuItem onClick={handleUnPin}>Unpin</DropdownMenuItem>
-          ) : (
-            <DropdownMenuItem onClick={handlePin}>Pin</DropdownMenuItem>
-          )
-        }
-        <DropdownMenuSeparator />
-        <DialogTrigger asChild>
-          <DropdownMenuItem>
+      <DropdownMenuContent sideOffset={5} alignOffset={-5}>
+        <DropdownMenuGroup>
+          <DropdownMenuItem onSelect={() => setViewOpen(true)}>
+            View
+          </DropdownMenuItem>
+          <DropdownMenuItem onSelect={() => setUpdateOpen(true)}>
+            Update
+          </DropdownMenuItem>
+          <DropdownMenuItem onSelect={() => setDeleteOpen(true)}>
             Delete
           </DropdownMenuItem>
-        </DialogTrigger>
+        </DropdownMenuGroup>
       </DropdownMenuContent>
+      <ViewFormDialog open={viewOpen} setOpen={setViewOpen} row={row} table={table} typeName={handleTypeRow(row.getValue("typeId"))}/>
+      <UpdateFormDialog open={updateOpen} setOpen={setUpdateOpen} row={row} table={table}/>
+      <DeleteFormDialog open={deleteOpen} setOpen={setDeleteOpen} row={row} />
     </DropdownMenu>
-    <DialogContent>
+  )
+}
+
+const ViewFormDialog = ({ open, setOpen, row, table, typeName }:{
+  open: boolean,
+  setOpen: (value: boolean) => void,
+  row: Row<any>,
+  table: Table<any>,
+  typeName: string
+}) => {
+
+  const [species, setSpecies] = useState<any>([])
+  const [diets, setDiets] = useState<any>([])
+
+  useEffect(() => {
+    const initialize = async () => {
+      try {
+        const res = await getSpecies();
+        const { data } = res;
+        setSpecies(data);
+      } catch (err:any) {
+      } 
+    };
+    initialize();
+  }, [])
+
+  useEffect(() => {
+    const initialize = async () => {
+      try {
+        const res = await getDiets();
+        const { data } = res;
+        setDiets(data);
+      } catch (err:any) {
+      } 
+    };
+    initialize();
+  }, [])
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogContent>
+        <DialogHeader>View Animal</DialogHeader>
+        <div className="w-full">
+          <div className="grid grid-cols-4 gap-4">
+            <div className="col-span-2">
+              <div className="text-sm font-semibold">Name</div>
+              <div className="text-sm">{row.getValue("name")}</div>
+            </div>
+            <div className="col-span-1">
+              <div className="text-sm font-semibold">Height</div>
+              <div className="text-sm">{row.getValue("height")}</div>
+            </div>
+            <div className="col-span-1">
+              <div className="text-sm font-semibold">Weight</div>
+              <div className="text-sm">{row.getValue("weight")}</div>
+            </div>
+          </div>
+        </div>
+
+      </DialogContent>
+    </Dialog>
+  )
+}
+
+const UpdateFormDialog = ({ open, setOpen, row, table }:{
+  open: boolean,
+  setOpen: (value: boolean) => void,
+  row: Row<any>,
+  table: Table<any>
+}) => {
+
+  const handleClose = () => {
+    setOpen(false)
+  }
+
+  const values = {
+    name: row.getValue("name"),
+    arrivalDate: new Date(row.getValue("arrivalDate")),
+    dateOfBirth: new Date(row.getValue("dateOfBirth")),
+    height: row.getValue("height"),
+    weight: row.getValue("weight"),
+    description: row.getValue("description"),
+    speciesId: row.getValue("speciesId"),
+    dietId: row.getValue("dietId"),
+    cageId: row.getValue("cageId"),
+    trainingPlanId: row.getValue("trainingPlanId"),
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogContent>
+        <DialogHeader>Update Species</DialogHeader>
+        <UpdateForm id={row.getValue("id")} values={values} setOpen={setOpen}/>
+      </DialogContent>
+    </Dialog>
+  )
+}
+
+const DeleteFormDialog = ({ open, setOpen, row }:{
+  open: boolean,
+  setOpen: (value: boolean) => void,
+  row: Row<any>,
+}) => {
+
+  const { refresh } = useRefresh()
+
+  const handleDelete = async () => {
+    deleteAnimal(row.getValue("id"))
+    .then(res => {
+      toast({
+        title: "Delete Success!",
+        description: "Species has been deleted."
+      })
+      
+      setTimeout(() => {
+        setOpen(false)
+        refresh()
+      }, 1000)
+    })
+    .catch(err => {
+      toast({
+        title: "Delete Failed!",
+        description: "Something went wrong.",
+        variant: "destructive"
+      })
+    })
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogContent>
       <DialogHeader>
         <DialogTitle>Are you sure absolutely sure?</DialogTitle>
         <DialogDescription>
