@@ -4,8 +4,9 @@ import { columns } from "@/app/dashboard/diets/components/columns";
 import { DataTable } from "@/app/dashboard/diets/components/data-table";
 import { Button } from "@/components/ui/button";
 import { getDiets } from "@/lib/api/dietAPI";
-import { useEffect, useState } from "react";
 import DataTableSkeleton from '../components/DataTableSkeleton'
+import Link from 'next/link';
+impot { useState, useEffect } from 'react'
 
 function UserManagementPage() {
   const [diets, setDiets] = useState<any>([])
@@ -31,11 +32,11 @@ function UserManagementPage() {
       <div className="flex-1 space-y-4 p-8 pt-8">
         <div className="flex items-center justify-between space-y-2">
           <h2 className="text-3xl font-bold tracking-tight">Diet Management</h2>
-          <a href="/dashboard/diets/create">
+          <Link href="/dashboard/diets/create">
             <Button variant="default">
               Create
             </Button>
-          </a>
+          </Link>
         </div>
         <div className="flex-1 space-y-4">
           {

@@ -313,36 +313,29 @@ export function SignUpForm() {
               <FormItem className="flex flex-col mt-2 justify-start  gap-0">
                 <FormLabel>Date of birth</FormLabel>
                 <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
+                    <PopoverTrigger asChild>
                       <Button
                         variant={"outline"}
-                        className={cn(
-                          "w-full pl-3 text-left font-normal",
-                          !field.value && "text-muted-foreground"
-                        )}
+                        className={cn("w-[240px] justify-start text-left font-normal", !field.value && "text-muted-foreground")}
                       >
-                        {field.value ? (
-                          format(field.value, "PPP")
-                        ) : (
-                          <span>Pick a date</span>
-                        )}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
                       </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={field.value}
-                      onSelect={field.onChange}
-                      disabled={(date) =>
-                        date > new Date() || date < new Date("1900-01-01")
-                      }
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
+                    </PopoverTrigger>
+                    <PopoverContent align="start" className=" w-auto p-0">
+                      <Calendar
+                        mode="single"
+                        captionLayout="dropdown-buttons"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        disabled={(date) =>
+                          date > new Date() || date < new Date("1900-01-01")
+                        }
+                        fromYear={1960}
+                        toYear={2030}
+                      />
+                    </PopoverContent>
+                  </Popover>
                 <FormMessage />
               </FormItem>
             )}

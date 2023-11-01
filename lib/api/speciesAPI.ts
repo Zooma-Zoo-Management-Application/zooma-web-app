@@ -54,3 +54,12 @@ export const deleteSpecies = async (id: number) => {
     return handleApiError(error);
   }
 }
+
+export const getSpeciesByAreaId = async (id: number) => {
+  try {
+    const { data } = await axiosClient.get(`/Species/get-species-in-area//${id}`);
+    return { error: null, data };
+  } catch (error) {
+    return handleApiError(error);
+  }
+}
