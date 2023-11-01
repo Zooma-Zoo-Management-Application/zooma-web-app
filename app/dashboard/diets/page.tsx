@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { getDiets } from "@/lib/api/dietAPI";
 import DataTableSkeleton from '../components/DataTableSkeleton'
 import Link from 'next/link';
-impot { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 
 function UserManagementPage() {
   const [diets, setDiets] = useState<any>([])
