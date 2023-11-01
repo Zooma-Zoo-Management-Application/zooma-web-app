@@ -73,24 +73,9 @@ export const columns: ColumnDef<Diet>[] = [
     },
   },
   {
-    accessorKey: "updateAt",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Last Updated Date" />
-    ),
-    cell: ({ row }) => {
-      return (
-        <div className="flex space-x-2">
-          <span className="max-w-[300px] truncate font-medium">
-            {format(new Date(row.getValue("updateAt")), "MMM dd, yyyy")}
-          </span>
-        </div>
-      )
-    },
-  },
-  {
     accessorKey: "scheduleAt",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Scheduled Date" />
+      <DataTableColumnHeader column={column} title="scheduled Date" />
     ),
     cell: ({ row }) => {
       return (
@@ -112,6 +97,36 @@ export const columns: ColumnDef<Diet>[] = [
         <div className="flex space-x-2">
           <span className="max-w-[300px] truncate font-medium">
             {format(new Date(row.getValue("endAt")), "MMM dd, yyyy")}
+          </span>
+        </div>
+      )
+    },
+  },
+  {
+    accessorKey: "feedingDate, feedingTime",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Feeding At" />
+    ),
+    cell: ({ row }) => {
+      return (
+        <div className="flex space-x-2">
+          <span className="max-w-[300px] truncate font-medium">
+            {row.getValue("feedingDate")} <br />  {row.getValue("feedingTime")}
+          </span>
+        </div>
+      )
+    },
+  },
+  {
+    accessorKey: "quantity, foodId",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Quantity" />
+    ),
+    cell: ({ row }) => {
+      return (
+        <div className="flex space-x-2">
+          <span className="max-w-[300px] truncate font-medium">
+            {row.getValue("foodId")}: {row.getValue("quantity")}kg
           </span>
         </div>
       )

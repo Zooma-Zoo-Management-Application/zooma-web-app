@@ -24,7 +24,7 @@ export default function Home() {
                     <h2 className="text-3xl font-bold tracking-tight">Diet Details</h2>
                     <a href="/dashboard/diets/calendar/createDietDetail">
                         <Button variant="outline">
-                            Back to calendar
+                            add Detail
                         </Button>
                     </a>
                 </div>

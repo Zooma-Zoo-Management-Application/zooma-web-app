@@ -21,7 +21,7 @@ function NewViewPage() {
         const res = await getNewById(+newId);
         const { data } = res;
         setNews(data);
-      } catch (err:any) {
+      } catch (err: any) {
         setError(`Error initializing the app: ${err.message}`);
       } finally {
         setIsLoading(false);
@@ -33,7 +33,7 @@ function NewViewPage() {
   const handleEdit = () => {
     router.push(`/dashboard/news/${newId}/edit`)
   }
-  
+
   return (
     <div className='p-10 w-full'>
       <div className='flex justify-between mb-4'>
@@ -46,25 +46,25 @@ function NewViewPage() {
         !isLoading ? (
           <>
             <div className="relative w-full h-60 mx-auto">
-            {
-              news ? (
-                <Image
-                  src={news.image}
-                  layout='fill'
-                  className="rounded-t-md"
-                  objectFit='cover'
-                  alt="News"
-                />
-              ) : (
-                <Image
-                  src="/peguin.jpg"
-                  layout='fill'
-                  className="rounded-t-md"
-                  objectFit='cover'
-                  alt="News"
-                />
-              )
-            }
+              {
+                news ? (
+                  <Image
+                    src={news.image}
+                    layout='fill'
+                    className="rounded-t-md"
+                    objectFit='cover'
+                    alt="News"
+                  />
+                ) : (
+                  <Image
+                    src="/peguin.jpg"
+                    layout='fill'
+                    className="rounded-t-md"
+                    objectFit='cover'
+                    alt="News"
+                  />
+                )
+              }
             </div>
             <h1 className='my-4'>{news?.title}</h1>
             <span className='text-base'>{news?.description}</span>
@@ -79,7 +79,7 @@ function NewViewPage() {
               </div>
               {/* <span className='text-gray-600 text-sm self-center my-1 pl-10'>Create at {format(new Date(news.date), "HH:mm:ss dd/LL/yyyy")} - {differenceInHours(new Date(), new Date(news.date))} hours ago</span> */}
             </div>
-            <TipTap content={news?.content} editable={false}/>
+            <TipTap content={news?.content} editable={false} />
           </>
         ) : (
           <ImageWithTextSkeleton />

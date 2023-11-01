@@ -8,11 +8,13 @@ export const dietSchema = z.object({
   description: z.string().nullish(),
   createAt: z.date(),
   updateAt: z.date().nullish(),
-  scheduleAt: z.date().nullish(),
-  goal: z.string(),
+  scheduleAt: z.date(),
   endAt: z.date(),
-  totalEnergyValue: z.number().nullish(),
+  feedingDate: z.string(),
+  feedingTine: z.date(),
+  quantity: z.number(),
   status: z.boolean(),
+  FoodId: z.number()
 })
 
 export type Diet = z.infer<typeof dietSchema>

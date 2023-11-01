@@ -32,14 +32,15 @@ import { toast } from "@/components/ui/use-toast"
 const formDetailSchema = z.object({
     name: z.string()
         .min(3, { message: 'Name must be at least 3 characters.' }),
+    feedingTime: z.string(),
     scheduleAt: z.date({
-        required_error: "Please select a date and time"
+        required_error: "Please select a date"
     }),
     endAt: z.date({
-        required_error: "Please select a date and time"
+        required_error: "Please select a date"
     }),
-    interval: z.number()
-        .nonnegative({ message: 'Interval can not be a negative number.' }),
+    interval: z.string(),
+    feedingDate: z.number().array(),
     description: z.string()
         .min(3, { message: 'Name must be at least 3 characters.' }),
 })
@@ -64,31 +65,11 @@ export function DietDetailForm() {
         mode: "onChange",
     })
 
-    const handleImage = (e: ChangeEvent<HTMLInputElement>, fieldChange: (value: string) => void) => {
-        e.preventDefault();
-
-        const fileReader = new FileReader();
-
-        if (e.target.files && e.target.files.length > 0) {
-            const file = e.target.files[0];
-
-            setFiles(Array.from(e.target.files));
-
-            if (!file.type.includes("image")) return;
-
-            fileReader.onload = async (event) => {
-                const imageDataUrl = event.target?.result?.toString() || '';
-                fieldChange(imageDataUrl);
-            }
-
-            fileReader.readAsDataURL(file);
-        }
-    }
-
     async function onSubmit(values: FormDetailValues) {
         console.log("submit")
         let newsbody: any = {
             name: values.name,
+            feedingTime: Date.parse(values.feedingTime),
             scheduleAt: values.scheduleAt,
             endAt: values.endAt,
             interval: values.interval,
@@ -120,6 +101,22 @@ export function DietDetailForm() {
                         </FormItem>
                     )}
                 />
+                <FormField
+                    control={form.control}
+                    name="feedingTime"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Name</FormLabel>
+                            <FormDescription>
+                                the feeding time of this Detail.
+                            </FormDescription>
+                            <FormControl>
+                                <Input type="time" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
                 <div className="flex justify-start">
                     <div className="pr-44">
                         <FormField
@@ -142,7 +139,7 @@ export function DietDetailForm() {
                                                     )}
                                                 >
                                                     {field.value ? (
-                                                        format(field.value, "PPP")
+                                                        format(field.value, "MMM dd, yyyy H:mma")
                                                     ) : (
                                                         <span>Pick a date</span>
                                                     )}

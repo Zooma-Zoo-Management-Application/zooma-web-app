@@ -34,7 +34,7 @@ export default function DashboardPage() {
         //   return a.month - b.month;
         // });
         setData(data);
-      } catch (err:any) {
+      } catch (err: any) {
         setError(`Error initializing the app: ${err.message}`);
       } finally {
         setIsLoading(false);
@@ -179,7 +179,7 @@ export default function DashboardPage() {
                     <CardTitle>Overview</CardTitle>
                   </CardHeader>
                   <CardContent className="pl-2">
-                    <Overview data={data.revenue} isLoading={isLoading}/>
+                    <Overview data={data.revenue} isLoading={isLoading} />
                   </CardContent>
                 </Card>
                 <Card className="col-span-3">
@@ -190,7 +190,7 @@ export default function DashboardPage() {
                     </CardDescription> */}
                   </CardHeader>
                   <CardContent>
-                    <RecentSales data={data.recentOrders} isLoading={isLoading}/>
+                    <RecentSales data={data.recentOrders} isLoading={isLoading} />
                   </CardContent>
                 </Card>
               </div>
