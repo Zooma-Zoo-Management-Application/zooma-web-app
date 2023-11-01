@@ -54,7 +54,7 @@ export function DataTableRowActions<TData>({
         } else {
           toast({
             title: "Ban Success!",
-            description: "Zoo Trainer has been banned."
+            description: "Staff has been banned."
           })
         }
       })
@@ -82,7 +82,7 @@ export function DataTableRowActions<TData>({
         } else {
           toast({
             title: "Unban Success!",
-            description: "Zoo Trainer has been unbanned."
+            description: "Staff has been unbanned."
           })
         }
       })
@@ -149,7 +149,6 @@ const ViewFormDialog = ({ open, setOpen, row, table }:{
             <AvatarFallback>{(row.getValue("user") as any)?.userName.slice(0,2)}</AvatarFallback>
           </Avatar>
           <div className="text-lg font-semibold">{row.getValue("userName")}</div>
-          <div className="text-sm">{row.getValue("userName")}</div>
         </div>
         <div className="flex gap-4">
           <div className="flex-1">

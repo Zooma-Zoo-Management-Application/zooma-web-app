@@ -9,48 +9,78 @@ import { Calendar } from "@/components/ui/calendar"
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
+  FormMessage
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { toast } from "@/components/ui/use-toast"
+import { BASE_URL } from "@/constants/appInfos"
 import FirebaseService from "@/lib/FirebaseService"
-import { updateUserInfo } from "@/lib/api/userAPI"
 import { cn, isBase64Image } from "@/lib/utils"
-import { ProfileValidation } from "@/lib/validations/profile"
+import axios from "axios"
 import { format } from "date-fns"
 import { getDownloadURL, ref, uploadBytes, } from "firebase/storage"
 import { CalendarIcon, ChevronDownIcon } from "lucide-react"
 import Image from "next/image"
 import { ChangeEvent, useState } from "react"
+import { Icons } from "@/components/shared/Icons"
+import { useRouter, useSearchParams } from "next/navigation"
+import useUserState from "@/stores/user-store"
+import { registerUser, registerUserBasedRole } from "@/lib/api/userAPI"
+import { toast } from "@/components/ui/use-toast"
 import useRefresh from "@/stores/refresh-store"
-
-type ProfileFormValues = z.infer<typeof ProfileValidation>
 
 // This can come from your database or API.
 
+const formSignUpSchema = z.object({
+  // fullname: z.string()
+  // .min(3, {message: 'Name must be at least 3 characters.'})
+  // .max(30, {message: 'Name must be max 30 characters'}),
+  username: z.string()
+  .min(3, {message: 'Username must be at least 3 characters.'})
+  .max(30, {message: 'Username must be max 30 characters'}),
+  email: z.string().email({message: 'Please enter a valid email address.'}),
+  gender: z.string().nonempty(),
+  dateOfBirth: z.date({
+    required_error: "A date of birth is required.",
+  }),
+  avatarUrl: z.string().url().nonempty(),
+  // phoneNumber: z.string(),
+  newPassword: z.string({
+    required_error: "New Password is required",
+  })
+  .min(3, {message: 'New Password must be at least 6 characters.'})
+  .max(30, {message: 'New Password must be max 30 characters'}),
+  confirmNewPassword: z.string({}),
+  })
+  .refine((data) => data.newPassword === data.confirmNewPassword, {
+    message: "Oops! New Password doesnt match",
+  })
+  
 
-export function ProfileForm({userId, values, setOpen}: any) {
+type SignUpFormValues = z.infer<typeof formSignUpSchema>
+
+export function UserCreateForm({setOpen}: {setOpen: (value: boolean) => void}) {
+  const [isLoading, setIsLoading] = useState<boolean>(false)
   const [files, setFiles] = useState<File[]>([]);
-  const { refresh } = useRefresh()
+  const searchParams = useSearchParams();
 
-  const defaultValues: Partial<ProfileFormValues> = {
-    username: values?.userName,
-    email: values?.email,
-    fullname: values?.fullName,
-    gender: values?.gender,
-    //Datetime to date
-    dateOfBirth: values?.dateOfBirth ? new Date(values?.dateOfBirth) : new Date(),
-    avatarUrl: values?.avatarUrl,
-    phoneNumber: values?.phoneNumber,
+  const { refresh } = useRefresh();
+
+  const defaultValues: Partial<SignUpFormValues> = {
+    username: "",
+    email: "",
+    gender: "Male",
+    dateOfBirth: new Date(),
+    avatarUrl: "",
+    newPassword: "",
+    confirmNewPassword: "",
   }
 
-  const form = useForm<ProfileFormValues>({
-    resolver: zodResolver(ProfileValidation),
+  const form = useForm<SignUpFormValues>({
+    resolver: zodResolver(formSignUpSchema),
     defaultValues,
     mode: "onChange",
   })
@@ -76,37 +106,60 @@ export function ProfileForm({userId, values, setOpen}: any) {
     }
   }
 
-  async function onSubmit(values: ProfileFormValues) {
+  async function onSubmit(values: SignUpFormValues) {
+    setIsLoading(true);
+
     const blob = values.avatarUrl;
 
     const hasImageChanged = isBase64Image(blob);
 
     if(hasImageChanged) {
-      // const imgRes = await startUpload(files);
       const imageRef = ref(FirebaseService.storage, `images/${values.email}`);
       uploadBytes(imageRef, files[0]).then(() => {
         getDownloadURL(imageRef)
           .then((url) => {
             values.avatarUrl = url;
-            updateUserInfo(userId, {
-                "userName": values?.username,
-                "email": values.email,
-                "fullName": values.fullname,
-                "phoneNumber": values.phoneNumber,
-                "gender": values.gender,
-                "dateOfBirth": values.dateOfBirth,
-                "avatarUrl": values.avatarUrl
+            registerUserBasedRole({
+              userInfo: {
+                username: values.username,
+                avatarUrl: values.avatarUrl,
+                newPassword: values.newPassword,
+                confirmNewPassword: values.confirmNewPassword,
+                dateOfBirth: values.dateOfBirth.toISOString(),
+                email: values.email,
+                gender: values.gender
+              },
+              roleId: 1
             })
-            .then((res) => {
-              toast({
-                title: "Profile updated",
-                description: "Profile has been updated successfully.",
-              });
-              setOpen(false);
+            .then((response) => {
+              console.log("responseasdasd", response);
+              if(response.data !== null) {
+                toast({
+                  title: "Create User Success",
+                  description: "Create User Success",
+                })
+                setIsLoading(false);
+                setOpen(false);
+              } else {
+                toast({
+                  title: "Create User Failed",
+                  description: JSON.stringify(response.error),
+                })
+                setIsLoading(false);
+                values.avatarUrl = "";
+              }
             })
           })
           .catch((error) => {
-            console.log(error);
+            toast({
+              title: "Login Error",
+              description: (
+                <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+                  <code className="text-light">{JSON.stringify(error, null, 2)}</code>
+                </pre>
+              )
+            })
+            setIsLoading(false);
             values.avatarUrl = "";
           })
           .finally(() => {
@@ -115,36 +168,14 @@ export function ProfileForm({userId, values, setOpen}: any) {
             }, 1000);
           })
       });
-    } else {
-      updateUserInfo(userId, {
-        "userName": values?.username,
-        "email": values.email,
-        "fullName": values.fullname,
-        "phoneNumber": values.phoneNumber,
-        "gender": values.gender,
-        "dateOfBirth": values.dateOfBirth,
-        "avatarUrl": values.avatarUrl
-      })
-      .then((res) => {
-        toast({
-          title: "Profile updated",
-          description: "Profile has been updated successfully.",
-        });
-        setOpen(false);
-      })
-      .finally(() => {
-        setTimeout(() => {
-          refresh()
-        }, 1000);
-      })
     }
     
   }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-      <FormField
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <FormField
           control={form.control}
           name="avatarUrl"
           render={({ field }) => (
@@ -201,16 +232,13 @@ export function ProfileForm({userId, values, setOpen}: any) {
           />
           <FormField
             control={form.control}
-            name="fullname"  
+            name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Fullname</FormLabel>
+                <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input placeholder="Your Full Name" {...field} />
+                  <Input placeholder="Your email" {...field} />
                 </FormControl>
-                <FormDescription>
-                  This is your public display name.
-                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -219,28 +247,25 @@ export function ProfileForm({userId, values, setOpen}: any) {
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 justify-items-stretch">
           <FormField
             control={form.control}
-            name="email"
+            name="newPassword"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input placeholder="Your email" {...field} />
+                  <Input type="password" placeholder="Your Password" {...field} />
                 </FormControl>
-                <FormDescription>
-                  We will never share your email with anyone else.
-                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
           <FormField
             control={form.control}
-            name="phoneNumber"
+            name="confirmNewPassword"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Phone Number</FormLabel>
+                <FormLabel>Confirm Password</FormLabel>
                 <FormControl>
-                  <Input placeholder="Your phone number" {...field} />
+                  <Input type="password" placeholder="Confirm Password" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -309,7 +334,12 @@ export function ProfileForm({userId, values, setOpen}: any) {
             )}
           />
         </div>
-        <Button type="submit">Update profile</Button>
+        <Button disabled={isLoading} type="submit" className="w-full hover:shadow-primary-md">
+          {isLoading && (
+            <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+          )}
+          Create
+        </Button>             
       </form>
     </Form>
   )
