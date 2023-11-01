@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
+import { Icons } from "@/components/shared/Icons"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import {
@@ -16,20 +17,16 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { BASE_URL } from "@/constants/appInfos"
+import { toast } from "@/components/ui/use-toast"
 import FirebaseService from "@/lib/FirebaseService"
+import { registerUserBasedRole } from "@/lib/api/userAPI"
 import { cn, isBase64Image } from "@/lib/utils"
-import axios from "axios"
+import useRefresh from "@/stores/refresh-store"
 import { format } from "date-fns"
 import { getDownloadURL, ref, uploadBytes, } from "firebase/storage"
 import { CalendarIcon, ChevronDownIcon } from "lucide-react"
 import Image from "next/image"
 import { ChangeEvent, useState } from "react"
-import { Icons } from "@/components/shared/Icons"
-import { useRouter, useSearchParams } from "next/navigation"
-import useUserState from "@/stores/user-store"
-import { registerUser, registerUserBasedRole } from "@/lib/api/userAPI"
-import { toast } from "@/components/ui/use-toast"
 
 // This can come from your database or API.
 
@@ -64,7 +61,8 @@ type SignUpFormValues = z.infer<typeof formSignUpSchema>
 export function UserCreateForm({setOpen}: {setOpen: (value: boolean) => void}) {
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [files, setFiles] = useState<File[]>([]);
-  const searchParams = useSearchParams();
+
+  const { refresh } = useRefresh()
 
   const defaultValues: Partial<SignUpFormValues> = {
     username: "",
@@ -158,7 +156,12 @@ export function UserCreateForm({setOpen}: {setOpen: (value: boolean) => void}) {
             })
             setIsLoading(false);
             values.avatarUrl = "";
-          });
+          })
+          .finally(() => {
+            setTimeout(() => {
+              refresh()
+            }, 1000);
+          })
       });
     }
     
@@ -298,36 +301,29 @@ export function UserCreateForm({setOpen}: {setOpen: (value: boolean) => void}) {
               <FormItem className="flex flex-col mt-2 justify-start  gap-0">
                 <FormLabel>Date of birth</FormLabel>
                 <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
+                    <PopoverTrigger asChild>
                       <Button
                         variant={"outline"}
-                        className={cn(
-                          "w-full pl-3 text-left font-normal",
-                          !field.value && "text-muted-foreground"
-                        )}
+                        className={cn("w-[240px] justify-start text-left font-normal", !field.value && "text-muted-foreground")}
                       >
-                        {field.value ? (
-                          format(field.value, "PPP")
-                        ) : (
-                          <span>Pick a date</span>
-                        )}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
                       </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={field.value}
-                      onSelect={field.onChange}
-                      disabled={(date) =>
-                        date > new Date() || date < new Date("1900-01-01")
-                      }
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
+                    </PopoverTrigger>
+                    <PopoverContent align="start" className=" w-auto p-0">
+                      <Calendar
+                        mode="single"
+                        captionLayout="dropdown-buttons"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        disabled={(date) =>
+                          date > new Date() || date < new Date("1900-01-01")
+                        }
+                        fromYear={1960}
+                        toYear={2030}
+                      />
+                    </PopoverContent>
+                  </Popover>
                 <FormMessage />
               </FormItem>
             )}

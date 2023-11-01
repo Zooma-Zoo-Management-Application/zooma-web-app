@@ -87,7 +87,16 @@ export const updateUserInfo = async (id:number, userInfo:any) => {
 
 export const banUser = async (id:number) => {
   try {
-    const { data } = await axiosClient.put(`/Accounts/ban-user/${id}`);
+    const { data } = await axiosClient.delete(`/Accounts/ban-user/${id}`);
+    return { error: null, data };
+  } catch (error) {
+    return handleApiError(error);
+  }
+}
+
+export const unbanUser = async (id:number) => {
+  try {
+    const { data } = await axiosClient.put(`/Accounts/unban-user/${id}`);
     return { error: null, data };
   } catch (error) {
     return handleApiError(error);
@@ -133,7 +142,7 @@ export const getZooTrainers = async () => {
 
 export const getVisitors = async () => {
   try {
-    const { data } = await axiosClient.get(`/users/visitors`);
+    const { data } = await axiosClient.get(`/Accounts/visitors`);
     return { error: null, data };
   } catch (error) {
     return handleApiError(error);

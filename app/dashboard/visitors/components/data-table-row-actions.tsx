@@ -54,7 +54,7 @@ export function DataTableRowActions<TData>({
         } else {
           toast({
             title: "Ban Success!",
-            description: "Zoo Trainer has been banned."
+            description: "Visitor has been banned."
           })
         }
       })
@@ -82,7 +82,7 @@ export function DataTableRowActions<TData>({
         } else {
           toast({
             title: "Unban Success!",
-            description: "Zoo Trainer has been unbanned."
+            description: "Visitor has been unbanned."
           })
         }
       })

@@ -1,6 +1,6 @@
 'use client'
 
-import { LandPlot, LayoutDashboard, Newspaper, PawPrint, Rabbit, ShoppingBag, Ticket, User, UtensilsCrossed } from 'lucide-react'
+import { LandPlot, LayoutDashboard, LucideFootprints, Newspaper, PawPrint, Rabbit, ShoppingBag, Ticket, User, UserCog, UtensilsCrossed } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
@@ -12,12 +12,12 @@ const adminSidebarLinks = [
     label: 'Overview'
   },
   {
-    icon: <User className="w-6 h-6"/>,
+    icon: <LucideFootprints className="w-6 h-6"/>,
     route: '/dashboard/visitors',
     label: 'Visitors'
   },
   {
-    icon: <User className="w-6 h-6"/>,
+    icon: <UserCog className="w-6 h-6"/>,
     route: '/dashboard/staffs',
     label: 'Staffs'
   },

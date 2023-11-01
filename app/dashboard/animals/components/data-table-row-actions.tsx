@@ -216,7 +216,7 @@ const DeleteFormDialog = ({ open, setOpen, row }:{
     .then(res => {
       toast({
         title: "Delete Success!",
-        description: "Species has been deleted."
+        description: "Animal has been deleted."
       })
       
       setTimeout(() => {

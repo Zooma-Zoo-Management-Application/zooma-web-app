@@ -100,8 +100,7 @@ export function UpdateForm({id, values, setOpen}: any) {
     resolver: zodResolver(UpdateValidation),
     defaultValues,
     mode: "onChange",
-  })
-
+  });  
 
   async function onSubmit(values: UpdateFormValues) {
     setIsLoading(true);
@@ -122,14 +121,14 @@ export function UpdateForm({id, values, setOpen}: any) {
     .then((response) => {
       if(response.data !== null) {
         toast({
-          title: "Create Animal Success",
-          description: "Create Animal Success",
+          title: "Update Animal Success",
+          description: "Update Animal Success",
         })
         setIsLoading(false);
         setOpen(false);
       } else {
         toast({
-          title: "Create Animal Failed",
+          title: "Update Animal Failed",
           description: JSON.stringify(response.error),
         })
         setIsLoading(false);
