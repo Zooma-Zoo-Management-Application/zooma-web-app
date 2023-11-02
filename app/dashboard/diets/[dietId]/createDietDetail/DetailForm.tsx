@@ -18,15 +18,24 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover"
-import { toast } from "@/components/ui/use-toast"
+import {
+    Command,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+} from "@/components/ui/command"
+import { getFoods } from "@/lib/api/foodAPI"
 import { cn } from "@/lib/utils"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { format } from "date-fns"
-import { CalendarIcon } from "lucide-react"
-import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { CalendarIcon, Check, ChevronsUpDown } from "lucide-react"
+import { useParams, useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
+import { toast } from "@/components/ui/use-toast"
+import { createDietDetail } from "@/lib/api/DietDetailAPI"
 
 const items = [
     { id: "1", label: "Monday", },
@@ -42,6 +51,12 @@ const formDetailSchema = z.object({
     name: z.string()
         .min(3, { message: 'Name must be at least 3 characters.' }),
     feedingTime: z.string(),
+    createAt: z.date({
+        required_error: "Please select a date"
+    }),
+    updateAt: z.date({
+        required_error: "Please select a date"
+    }),
     scheduleAt: z.date({
         required_error: "Please select a date"
     }),
@@ -53,21 +68,63 @@ const formDetailSchema = z.object({
     feedingDate: z.array(z.string()).refine((value) => value.some((item) => item), {
         message: "You have to select at least one item.",
     }),
+    status: z.boolean(),
+    quantity: z.number({
+        required_error: "required",
+        invalid_type_error: "must be a number",
+    }),
+    dietId: z.number({
+        required_error: "required",
+        invalid_type_error: "must be a number",
+    }),
+    foodId: z.number({
+        required_error: "required",
+        invalid_type_error: "must be a number",
+    }),
 })
 
+interface food {
+    id: number,
+    name: string,
+    description: string,
+    energyValue: number,
+    imageUrl: string
+}
 
 type FormDetailValues = z.infer<typeof formDetailSchema>
 
 export function DietDetailForm() {
-    const [files, setFiles] = useState<File[]>([]);
+    const { dietId } = useParams();
     const router = useRouter()
+    const [open, setOpen] = useState(false)
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
+    const [foods, setFoods] = useState<food[]>([])
+    const [value, setValue] = useState<string>()
 
+    useEffect(() => {
+        const initialize = async () => {
+            try {
+                const res = await getFoods();
+                setFoods(res.data);
+            } catch (err: any) {
+                setError(`Error initializing the app: ${err.message}`);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        initialize();
+    }, [])
     const defaultValues: Partial<FormDetailValues> = {
         name: "",
+        description: "",
+        updateAt: new Date(),
         scheduleAt: new Date(),
         endAt: new Date(),
-        description: "",
-        feedingDate: ["1","2"],
+        feedingDate: [],
+        status: true,
+        dietId: Number(dietId),
+        foodId: -1
     }
 
     const form = useForm<FormDetailValues>({
@@ -78,22 +135,32 @@ export function DietDetailForm() {
 
     async function onSubmit(values: FormDetailValues) {
         console.log("submit")
-        let newsbody: any = {
+        let DietDetailBody: any = {
             name: values.name,
             feedingTime: Date.parse(values.feedingTime),
-            scheduleAt: values.scheduleAt,
+            scheduleAt: values.scheduleAt.setTime(Date.parse(values.feedingTime)),
             endAt: values.endAt,
-            description: values.description
+            description: values.description,
+            updateAt: new Date(),
+            feedingDate: values.feedingDate,
+            quantity: Number(values.quantity),
+            status: true,
+            dietId: Number(dietId),
+            foodId: values.foodId,
         };
-        toast({
-            title: "You submitted the following values:",
-            description: (
-                <pre className="mt-2 w-max-[340px] rounded-md bg-slate-950 p-4">
-                    <code className="text-white-300">{JSON.stringify(values, null, 1)}</code>
-                </pre>
-            ),
-        })
-        window.location.href = "/dashboard/diets/calendar"
+        createDietDetail(DietDetailBody)
+            .finally(() => {
+                setIsLoading(false);
+                toast({
+                    variant: "default",
+                    description: (
+                        <span className="text-l font-bold text-green-500">
+                            Edit Successfully!
+                        </span>
+                    ),
+                })
+                router.push(`/dashboard/diets/${dietId}/view`);
+            })
     }
     return (
         <Form {...form}>
@@ -111,23 +178,25 @@ export function DietDetailForm() {
                         </FormItem>
                     )}
                 />
-                <FormField
-                    control={form.control}
-                    name="feedingTime"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Name</FormLabel>
-                            <FormDescription>
-                                the feeding time of this Detail.
-                            </FormDescription>
-                            <FormControl>
-                                <Input type="time" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
                 <div className="flex justify-start">
+                    <div className="pr-44">
+                        <FormField
+                            control={form.control}
+                            name="feedingTime"
+                            render={({ field }) => (
+                                <FormItem className="flex flex-col">
+                                    <FormLabel>Feeding Time</FormLabel>
+                                    <FormDescription>
+                                        the feeding time of this Detail.
+                                    </FormDescription>
+                                    <FormControl>
+                                        <Input type="time" {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </div>
                     <div className="pr-44">
                         <FormField
                             control={form.control}
@@ -223,48 +292,125 @@ export function DietDetailForm() {
                     render={() => (
                         <FormItem>
                             <div className="mb-4">
-                                <FormLabel className="text-base">Sidebar</FormLabel>
+                                <FormLabel className="text-base">Feeding Date</FormLabel>
                                 <FormDescription>
-                                Select the items you want to display in the sidebar.
+                                    Choose the feeding days in a week(apply for every week)
                                 </FormDescription>
                             </div>
-                            {items.map((item) => (
-                                <FormField
-                                key={item.id}
-                                control={form.control}
-                                name="feedingDate"
-                                render={({ field }) => {
-                                    return (
-                                    <FormItem
+                            <div className="flex justify-start">
+                                {items.map((item) => (
+                                    <FormField
                                         key={item.id}
-                                        className="flex flex-row items-start space-x-3 space-y-0"
-                                    >
-                                        <FormControl>
-                                        <Checkbox
-                                            checked={field.value?.includes(item.id)}
-                                            onCheckedChange={(checked) => {
-                                            return checked
-                                                ? field.onChange([...field.value, item.id])
-                                                : field.onChange(
-                                                    field.value?.filter(
-                                                    (value) => value !== item.id
-                                                    )
-                                                )
-                                            }}
-                                        />
-                                        </FormControl>
-                                        <FormLabel className="text-sm font-normal">
-                                        {item.label}
-                                        </FormLabel>
-                                    </FormItem>
-                                    )
-                                }}
-                                />
-                            ))}
-                        <FormMessage />
+                                        control={form.control}
+                                        name="feedingDate"
+                                        render={({ field }) => {
+                                            return (
+                                                <FormItem
+                                                    key={item.id}
+                                                    className="flex flex-row items-start space-x-1 -space-y-px pl-10"
+                                                >
+                                                    <FormControl>
+                                                        <Checkbox
+                                                            checked={field.value?.includes(item.id)}
+                                                            onCheckedChange={(checked) => {
+                                                                return checked
+                                                                    ? field.onChange([...field.value, item.id])
+                                                                    : field.onChange(
+                                                                        field.value?.filter(
+                                                                            (value) => value !== item.id
+                                                                        )
+                                                                    )
+                                                            }}
+                                                        />
+                                                    </FormControl>
+                                                    <FormLabel className="text-sm font-normal">
+                                                        {item.label}
+                                                    </FormLabel>
+                                                </FormItem>
+                                            )
+                                        }}
+                                    />
+                                ))}
+                            </div>
+                            <FormMessage />
                         </FormItem>
                     )}
-                    />
+                />
+                <div className="flex justify-start">
+                    <div className="pr-52">
+                        <FormField
+                            control={form.control}
+                            name="foodId"
+                            render={({ field }) => (
+                                <FormItem className="flex flex-col">
+                                    <FormLabel>Food</FormLabel>
+                                    <FormDescription>
+                                        select Food
+                                    </FormDescription>
+                                    <Popover open={open} onOpenChange={setOpen}>
+                                        <PopoverTrigger asChild>
+                                            <Button
+                                                variant="outline"
+                                                role="combobox"
+                                                aria-expanded={open}
+                                                className="w-[200px] justify-between font-normal"
+                                            >
+                                                {value ? foods.find((food: food) => food.id === Number(value))?.name
+                                                    : "Select food..."}
+                                                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                            </Button>
+                                        </PopoverTrigger>
+                                        <PopoverContent className="w-[200px] p-0">
+                                            <Command>
+                                                <CommandInput placeholder="Search food..." />
+                                                <CommandEmpty>No framework found.</CommandEmpty>
+                                                <CommandGroup>
+                                                    {foods.map((food) => (
+                                                        <CommandItem
+                                                            key={food.id}
+                                                            value={food.id.toString()}
+                                                            onSelect={(currentValue) => {
+                                                                setValue(currentValue === value ? "" : currentValue)
+                                                                setOpen(false)
+                                                            }}
+                                                        >
+                                                            <Check
+                                                                className={cn(
+                                                                    "mr-2 h-4 w-4",
+                                                                    value === food.name ? "opacity-100" : "opacity-0"
+                                                                )}
+                                                            />
+                                                            {food.name}
+                                                        </CommandItem>
+                                                    ))}
+                                                </CommandGroup>
+                                            </Command>
+                                        </PopoverContent>
+                                    </Popover>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </div>
+                    <div className="pr-44">
+                        <FormField
+                            control={form.control}
+                            name="quantity"
+                            render={({ field }) => (
+                                <FormItem className="flex flex-col">
+                                    <FormLabel>Quantity</FormLabel>
+                                    <FormDescription>
+                                        in Kilogram(Kg)
+                                    </FormDescription>
+                                    <FormControl>
+                                        <Input type="number" placeholder="0" step={0.01} {...field} onChange={event => field.onChange(+event.target.value)} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </div>
+                </div>
                 <FormField
                     control={form.control}
                     name="description"
@@ -278,7 +424,7 @@ export function DietDetailForm() {
                         </FormItem>
                     )}
                 />
-                <Button type="submit" className="w-full hover:shadow-primary-md">Create New</Button>
+                <Button type="submit" className="w-full hover:shadow-primary-md">Create Diet Detail</Button>
             </form>
         </Form>
     )

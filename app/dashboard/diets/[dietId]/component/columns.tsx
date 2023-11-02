@@ -7,6 +7,19 @@ import { statuses } from "../data/data"
 import { Diet } from "../data/schema"
 import { DataTableColumnHeader } from "./data-table-column-header"
 import { format } from "date-fns"
+interface item {
+  id: string,
+  label: string
+}
+const items = [
+  { id: "1", label: "Monday", },
+  { id: "2", label: "Tuesday", },
+  { id: "3", label: "Wednesday", },
+  { id: "4", label: "Thursday", },
+  { id: "5", label: "Friday", },
+  { id: "6", label: "Saturday", },
+  { id: "7", label: "Sunday", },
+] as const
 
 export const columns: ColumnDef<Diet>[] = [
   // {
@@ -103,7 +116,7 @@ export const columns: ColumnDef<Diet>[] = [
     },
   },
   {
-    accessorKey: "feedingDate, feedingTime",
+    accessorKey: "feedingDateArray",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Feeding At" />
     ),
@@ -111,14 +124,14 @@ export const columns: ColumnDef<Diet>[] = [
       return (
         <div className="flex space-x-2">
           <span className="max-w-[300px] truncate font-medium">
-            {row.getValue("feedingDate")} <br />  {row.getValue("feedingTime")}
+            {row.getValue("feedingDateArray")} <br />  {row.getValue("feedingTime")}
           </span>
         </div>
       )
     },
   },
   {
-    accessorKey: "quantity, foodId",
+    accessorKey: "quantity",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Quantity" />
     ),
@@ -126,7 +139,7 @@ export const columns: ColumnDef<Diet>[] = [
       return (
         <div className="flex space-x-2">
           <span className="max-w-[300px] truncate font-medium">
-            {row.getValue("foodId")}: {row.getValue("quantity")}kg
+            {row.getValue("foodId")} {row.getValue("quantity")}kg
           </span>
         </div>
       )

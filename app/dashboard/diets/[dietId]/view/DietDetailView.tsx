@@ -5,19 +5,12 @@ import interactionPlugin from '@fullcalendar/interaction'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import { useEffect, useRef, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { getDietDetailByDietId } from '@/lib/api/dietAPI';
+import { getDietDetailByDietId } from '@/lib/api/DietDetailAPI';
 import ConfirmationDialog from './comfirm';
-import { Button } from "@/components/ui/button"
 import {
     Card,
     CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
 } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import {
     Tabs,
     TabsContent,
@@ -30,7 +23,7 @@ import { columns } from '../component/columns';
 
 interface Event {
     title: string;
-    start: Date | string;
+    startTime: Date;
     allDay: boolean;
     id: number;
     daysOfWeek: number[]
@@ -43,8 +36,8 @@ interface DietDetail {
     updateAt: Date,
     scheduleAt: Date,
     endAt: Date,
-    feedingDate: string,
-    feedingTine: Date,
+    feedingDateArray: string[],
+    feedingTime: Date,
     quantity: number,
     status: boolean,
     FoodId: number
@@ -93,19 +86,17 @@ export default function DietDetailViewPage() {
         setIsDialogOpen(false);
     };
 
-    // const events = dietDetails.map((dietDetail: DietDetail) => (
-    //     {
-    //         id: dietDetail.id,
-    //         title: dietDetail.name,
-    //         start: dietDetail.scheduleAt,
-    //         allDay: false,
-    //         dayOfWeek: [1, 2]
-    //     }
-    // ))
+    const events = dietDetails.map((dietDetail: DietDetail) => (
+        {
+            id: dietDetail.id,
+            title: dietDetail.name,
+            startTime: dietDetail.scheduleAt,
+        }
+    ))
 
     return (
         <div>
-            <Tabs defaultValue="Calendar" className="w-full">
+            <Tabs defaultValue="List" className="w-full">
                 <TabsList className="grid w-[400px] grid-cols-2 ml-auto">
                     <TabsTrigger value="Calendar">Calendar</TabsTrigger>
                     <TabsTrigger value="List">List</TabsTrigger>
@@ -126,7 +117,7 @@ export default function DietDetailViewPage() {
                                         right: 'dayGridMonth,timeGridWeek'
                                     }}
                                     events={[
-                                        // events
+                                        events
                                     ]}
                                     eventClick={(info) => {
                                         handleNavigate();
