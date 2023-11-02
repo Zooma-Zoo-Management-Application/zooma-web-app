@@ -5,19 +5,12 @@ import interactionPlugin from '@fullcalendar/interaction'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import { useEffect, useRef, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { getDietDetailByDietId } from '@/lib/api/dietAPI';
+import { getDietDetailByDietId } from '@/lib/api/DietDetailAPI';
 import ConfirmationDialog from './comfirm';
-import { Button } from "@/components/ui/button"
 import {
     Card,
     CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
 } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import {
     Tabs,
     TabsContent,
@@ -43,8 +36,8 @@ interface DietDetail {
     updateAt: Date,
     scheduleAt: Date,
     endAt: Date,
-    feedingDate: string,
-    feedingTine: Date,
+    feedingDate: string[],
+    feedingTime: Date,
     quantity: number,
     status: boolean,
     FoodId: number
@@ -105,7 +98,7 @@ export default function DietDetailViewPage() {
 
     return (
         <div>
-            <Tabs defaultValue="Calendar" className="w-full">
+            <Tabs defaultValue="List" className="w-full">
                 <TabsList className="grid w-[400px] grid-cols-2 ml-auto">
                     <TabsTrigger value="Calendar">Calendar</TabsTrigger>
                     <TabsTrigger value="List">List</TabsTrigger>

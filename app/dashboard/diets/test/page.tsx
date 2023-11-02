@@ -1,127 +1,91 @@
 "use client"
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import * as z from "zod"
+import * as React from "react"
+import { Check, ChevronsUpDown } from "lucide-react"
 
+import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
 import {
-    Form,
-    FormControl,
-    FormDescription,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "@/components/ui/form"
-import { toast } from "@/components/ui/use-toast"
+    Command,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+} from "@/components/ui/command"
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover"
+import { useEffect, useState } from "react"
+import { getFoods } from "@/lib/api/foodAPI"
 
-const items = [
-    {
-        id: "1",
-        label: "Monday",
-    },
-    {
-        id: "2",
-        label: "Tuesday",
-    },
-    {
-        id: "3",
-        label: "Wednesday",
-    },
-    {
-        id: "4",
-        label: "Thursday",
-    },
-    {
-        id: "5",
-        label: "Friday",
-    },
-    {
-        id: "7",
-        label: "Sunday",
-    },
+interface food {
+    name: string,
+    description: string,
+    energyValue: number,
+    imageUrl: string
+}
 
-] as const
+export default function ComboboxDemo() {
+    const [open, setOpen] = React.useState(false)
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
+    const [foods, setFoods] = useState<food[]>([])
+    const [value, setValue] = useState<string>()
 
-const FormSchema = z.object({
-    items: z.array(z.string()).refine((value) => value.some((item) => item), {
-        message: "You have to select at least one item.",
-    }),
-})
-
-export default function CheckboxReactHookFormMultiple() {
-    const form = useForm<z.infer<typeof FormSchema>>({
-        resolver: zodResolver(FormSchema),
-    })
-
-    function onSubmit(data: z.infer<typeof FormSchema>) {
-        toast({
-            title: "You submitted the following values:",
-            description: (
-                <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-                    <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-                </pre>
-            ),
-        })
-    }
-
+    useEffect(() => {
+        const initialize = async () => {
+            try {
+                const res = await getFoods();
+                setFoods(res.data);
+            } catch (err: any) {
+                setError(`Error initializing the app: ${err.message}`);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        initialize();
+    }, [])
     return (
-        <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                <FormField
-                    control={form.control}
-                    name="items"
-                    render={() => (
-                        <FormItem>
-                            <div className="mb-4">
-                                <FormLabel className="text-base">Feeding Date</FormLabel>
-                                <FormDescription>
-                                    Choose the feeding days in a week(apply for every week)
-                                </FormDescription>
-                            </div>
-                            <div className="flex justify-start">
-                                {items.map((item) => (
-                                    <FormField
-                                        key={item.id}
-                                        control={form.control}
-                                        name="items"
-                                        render={({ field }) => {
-                                            return (
-                                                <FormItem
-                                                    key={item.id}
-                                                    className="px-5 space-x-1"
-                                                >
-                                                    <FormControl>
-                                                        <Checkbox
-                                                            checked={field.value?.includes(item.id)}
-                                                            onCheckedChange={(checked) => {
-                                                                return checked
-                                                                    ? field.onChange([...field.value, item.id])
-                                                                    : field.onChange(
-                                                                        field.value?.filter(
-                                                                            (value) => value !== item.id
-                                                                        )
-                                                                    )
-                                                            }}
-                                                        />
-                                                    </FormControl>
-                                                    <FormLabel className="font-normal">
-                                                        {item.label}
-                                                    </FormLabel>
-                                                </FormItem>
-                                            )
-                                        }}
-                                    />
-                                ))}
-                            </div>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                <Button type="submit">Submit</Button>
-            </form>
-        </Form>
+        <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger asChild>
+                <Button
+                    variant="outline"
+                    role="combobox"
+                    aria-expanded={open}
+                    className="w-[200px] justify-between"
+                >
+                    {value ? value : "Select framework..."}
+                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-[200px] p-0">
+                <Command>
+                    <CommandInput placeholder="Search food..." />
+                    <CommandEmpty>No framework found.</CommandEmpty>
+                    <CommandGroup>
+                        {foods.map((food) => (
+                            <CommandItem
+                                key={food.name}
+                                value={food.name}
+                                onSelect={(currentValue) => {
+                                    setValue(currentValue === value ? "" : currentValue)
+                                    setOpen(false)
+                                }}
+                            >
+                                <Check
+                                    className={cn(
+                                        "mr-2 h-4 w-4",
+                                        value === food.name ? "opacity-100" : "opacity-0"
+                                    )}
+                                />
+                                {food.name}
+                            </CommandItem>
+                        ))}
+                    </CommandGroup>
+                </Command>
+            </PopoverContent>
+        </Popover>
     )
 }

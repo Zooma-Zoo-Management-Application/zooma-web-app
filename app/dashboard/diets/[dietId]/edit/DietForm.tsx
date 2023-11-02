@@ -25,6 +25,7 @@ import { Calendar } from "@/components/ui/calendar"
 import { CalendarIcon } from "lucide-react"
 import { format } from "date-fns"
 import { Textarea } from "@/components/ui/textarea"
+import { toast } from "@/components/ui/use-toast"
 
 // This can come from your database or API.
 
@@ -35,12 +36,16 @@ const formNewSchema = z.object({
         .min(3, { message: 'Description must be at least 3 characters.' }),
     goal: z.string()
         .min(3, { message: 'Goal must be at least 3 characters' }),
+    updateAt: z.date({
+        required_error: "Please select a date and time"
+    }),
     scheduleAt: z.date({
         required_error: "Please select a date and time"
     }),
     endAt: z.date({
         required_error: "Please select a date and time"
     }),
+    status: z.boolean()
 })
 
 
@@ -56,8 +61,10 @@ export function NewsForm({ dietParam }: any) {
         name: dietParam.name || "",
         description: dietParam.description || "",
         goal: dietParam.goal || "Not specific",
-        scheduleAt: dietParam.scheduleAt,
-        endAt: dietParam.endAt || ""
+        updateAt: new Date(),
+        scheduleAt: new Date(dietParam.scheduleAt),
+        endAt: new Date(dietParam.endAt) || "",
+        status: dietParam.status
     }
 
     const form = useForm<FormNewValues>({
@@ -70,14 +77,27 @@ export function NewsForm({ dietParam }: any) {
     async function onSubmit(values: FormNewValues) {
         setIsLoading(true);
         console.log("submit")
-        let newsbody: any = {
-            title: values.name,
+        let dietbody: any = {
+            name: values.name,
             description: values.description,
+            goal: values.goal,
+            updateAt: new Date(),
+            scheduleAt: values.scheduleAt,
+            endAt: values.endAt,
+            status: dietParam.status
         };
-        editDiet(dietParam.id, newsbody)
+        editDiet(dietParam.id, dietbody)
             .finally(() => {
                 setIsLoading(false);
-                router.push(`/dashboard/news/${dietParam.id}/view`);
+                toast({
+                    variant: "default",
+                    description: (
+                        <span className="text-l font-bold text-green-500">
+                            Edit Successfully!
+                        </span>
+                    ),
+                })
+                router.push(`/dashboard/diets/${dietParam.id}/view`);
             })
     }
 
@@ -132,7 +152,6 @@ export function NewsForm({ dietParam }: any) {
                                                 mode="single"
                                                 selected={field.value}
                                                 onSelect={field.onChange}
-                                                disabled={{ before: new Date() }}
                                                 initialFocus
                                             />
                                         </PopoverContent>
@@ -176,7 +195,6 @@ export function NewsForm({ dietParam }: any) {
                                                 mode="single"
                                                 selected={field.value}
                                                 onSelect={field.onChange}
-                                                disabled={{ before: new Date() }}
                                                 initialFocus
                                             />
                                         </PopoverContent>
