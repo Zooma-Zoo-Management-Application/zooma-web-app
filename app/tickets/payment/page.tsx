@@ -3,12 +3,13 @@
 import Header from '@/components/shared/Header';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+import { withProtected } from '@/hooks/useAuth';
 import { returnVNPay } from '@/lib/api/orderAPI';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import React, { Fragment } from 'react'
 
-export default function Page() {
+function Page() {
   const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = React.useState<boolean>(true)
   const [message, setMessage] = React.useState<string>("")
@@ -72,3 +73,5 @@ export default function Page() {
     </div>
   )
 }
+
+export default withProtected(Page)

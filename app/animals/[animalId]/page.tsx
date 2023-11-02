@@ -1,5 +1,6 @@
 "use client"
 
+import { withPublic } from '@/hooks/useAuth';
 import { getAreasBasedOnSpecies } from '@/lib/api/areaAPI';
 import { getSpeciesById } from '@/lib/api/speciesAPI';
 import Image from 'next/image';
@@ -7,7 +8,7 @@ import { useParams, useRouter } from 'next/navigation';
 import React, { useEffect } from 'react'
 import { twMerge } from 'tailwind-merge';
 
-export default function Page() {
+function Page() {
   const { animalId } = useParams();
   const [species, setSpecies] = React.useState<any>(null);
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
@@ -117,3 +118,5 @@ export default function Page() {
     </div>
   )
 }
+
+export default withPublic(Page)

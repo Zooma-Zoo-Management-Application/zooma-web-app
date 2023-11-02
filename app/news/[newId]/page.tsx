@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { BASE_URL } from '@/constants/appInfos';
+import { withPublic } from '@/hooks/useAuth';
 import { getNewById } from '@/lib/api/newAPI';
 import axios from 'axios';
 import { differenceInHours, format } from 'date-fns';
@@ -91,4 +92,4 @@ function NewViewPage() {
   )
 }
 
-export default NewViewPage
+export default withPublic(NewViewPage)

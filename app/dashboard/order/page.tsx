@@ -9,6 +9,7 @@ import { columns } from "./components/columns";
 import useRefresh from "@/stores/refresh-store";
 import { RefreshCcw } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { withProtected } from "@/hooks/useAuth";
 
 function UserManagementPage() {
   const [orders, setOrders] = useState<any>([])
@@ -72,4 +73,4 @@ function UserManagementPage() {
   )
 }
 
-export default UserManagementPage
+export default withProtected(UserManagementPage)

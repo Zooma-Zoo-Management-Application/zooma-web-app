@@ -11,6 +11,7 @@ import { UserCreateForm } from "./components/UserCreateForm";
 import { columns } from "./components/columns";
 import { DataTable } from "./components/data-table";
 import { getAnimals } from "@/lib/api/animalAPI";
+import { withProtected } from "@/hooks/useAuth";
 
 function UserManagementPage() {
   const [animals, setAnimals] = useState<any>([])
@@ -106,4 +107,4 @@ const CreateFormDialog = ({ open, setOpen }:{
   )
 }
 
-export default UserManagementPage
+export default withProtected(UserManagementPage)

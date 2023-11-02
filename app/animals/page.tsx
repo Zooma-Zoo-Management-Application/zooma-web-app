@@ -1,5 +1,6 @@
 "use client"
 
+import { withPublic } from "@/hooks/useAuth"
 import { getAnimals } from "@/lib/api/animalAPI"
 import { getSpecies } from "@/lib/api/speciesAPI"
 import Image from "next/image"
@@ -54,4 +55,4 @@ function AnimalsPage() {
   )
 }
 
-export default AnimalsPage
+export default withPublic(AnimalsPage)

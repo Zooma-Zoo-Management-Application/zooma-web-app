@@ -7,6 +7,7 @@ import { getDiets } from "@/lib/api/dietAPI";
 import DataTableSkeleton from '../components/DataTableSkeleton'
 import Link from 'next/link';
 import { useState, useEffect } from 'react'
+import { withProtected } from "@/hooks/useAuth";
 
 function UserManagementPage() {
   const [diets, setDiets] = useState<any>([])
@@ -52,4 +53,4 @@ function UserManagementPage() {
   )
 }
 
-export default UserManagementPage
+export default withProtected(UserManagementPage)

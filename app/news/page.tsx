@@ -2,6 +2,7 @@
 
 import NewSlider from '@/app/components/NewSlider';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { withPublic } from '@/hooks/useAuth';
 import { getNews } from '@/lib/api/newAPI';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -91,4 +92,4 @@ function NewsPage() {
   )
 }
 
-export default NewsPage
+export default withPublic(NewsPage)

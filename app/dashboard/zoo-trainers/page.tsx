@@ -10,6 +10,7 @@ import { columns } from "./components/columns";
 import { DataTable } from "./components/data-table";
 import { RefreshCcw } from "lucide-react";
 import useRefresh from "@/stores/refresh-store";
+import { withProtected } from "@/hooks/useAuth";
 
 function UserManagementPage() {
   const [zooTrainer, setZooTrainer] = useState<any>([])
@@ -104,4 +105,4 @@ const CreateFormDialog = ({ open, setOpen }:{
   )
 }
 
-export default UserManagementPage
+export default withProtected(UserManagementPage)

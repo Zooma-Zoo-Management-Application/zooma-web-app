@@ -7,6 +7,7 @@ import { getNews } from "@/lib/api/newAPI";
 import { Metadata } from "next";
 import { useEffect, useState } from "react";
 import DataTableSkeleton from '../components/DataTableSkeleton'
+import { withProtected } from "@/hooks/useAuth";
 
 function UserManagementPage() {
   const [news, setNews] = useState<any>([])
@@ -52,4 +53,4 @@ function UserManagementPage() {
   )
 }
 
-export default UserManagementPage
+export default withProtected(UserManagementPage)

@@ -16,6 +16,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import useUserState from '@/stores/user-store';
 import { useSearchParams } from 'next/navigation';
 import useOrder from '@/stores/order-store';
+import { withPublic } from '@/hooks/useAuth';
 
 interface Tickets {
   id: number;
@@ -220,4 +221,4 @@ function TicketsPage() {
   )
 }
 
-export default TicketsPage
+export default withPublic(TicketsPage)
