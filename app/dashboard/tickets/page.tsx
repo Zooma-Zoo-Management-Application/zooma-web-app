@@ -5,6 +5,7 @@ import DataTableSkeleton from '../components/DataTableSkeleton'
 import { getTickets } from "@/lib/api/ticketAPI";
 import { DataTable } from './components/data-table';
 import { columns } from './components/columns';
+import { withProtected } from '@/hooks/useAuth';
 
 function UserManagementPage() {
   const [tickets, setTickets] = useState<any>([])
@@ -45,4 +46,4 @@ function UserManagementPage() {
   )
 }
 
-export default UserManagementPage
+export default withProtected(UserManagementPage)

@@ -13,6 +13,8 @@ import { getTickets } from "@/lib/api/ticketAPI";
 import { getNews } from "@/lib/api/newAPI";
 import { RowData } from "@tanstack/react-table";
 import Footer from "@/components/shared/Footer";
+import { withPublic } from "@/hooks/useAuth";
+import useUserState from "@/stores/user-store";
 
 declare module '@tanstack/table-core' {
   interface TableMeta<TData extends RowData> {
@@ -23,11 +25,12 @@ declare module '@tanstack/table-core' {
   }
 }
 
-export default function Home() {
+function Home() {
   const {isVideoMuted, setIsVideoMuted} = useUIState();
   const [tickets, setTickets] = useState<any>([])
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const { currentUser } = useUserState()
 
   useEffect(() => {
     const initialize = async () => {
@@ -63,3 +66,5 @@ export default function Home() {
     </div>
   )
 }
+
+export default withPublic(Home)

@@ -2,6 +2,7 @@
 
 import ImageWithTextSkeleton from '@/app/dashboard/components/ImageWithTextSkeleton';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { withProtected } from '@/hooks/useAuth';
 import { getOrders, getOrdersByUserId } from '@/lib/api/orderAPI';
 import { formatVND, getImageOfTicket, getImageOfTicketById, getStatus } from '@/lib/utils';
 import useUserState from '@/stores/user-store';
@@ -117,4 +118,4 @@ function OrderHistory() {
     </div>
   )
 }
-export default OrderHistory
+export default withProtected(OrderHistory)

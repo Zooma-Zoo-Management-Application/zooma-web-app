@@ -2,27 +2,21 @@
 
 import Breadcrumb from '@/components/shared/Breadcrumb'
 import BreadcrumbItem from '@/components/shared/BreadcrumbItem'
-import useUIState from '@/stores/ui-store'
-import useUserState from '@/stores/user-store'
-import { usePathname, useRouter } from 'next/navigation'
+import { UserNav } from '@/components/shared/UserNav'
+import { Button } from '@/components/ui/button'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { Fragment, useEffect, useState } from 'react'
 import LeftSidebar from './components/LeftSidebar'
-import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-import { UserNav } from '@/components/shared/UserNav'
+import useUserState from '@/stores/user-store'
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
+function RootLayout({
+  children }: {
+  children: React.ReactNode,
 }) {
-  const { isOpenSidebar, setIsOpenSidebar } = useUIState();
-
-  const router = useRouter();
   const [breadcrumbs, setBreadcrumbs] = useState<any>([]);
   const pathname = usePathname()
-
-  const { currentUser } = useUserState();
+  const {currentUser} = useUserState()
 
   useEffect(() => {
     let pathArray = pathname.split("/");
@@ -47,7 +41,7 @@ export default function RootLayout({
       <body>
         <main className='flex flex-row items-start'>
             <div className='w-fit custom-scrollbar sticky left-0 top-0 z-[1000]'>
-              <LeftSidebar />
+              <LeftSidebar roleId={currentUser?.roleId || 3}/>
             </div>
             <div className="flex min-h-screen w-full flex-1 flex-col items-start max-md:pb-32">
               <div className='z-[1] flex justify-between items-center w-full p-4 sticky top-0 mt-2 bg-white-500 border-b border-b-gray-200'>
@@ -89,3 +83,5 @@ export default function RootLayout({
     </html>
   )
 }
+
+export default RootLayout

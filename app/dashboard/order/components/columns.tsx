@@ -78,7 +78,7 @@ export const columns: ColumnDef<Order>[] = [
           {/* {label && <Badge variant="outline">{label.label}</Badge>} */}
           <span className="max-w-[500px] truncate font-medium">
             {/* format time */}
-            {format(new Date(row.getValue("orderDate")), "dd/MM/yyyy")}
+            {format(new Date(row.getValue("orderDate")), "HH:mm dd/MM/yyyy")}
           </span>
         </div>
       )

@@ -1,6 +1,6 @@
 "use client"
 
-import { useRouter } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import {
   Avatar,
   AvatarFallback,
@@ -41,10 +41,12 @@ interface IUserNavProps{
 export function UserNav({user = null, isMobile = false} : IUserNavProps) {
   const router = useRouter()
   const { setCurrentUser } = useUserState();
+  const pathname = usePathname();
   
   const logout = () => {
     localStorage.removeItem("accessToken");
     setCurrentUser(null);
+    if(pathname !== "/") router.replace("/");
   }
 
   if(!user) return (

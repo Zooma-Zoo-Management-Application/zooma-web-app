@@ -1,11 +1,12 @@
-import React from 'react'
+"use client"
+import { withProtected } from '@/hooks/useAuth'
 
 function AccountSettings() {
   return (
     <div className='min-h-[50vh]'>
-      w
+      AccountSettings
     </div>
   )
 }
 
-export default AccountSettings
+export default withProtected(AccountSettings)

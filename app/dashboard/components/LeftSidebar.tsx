@@ -88,15 +88,17 @@ const zooTrainerSidebarLinks = [
     label: 'Diets'
   },
 ]
+//1 staff
+//2 zoo
+//3 user
+//4 admin
 
-
-
-function LeftSidebar({ role="staff" }) {
+function LeftSidebar({ roleId= 3 }) {
   const pathname = usePathname();
   const router = useRouter();
-  const sidebarLinks = role === "admin" 
-  ? adminSidebarLinks : role === "staff" 
-  ? staffSidebarLinks : role === "zoo-trainer" 
+  const sidebarLinks = roleId === 4
+  ? adminSidebarLinks : roleId === 1
+  ? staffSidebarLinks : roleId === 2
   ? zooTrainerSidebarLinks : [];
   return (
     <section className='custom-scrollbar

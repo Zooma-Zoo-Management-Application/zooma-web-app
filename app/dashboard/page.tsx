@@ -5,9 +5,8 @@ import { RecentSales } from "@/app/dashboard/components/RecentSales"
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
-  CardTitle,
+  CardTitle
 } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import {
@@ -18,9 +17,13 @@ import {
 } from "@/components/ui/tabs"
 import { getSixmonthsAbalysis } from "@/lib/api/analysis"
 import { formatVND } from "@/lib/utils"
+import { BaggageClaim, Ticket } from "lucide-react"
 import { Fragment, useEffect, useState } from "react"
+import { Analytics } from "./components/Analytics"
+import { PieAnalyst } from "./components/Pie"
+import { withProtected } from "@/hooks/useAuth"
 
-export default function DashboardPage() {
+function DashboardPage() {
   const [data, setData] = useState<any>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState("")
@@ -41,14 +44,11 @@ export default function DashboardPage() {
       }
     };
     initialize();
-  }, [data])
+  }, [])
 
   return (
     <Fragment>
-      <div className="md:hidden">
-        This dashboard in mobile is not yet implemented.
-      </div>
-      <div className="hidden flex-col md:flex w-full">
+      <div className="flex-col md:flex w-full">
         <div className="flex-1 space-y-4 p-8 pt-6">
           <div className="flex items-center justify-between space-y-2">
             <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
@@ -56,7 +56,7 @@ export default function DashboardPage() {
           <Tabs defaultValue="overview" className="space-y-4">
             <TabsList>
               <TabsTrigger value="overview">Overview</TabsTrigger>
-              <TabsTrigger value="analytics" disabled>
+              <TabsTrigger value="analytics">
                 Analytics
               </TabsTrigger>
               {/* <TabsTrigger value="reports" disabled>
@@ -67,8 +67,8 @@ export default function DashboardPage() {
               </TabsTrigger> */}
             </TabsList>
             <TabsContent value="overview" className="space-y-4">
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                <Card>
+              <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+                <Card className="col-span-2 lg:col-span-1">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium">
                       Total Revenue
@@ -99,76 +99,38 @@ export default function DashboardPage() {
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium">
-                      Subscriptions
+                      Total Tickets
                     </CardTitle>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      className="h-4 w-4 text-muted-foreground"
-                    >
-                      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                      <circle cx="9" cy="7" r="4" />
-                      <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
-                    </svg>
+                    <Ticket className="h-4 w-4 text-muted-foreground" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold">+2350</div>
+                    {
+                      isLoading ? (
+                        <Skeleton className="w-full h-7" />
+                      ) : (
+                        <div className="text-2xl font-bold">{data.totalTickets}</div>
+                      )
+                    }
                     <p className="text-xs text-muted-foreground">
-                      +180.1% from last month
+                      In 6 months
                     </p>
                   </CardContent>
                 </Card>
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Sales</CardTitle>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      className="h-4 w-4 text-muted-foreground"
-                    >
-                      <rect width="20" height="14" x="2" y="5" rx="2" />
-                      <path d="M2 10h20" />
-                    </svg>
+                    <CardTitle className="text-sm font-medium">Successful Orders</CardTitle>
+                    <BaggageClaim className="h-4 w-4 text-muted-foreground" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold">+12,234</div>
+                  {
+                      isLoading ? (
+                        <Skeleton className="w-full h-7" />
+                      ) : (
+                        <div className="text-2xl font-bold">{data.totalSuccessOrders}</div>
+                      )
+                    }
                     <p className="text-xs text-muted-foreground">
-                      +19% from last month
-                    </p>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">
-                      Active Now
-                    </CardTitle>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      className="h-4 w-4 text-muted-foreground"
-                    >
-                      <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-                    </svg>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">+573</div>
-                    <p className="text-xs text-muted-foreground">
-                      +201 since last hour
+                    In 6 months
                     </p>
                   </CardContent>
                 </Card>
@@ -195,9 +157,99 @@ export default function DashboardPage() {
                 </Card>
               </div>
             </TabsContent>
+            <TabsContent value="analytics" className="space-y-4">
+              <div className="grid gap-3 md:grid-cols-1 lg:grid-cols-3">
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">
+                      Total Staffs
+                    </CardTitle>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      className="h-4 w-4 text-muted-foreground"
+                    >
+                      <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                    </svg>
+                  </CardHeader>
+                  <CardContent>
+                    {
+                      isLoading ? (
+                        <Skeleton className="w-full h-7" />
+                      ) : (
+                        <div className="text-2xl font-bold">{data.usersQuantity.staffs}</div>
+                      )
+                    }
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">
+                      Total Visitors
+                    </CardTitle>
+                    <Ticket className="h-4 w-4 text-muted-foreground" />
+                  </CardHeader>
+                  <CardContent>
+                    {
+                      isLoading ? (
+                        <Skeleton className="w-full h-7" />
+                      ) : (
+                        <div className="text-2xl font-bold">{data.usersQuantity.visitors}</div>
+                      )
+                    }
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Total Zoo Trainers</CardTitle>
+                    <BaggageClaim className="h-4 w-4 text-muted-foreground" />
+                  </CardHeader>
+                  <CardContent>
+                  {
+                      isLoading ? (
+                        <Skeleton className="w-full h-7" />
+                      ) : (
+                        <div className="text-2xl font-bold">{data.usersQuantity.zooTrainers}</div>
+                      )
+                    }
+                    <p className="text-xs text-muted-foreground">
+                    In 6 months
+                    </p>
+                  </CardContent>
+                </Card>
+              </div>
+              <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
+                <Card className="col-span-4">
+                  <CardHeader>
+                    <CardTitle>Analytics</CardTitle>
+                  </CardHeader>
+                  <CardContent className="pl-2">
+                    <Analytics data={data.tickets} isLoading={isLoading} />
+                  </CardContent>
+                </Card>
+                {/* <Card className="col-span-2">
+                  <CardHeader>
+                    <CardTitle>Analytics</CardTitle>
+                  </CardHeader>
+                  <CardContent className="pl-2">
+                    <PieAnalyst data={data.revenue} isLoading={isLoading} />
+                  </CardContent>
+                </Card> */}
+              </div>
+              <div className="grid gap-4 md:grid-cols-2">
+                
+              </div>
+            </TabsContent>
           </Tabs>
         </div>
       </div>
     </Fragment>
   )
 }
+
+export default withProtected(DashboardPage)

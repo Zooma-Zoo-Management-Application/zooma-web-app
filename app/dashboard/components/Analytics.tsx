@@ -3,10 +3,10 @@
 import { Skeleton } from "@/components/ui/skeleton"
 import { formatVND } from "@/lib/utils"
 import { Fragment, useEffect, useState } from "react"
-import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
+import { Area, AreaChart, Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
 
 
-export function Overview({data, isLoading}: {data: any, isLoading: boolean}) {
+export function Analytics({data, isLoading}: {data: any, isLoading: boolean}) {
   return (
     <Fragment>
       {
@@ -21,9 +21,10 @@ export function Overview({data, isLoading}: {data: any, isLoading: boolean}) {
           </div>
         ) : (
           <ResponsiveContainer width="100%" height={350}>
-            <BarChart data={data.sort(
+            <AreaChart data={data.sort(
               (a:any, b:any) => a.month - b.month
             )}>
+              <CartesianGrid strokeDasharray="3 3" />
               <XAxis
                 dataKey="month"
                 stroke="#888888"
@@ -33,24 +34,16 @@ export function Overview({data, isLoading}: {data: any, isLoading: boolean}) {
                 tickFormatter={(value: any) => `${getMonthName(value)}`}
               />
               <YAxis
-                yAxisId="left"
-                stroke="#888888"
-                fontSize={12}
-                tickLine={false}
-                axisLine={false}
-                tickFormatter={(value: any) => `${formatVND(value)}`}
-                className="whitespace-nowrap"
-              />
-              <Bar yAxisId="left" dataKey="revenue" fill="#16A34A" radius={[4, 4, 0, 0]} />
-              <YAxis
-                yAxisId="right"
                 fontSize={12}
                 tickLine={false}
                 axisLine={false}
                 tickFormatter={(value: any) => `${(value)} tickets`}
                 stroke="#82ca9d"
+                className="whitespace-nowrap"
               />
-              <Bar yAxisId="right" dataKey="ticketQuantity" fill="#0694e6" radius={[4, 4, 0, 0]}/>
+              <Area type="monotone" dataKey="adultTickets" stackId="1" stroke="#8884d8" fill="#8884d8" />
+              <Area type="monotone" dataKey="childTickets" stackId="1" stroke="#82ca9d" fill="#82ca9d" />
+              <Area type="monotone" dataKey="seniorTickets" stackId="1" stroke="#ffc658" fill="#ffc658" />
               <Tooltip 
               labelFormatter={(value) => `Month: ${getMonthName(value)}`}
               formatter={(value, name, props) => {
@@ -58,11 +51,11 @@ export function Overview({data, isLoading}: {data: any, isLoading: boolean}) {
                   return [formatVND(+value), "Total In-Month Revenue: "]
                 }
                 else{
-                  return [value, "Total In-Month Ticket Quantity: "]
+                  return [value, name]
                 }
               }}
               />
-            </BarChart>
+            </AreaChart>
           </ResponsiveContainer>
         )
       }
