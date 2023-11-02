@@ -1,9 +1,8 @@
 "use client"
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import * as z from "zod"
 import { Button } from "@/components/ui/button"
+import { Calendar } from "@/components/ui/calendar"
+import { Checkbox } from "@/components/ui/checkbox"
 import {
     Form,
     FormControl,
@@ -14,20 +13,30 @@ import {
     FormMessage
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { ChangeEvent, useState } from "react"
-import { useRouter } from "next/navigation"
-import { format } from "date-fns"
-import { CalendarIcon } from "lucide-react"
-import { cn } from "@/lib/utils"
-import { Calendar } from "@/components/ui/calendar"
 import {
     Popover,
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover"
 import { toast } from "@/components/ui/use-toast"
+import { cn } from "@/lib/utils"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { format } from "date-fns"
+import { CalendarIcon } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { useState } from "react"
+import { useForm } from "react-hook-form"
+import * as z from "zod"
 
-// This can come from your database or API.
+const items = [
+    { id: "1", label: "Monday", },
+    { id: "2", label: "Tuesday", },
+    { id: "3", label: "Wednesday", },
+    { id: "4", label: "Thursday", },
+    { id: "5", label: "Friday", },
+    { id: "6", label: "Saturday", },
+    { id: "7", label: "Sunday", },
+] as const
 
 const formDetailSchema = z.object({
     name: z.string()
@@ -39,10 +48,11 @@ const formDetailSchema = z.object({
     endAt: z.date({
         required_error: "Please select a date"
     }),
-    interval: z.string(),
-    feedingDate: z.number().array(),
     description: z.string()
         .min(3, { message: 'Name must be at least 3 characters.' }),
+    feedingDate: z.array(z.string()).refine((value) => value.some((item) => item), {
+        message: "You have to select at least one item.",
+    }),
 })
 
 
@@ -56,7 +66,8 @@ export function DietDetailForm() {
         name: "",
         scheduleAt: new Date(),
         endAt: new Date(),
-        description: ""
+        description: "",
+        feedingDate: ["1","2"],
     }
 
     const form = useForm<FormDetailValues>({
@@ -72,7 +83,6 @@ export function DietDetailForm() {
             feedingTime: Date.parse(values.feedingTime),
             scheduleAt: values.scheduleAt,
             endAt: values.endAt,
-            interval: values.interval,
             description: values.description
         };
         toast({
@@ -209,20 +219,52 @@ export function DietDetailForm() {
                 </div>
                 <FormField
                     control={form.control}
-                    name="interval"
-                    render={({ field }) => (
+                    name="feedingDate"
+                    render={() => (
                         <FormItem>
-                            <FormLabel>Feeding interval</FormLabel>
-                            <FormControl>
-                                <Input type="number" {...field}
-                                    onChange={event => field.onChange(+event.target.value)}
-                                    placeholder="Feeding interval of diet detail"
+                            <div className="mb-4">
+                                <FormLabel className="text-base">Sidebar</FormLabel>
+                                <FormDescription>
+                                Select the items you want to display in the sidebar.
+                                </FormDescription>
+                            </div>
+                            {items.map((item) => (
+                                <FormField
+                                key={item.id}
+                                control={form.control}
+                                name="feedingDate"
+                                render={({ field }) => {
+                                    return (
+                                    <FormItem
+                                        key={item.id}
+                                        className="flex flex-row items-start space-x-3 space-y-0"
+                                    >
+                                        <FormControl>
+                                        <Checkbox
+                                            checked={field.value?.includes(item.id)}
+                                            onCheckedChange={(checked) => {
+                                            return checked
+                                                ? field.onChange([...field.value, item.id])
+                                                : field.onChange(
+                                                    field.value?.filter(
+                                                    (value) => value !== item.id
+                                                    )
+                                                )
+                                            }}
+                                        />
+                                        </FormControl>
+                                        <FormLabel className="text-sm font-normal">
+                                        {item.label}
+                                        </FormLabel>
+                                    </FormItem>
+                                    )
+                                }}
                                 />
-                            </FormControl>
-                            <FormMessage />
+                            ))}
+                        <FormMessage />
                         </FormItem>
                     )}
-                />
+                    />
                 <FormField
                     control={form.control}
                     name="description"

@@ -11,6 +11,7 @@ import { DataTable } from "./components/data-table";
 import { RefreshCcw } from "lucide-react";
 import useRefresh from "@/stores/refresh-store";
 import { getTypes } from "@/lib/api/typeAPI";
+import { withProtected } from "@/hooks/useAuth";
 
 function UserManagementPage() {
   const [types, setTypes] = useState<any>([])
@@ -102,4 +103,4 @@ const CreateFormDialog = ({ open, setOpen }:{
   )
 }
 
-export default UserManagementPage
+export default withProtected(UserManagementPage)

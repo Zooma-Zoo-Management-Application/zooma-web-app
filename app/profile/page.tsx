@@ -1,6 +1,7 @@
 import React from 'react'
 import { ProfileForm } from './components/ProfileForm'
 import { Separator } from '@/components/ui/separator'
+import { withProtected } from '@/hooks/useAuth'
 
 function ProfilePage() {
   return (
@@ -17,4 +18,4 @@ function ProfilePage() {
   )
 }
 
-export default ProfilePage
+export default withProtected(ProfilePage)
