@@ -10,7 +10,7 @@ export const dietSchema = z.object({
   updateAt: z.date().nullish(),
   scheduleAt: z.date(),
   endAt: z.date(),
-  feedingDate: z.array(z.string()),
+  feedingDateArray: z.array(z.string()),
   feedingTime: z.date(),
   quantity: z.number(),
   status: z.boolean(),
