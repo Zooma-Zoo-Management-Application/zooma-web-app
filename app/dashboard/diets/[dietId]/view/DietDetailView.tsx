@@ -23,7 +23,7 @@ import { columns } from '../component/columns';
 
 interface Event {
     title: string;
-    start: Date | string;
+    startTime: Date;
     allDay: boolean;
     id: number;
     daysOfWeek: number[]
@@ -36,7 +36,7 @@ interface DietDetail {
     updateAt: Date,
     scheduleAt: Date,
     endAt: Date,
-    feedingDate: string[],
+    feedingDateArray: string[],
     feedingTime: Date,
     quantity: number,
     status: boolean,
@@ -86,15 +86,13 @@ export default function DietDetailViewPage() {
         setIsDialogOpen(false);
     };
 
-    // const events = dietDetails.map((dietDetail: DietDetail) => (
-    //     {
-    //         id: dietDetail.id,
-    //         title: dietDetail.name,
-    //         start: dietDetail.scheduleAt,
-    //         allDay: false,
-    //         dayOfWeek: [1, 2]
-    //     }
-    // ))
+    const events = dietDetails.map((dietDetail: DietDetail) => (
+        {
+            id: dietDetail.id,
+            title: dietDetail.name,
+            startTime: dietDetail.scheduleAt,
+        }
+    ))
 
     return (
         <div>
@@ -119,7 +117,7 @@ export default function DietDetailViewPage() {
                                         right: 'dayGridMonth,timeGridWeek'
                                     }}
                                     events={[
-                                        // events
+                                        events
                                     ]}
                                     eventClick={(info) => {
                                         handleNavigate();

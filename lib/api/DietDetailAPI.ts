@@ -8,7 +8,7 @@ interface IFormData {
     updateAt: Date,
     scheduleAt: Date,
     endAt: Date,
-    feedingDate: string[],
+    feedingDateArray: string[],
     feedingTime: Date,
     quantity: number,
     status: boolean,
@@ -53,7 +53,7 @@ export const getDietById = async (id: number) => {
 
 export const getDietDetailByDietId = async (dietId: number) => {
     try {
-        const { data } = await axiosClient.get(`/get-diet-details-by-diet-Id/${dietId}`);
+        const { data } = await axiosClient.get(`/DietDetails/getDietDetailsByDietId/${dietId}`);
         return { error: null, data };
     } catch (error) {
         return handleApiError(error);

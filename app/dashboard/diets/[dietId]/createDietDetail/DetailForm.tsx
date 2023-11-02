@@ -69,7 +69,10 @@ const formDetailSchema = z.object({
         message: "You have to select at least one item.",
     }),
     status: z.boolean(),
-    quantity: z.string().regex(/^[0-9\b]+$/),
+    quantity: z.number({
+        required_error: "required",
+        invalid_type_error: "must be a number",
+    }),
     dietId: z.number({
         required_error: "required",
         invalid_type_error: "must be a number",
@@ -400,7 +403,7 @@ export function DietDetailForm() {
                                         in Kilogram(Kg)
                                     </FormDescription>
                                     <FormControl>
-                                        <Input type="number" placeholder="0" {...field} />
+                                        <Input type="number" placeholder="0" step={0.01} {...field} onChange={event => field.onChange(+event.target.value)} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
