@@ -42,8 +42,8 @@ function DietViewPage() {
                 !isLoading ? (
                     <>
                         <div className='bg-green-500 bg-opacity-70 rounded-sm p-2'>
-                            <div className='flex justify-between'>
-                                <h1 className="text-6xl font-bold tracking-tight">{diet?.name}</h1>
+                            <div className='flex justify-between mb-3'>
+                                <h1 className="text-5xl font-bold tracking-tight">{diet?.name}</h1>
                                 <div className='my-auto'>
                                     <Button variant="secondary" onClick={handleEdit}>
                                         Edit diet Information

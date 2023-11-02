@@ -29,8 +29,6 @@ import { toast } from "@/components/ui/use-toast"
 import { Textarea } from "@/components/ui/textarea"
 import { createDiet } from "@/lib/api/dietAPI"
 
-// This can come from your database or API.
-
 const formDetailSchema = z.object({
     name: z.string()
         .min(3, { message: 'Name must be at least 3 characters.' }),
@@ -44,15 +42,15 @@ const formDetailSchema = z.object({
     }),
     description: z.string()
         .min(3, { message: 'Description must be at least 3 characters.' }),
-    goal: z.string().min(3, { message: 'Description must be at least 3 characters.' }),
+    goal: z.string().min(3, { message: 'Goal must be at least 3 characters.' }),
 })
 
 
 type FormDetailValues = z.infer<typeof formDetailSchema>
 
 export function DietDetailForm() {
-    const [files, setFiles] = useState<File[]>([]);
     const router = useRouter()
+    const [date, setDate] = useState<Date>()
 
     const defaultValues: Partial<FormDetailValues> = {
         name: "",
@@ -81,16 +79,16 @@ export function DietDetailForm() {
             description: values.description,
             goal: values.goal
         };
-        createDiet(dietBody)
+        //createDiet(dietBody)
         toast({
-            title: "You submitted the following values:",
+            variant: "default",
             description: (
-                <pre className="mt-2 w-max-[340px] rounded-md bg-slate-950 p-4">
-                    <code className="text-white-300">{JSON.stringify(values, null, 1)}</code>
-                </pre>
+                <span className="text-l font-bold text-green-500">
+                    Create Successfully!
+                </span>
             ),
         })
-        window.location.href = "/dashboard/diets"
+        router.push("/dashboard/diets")
     }
     return (
         <Form {...form}>
@@ -130,7 +128,7 @@ export function DietDetailForm() {
                                                     )}
                                                 >
                                                     {field.value ? (
-                                                        format(field.value, "MMM dd, yyyy H:mma")
+                                                        format(field.value, "MMM dd, yyyy")
                                                     ) : (
                                                         <span>Pick a date</span>
                                                     )}
@@ -174,7 +172,7 @@ export function DietDetailForm() {
                                                     )}
                                                 >
                                                     {field.value ? (
-                                                        format(field.value, "PPP")
+                                                        format(field.value, "MMM dd, yyyy")
                                                     ) : (
                                                         <span>Pick a date</span>
                                                     )}
@@ -224,7 +222,7 @@ export function DietDetailForm() {
                         </FormItem>
                     )}
                 />
-                <Button type="submit" className="w-full hover:shadow-primary-md">Create New</Button>
+                <Button type="submit" className="w-full hover:shadow-primary-md">Create Diet</Button>
             </form>
         </Form>
     )

@@ -18,15 +18,10 @@ interface Event {
 export default function Home() {
     const [open, setOpen] = useState<boolean>(false)
     return (
-        <div className="hidden flex-col md:flex w-full">
+        <div className="hidden flex-col md:flex w-full mt-3">
             <div className="flex-1 space-y-4 px-8">
                 <div className="flex items-center justify-between space-y-2">
-                    <h2 className="text-3xl font-bold tracking-tight">Diet Details</h2>
-                    <a href="/dashboard/diets/calendar/createDietDetail">
-                        <Button variant="outline">
-                            add Detail
-                        </Button>
-                    </a>
+                    <h2 className="text-3xl font-bold tracking-tight">Add Diet Details</h2>
                 </div>
                 <DietDetailForm />
             </div>
