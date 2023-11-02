@@ -1,3 +1,4 @@
+"use client"
 import React from 'react'
 import { ProfileForm } from './components/ProfileForm'
 import { Separator } from '@/components/ui/separator'
