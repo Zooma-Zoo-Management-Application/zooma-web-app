@@ -61,8 +61,8 @@ const Header = () => {
         }
       >
         <nav className="max-w-screen-xl px-6 sm:px-8 lg:px-16 mx-auto grid grid-flow-col py-3 sm:py-4 ">
-          <div className="col-start-1 col-end-2 flex items-center cursor-pointer"
-            onClick={() => router.push("/")}
+          <Link className="col-start-1 col-end-2 flex items-center cursor-pointer"
+            href="/"
           >
             {
               !scrollActive ? (
@@ -81,28 +81,30 @@ const Header = () => {
                 />
               )
             }
-          </div>
+          </Link>
           <ul className="hidden lg:flex col-start-4 col-end-9 text-white-500  items-center justify-center">
             {
               navLinks.map((navLink, index) => {
                 if(navLink.label == "Profile") return (<Fragment></Fragment>)
 
                 return (
-                  <li
-                    key={navLink.label+navLink.route}
-                    onClick={() => router.push(navLink.route)}
-                    className={
-                      "px-4 py-2 mx-2 cursor-pointer animation-hover inline-block relative font-amsi font-bold tracking-wider" +
-                      (false
-                        ? " text-primary animation-active "
-                        : "  hover:text-primary ")
-                      + (
-                        scrollActive ? " text-dark" : " text-white-500"
-                      )
-                    }
+                  <Link key={navLink.label+navLink.route}
+                    href={navLink.route}
                   >
-                    {navLink.label}
-                  </li>
+                    <li
+                      className={
+                        "px-4 py-2 mx-2 cursor-pointer animation-hover inline-block relative font-amsi font-bold tracking-wider" +
+                        (false
+                          ? " text-primary animation-active "
+                          : "  hover:text-primary ")
+                        + (
+                          scrollActive ? " text-dark" : " text-white-500"
+                        )
+                      }
+                    >
+                      {navLink.label}
+                    </li>
+                  </Link>
                 )
               })
             }

@@ -1,6 +1,5 @@
 "use client"
 
-import NewSlider from '@/app/components/NewSlider';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { withPublic } from '@/hooks/useAuth';
 import { getNews } from '@/lib/api/newAPI';
@@ -48,7 +47,6 @@ function NewsPage() {
                       <span className="py-1 px-3 bg-primary rounded-full text-sm text-white-500">Popular</span>
                     </div>
                     <div className="col-start-1 col-end-7 row-start-6 row-span-2 text-xl text-white-500 pt-3 px-1 flex flex-col justify-end">
-                      {/* {listNews[0]?.description} */}
                       <h5>{listNews[0]?.date}</h5>
                       <h2 className='text-xl sm:text-2xl'>{listNews[0]?.title}</h2>
                       <span className='text-sm sm:text-base'>{listNews[0]?.description?.slice(0, 50)+"..."}</span>
