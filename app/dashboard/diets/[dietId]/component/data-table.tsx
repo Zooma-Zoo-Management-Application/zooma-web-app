@@ -84,7 +84,7 @@ export function DataTable<TData, TValue>({
 
   const handleDateRow = (feedingDateArray: string[]) => {
     let str = "";
-    if (feedingDateArray.includes("8")) { str = dates.at(7)?.label } else {
+    if (feedingDateArray.includes("8")) { return dates.at(7)?.label } else {
       feedingDateArray?.map((date: string) => {
         if (dates.find((date1) => date1.id === date)) {
           str += (dates.find((date1) => date1.id === date)?.label) + ". "
