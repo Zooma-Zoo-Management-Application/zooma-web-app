@@ -2,20 +2,14 @@ import { axiosClient, handleApiError } from "./axiosClient";
 
 interface IFormData {
     id: number,
-    name: string,
+    yearOfExperience: number,
     description: string,
-    createAt: Date,
-    updateAt: Date,
-    scheduleAt: Date,
-    endAt: Date,
-    feedingDateArray: string[],
-    feedingTime: Date,
-    quantity: number,
     status: boolean,
-    FoodId: number
+    userId: number,
+    skillId: number
 }
 
-export const createDietDetail = async (formData: IFormData) => {
+export const createExperience = async (formData: IFormData) => {
     try {
         const { data } = await axiosClient.post(`/DietDetails`, formData);
         return { error: null, data };

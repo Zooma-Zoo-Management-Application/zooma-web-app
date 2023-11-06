@@ -2,49 +2,34 @@ import { axiosClient, handleApiError } from "./axiosClient";
 
 interface IFormData {
     id: number,
-    name: string,
+    yearOfExperience: number,
     description: string,
-    createAt: Date,
-    updateAt: Date,
-    scheduleAt: Date,
-    endAt: Date,
-    feedingDateArray: string[],
-    feedingTime: Date,
-    quantity: number,
     status: boolean,
-    FoodId: number
+    userId: number,
+    skillId: number
 }
 
-export const createDietDetail = async (formData: IFormData) => {
+export const createExperience = async (formData: IFormData) => {
     try {
-        const { data } = await axiosClient.post(`/DietDetails`, formData);
+        const { data } = await axiosClient.post(`/TrainerExps`, formData);
         return { error: null, data };
     } catch (error) {
         return handleApiError(error);
     }
 };
 
-export const editDiet = async (id: number, formData: IFormData) => {
+export const editExperience = async (id: number, formData: IFormData) => {
     try {
-        const { data } = await axiosClient.put(`/Diets/${id}`, formData);
+        const { data } = await axiosClient.put(`/TrainerExp/${id}`, formData);
         return { error: null, data };
     } catch (error) {
         return handleApiError(error);
     }
 };
 
-export const getDietDetails = async () => {
+export const getExperiencesByTrainerId = async (id: number) => {
     try {
-        const { data } = await axiosClient.get(`/DietDetails`);
-        return { error: null, data };
-    } catch (error) {
-        return handleApiError(error);
-    }
-};
-
-export const getDietById = async (id: number) => {
-    try {
-        const { data } = await axiosClient.get(`/Diets/${id}`);
+        const { data } = await axiosClient.get(`/TrainerExpByTrainerId/${id}`);
         return { error: null, data };
     } catch (error) {
         return handleApiError(error);

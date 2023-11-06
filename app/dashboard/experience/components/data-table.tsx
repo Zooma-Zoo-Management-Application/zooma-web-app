@@ -33,16 +33,6 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
 }
-const dates = [
-  { id: "1", label: "Mon", },
-  { id: "2", label: "Tue", },
-  { id: "3", label: "Wed", },
-  { id: "4", label: "Thu", },
-  { id: "5", label: "Fri", },
-  { id: "6", label: "Sat", },
-  { id: "7", label: "Sun", },
-  { id: "8", label: "Everyday", },
-] as const
 
 export function DataTable<TData, TValue>({
   columns,
@@ -62,10 +52,7 @@ export function DataTable<TData, TValue>({
     columns,
     state: {
       sorting,
-      columnVisibility: {
-        ...columnVisibility,
-        feedingDateArray: false,
-      },
+      columnVisibility,
       rowSelection,
       columnFilters,
     },
@@ -81,19 +68,6 @@ export function DataTable<TData, TValue>({
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues()
   })
-
-  const handleDateRow = (feedingDateArray: string[]) => {
-    let str = "";
-    if (feedingDateArray.includes("8")) { str = dates.at(7)?.label } else {
-      feedingDateArray?.map((date: string) => {
-        if (dates.find((date1) => date1.id === date)) {
-          str += (dates.find((date1) => date1.id === date)?.label) + ". "
-        }
-      })
-    }
-    console.log(str)
-    return str;
-  }
 
   return (
     <div className="space-y-4">
@@ -115,8 +89,6 @@ export function DataTable<TData, TValue>({
                     </TableHead>
                   )
                 })}
-                <TableHead>Feeding dates</TableHead>
-                <TableHead>Food</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
             ))}
@@ -136,14 +108,6 @@ export function DataTable<TData, TValue>({
                       )}
                     </TableCell>
                   ))}
-                  <TableCell>
-                    {
-                      handleDateRow(row.getValue("feedingDateArray"))
-                    }
-                  </TableCell>
-                  <TableCell>
-                    nothing
-                  </TableCell>
                   <TableCell>
                     <DataTableRowActions row={row} table={table} />
                   </TableCell>

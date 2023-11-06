@@ -24,10 +24,10 @@ export const columns: ColumnDef<Species>[] = [
       return (
         <div className="flex space-x-2">
           <span className="max-w-[500px] h-20 w-20 truncate font-medium">
-          <Avatar className="w-full h-full">
-            <AvatarImage src={row.getValue("imageUrl")} className="bg-cover bg-center"/>
-            <AvatarFallback>{row.getValue("name")?.toString().slice(0,2)}</AvatarFallback>
-          </Avatar>
+            <Avatar className="w-full h-full">
+              <AvatarImage src={row.getValue("imageUrl")} className="bg-cover bg-center" />
+              <AvatarFallback>{row.getValue("name")?.toString().slice(0, 2)}</AvatarFallback>
+            </Avatar>
           </span>
         </div>
       )
