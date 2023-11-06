@@ -246,18 +246,18 @@
 }
 
 #zoo-map .area-path{
-  fill: #16A34A;
+  fill: #adadad;
   stroke: #1b263a;
 }
 
 #zoo-map .area-path:hover{
   opacity: 0.8;
-  stroke: gray;
+  stroke: #16A34A;
   cursor: pointer;
 }
 
 #zoo-map .area-path-animal{
-  fill: #ecf71f;
+  fill: #16A34A;
   stroke: #1b263a;
 }
 

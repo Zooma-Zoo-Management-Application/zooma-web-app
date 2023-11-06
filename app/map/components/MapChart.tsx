@@ -9,7 +9,6 @@ function MapChart() {
   const [open, setOpen] = useState(false)
   const [currentArea, setCurrentArea] = useState<any>(null)
 
-
   const handleMoverOver = (areaId:number) => {
     const area:any = areas.find((area:any) => area.id === areaId);
     console.log(area)
