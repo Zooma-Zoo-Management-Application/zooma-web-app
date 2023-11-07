@@ -28,6 +28,8 @@ import {
 import { DataTablePagination } from "./data-table-pagination"
 import { DataTableToolbar } from "./data-table-toolbar"
 import { DataTableRowActions } from "./data-table-row-actions"
+import { useEffect, useState } from "react"
+import { getFoods } from "@/lib/api/foodAPI"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -44,6 +46,14 @@ const dates = [
   { id: "8", label: "Everyday", },
 ] as const
 
+interface food {
+  id: number,
+  name: string,
+  description: string,
+  energyValue: number,
+  imageUrl: string
+}
+
 export function DataTable<TData, TValue>({
   columns,
   data,
@@ -55,7 +65,24 @@ export function DataTable<TData, TValue>({
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   )
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
   const [sorting, setSorting] = React.useState<SortingState>([])
+  const [foods, setFoods] = useState<food[]>([])
+
+  useEffect(() => {
+    const initialize = async () => {
+      try {
+        const res = await getFoods();
+        setFoods(res.data);
+      } catch (err: any) {
+        setError(`Error initializing the app: ${err.message}`);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    initialize();
+  }, [])
 
   const table = useReactTable({
     data: dataState,
@@ -64,7 +91,10 @@ export function DataTable<TData, TValue>({
       sorting,
       columnVisibility: {
         ...columnVisibility,
+        feedingTime: false,
         feedingDateArray: false,
+        foodId: false,
+        quantity: false,
       },
       rowSelection,
       columnFilters,
@@ -82,17 +112,49 @@ export function DataTable<TData, TValue>({
     getFacetedUniqueValues: getFacetedUniqueValues()
   })
 
-  const handleDateRow = (feedingDateArray: string[]) => {
+  const handleDateRow = (feedingDateArray: string[], feedingTime: string) => {
     let str = "";
-    if (feedingDateArray.includes("8")) { return dates.at(7)?.label } else {
+    if (feedingDateArray.includes("8")) {
+      return <>
+        <div className="flex space-x-2">
+          {/* {label && <Badge variant="outline">{label.label}</Badge>} */}
+          <span className="max-w-[300px] truncate font-medium">
+            At {feedingTime.substring(0, 5)}{<br />}{dates.at(7)?.label}
+          </span>
+        </div>
+      </>
+    } else {
       feedingDateArray?.map((date: string) => {
         if (dates.find((date1) => date1.id === date)) {
           str += (dates.find((date1) => date1.id === date)?.label) + ". "
         }
       })
     }
-    console.log(str)
-    return str;
+    return <>
+      <div className="flex space-x-2">
+        {/* {label && <Badge variant="outline">{label.label}</Badge>} */}
+        <span className="max-w-[300px] truncate font-medium">
+          At {feedingTime.substring(0, 5)}{<br />}{str}
+        </span>
+      </div>
+    </>;
+  }
+
+  const handleFoodRow = (foodId: number, quantity: number) => {
+    let str = "";
+    if (foods.find((food) => food.id === foodId)) {
+      str = (foods.find((food) => food.id === foodId)?.name) as string
+    } else {
+      error
+    }
+    return <>
+      <div className="flex space-x-2">
+        {/* {label && <Badge variant="outline">{label.label}</Badge>} */}
+        <span className="max-w-[300px] truncate font-medium text-center">
+          {str}: {quantity}kg
+        </span>
+      </div>
+    </>;
   }
 
   return (
@@ -138,11 +200,13 @@ export function DataTable<TData, TValue>({
                   ))}
                   <TableCell>
                     {
-                      handleDateRow(row.getValue("feedingDateArray"))
+                      handleDateRow(row.getValue("feedingDateArray"), row.getValue("feedingTime"))
                     }
                   </TableCell>
                   <TableCell>
-                    nothing
+                    {
+                      handleFoodRow(row.getValue("foodId"), row.getValue("quantity"))
+                    }
                   </TableCell>
                   <TableCell>
                     <DataTableRowActions row={row} table={table} />

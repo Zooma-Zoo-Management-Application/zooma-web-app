@@ -103,6 +103,21 @@ export const columns: ColumnDef<Diet>[] = [
     },
   },
   {
+    accessorKey: "feedingTime",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Feeding Dates" />
+    ),
+    cell: ({ row }) => {
+      return (
+        <div className="flex space-x-2">
+          <span className="max-w-[300px] truncate font-medium">
+            {row.getValue("feedingTime")}
+          </span>
+        </div>
+      )
+    },
+  },
+  {
     accessorKey: "feedingDateArray",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Feeding Dates" />
@@ -112,6 +127,36 @@ export const columns: ColumnDef<Diet>[] = [
         <div className="flex space-x-2">
           <span className="max-w-[300px] truncate font-medium">
             {row.getValue("feedingDateArray")}
+          </span>
+        </div>
+      )
+    },
+  },
+  {
+    accessorKey: "foodId",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Food" />
+    ),
+    cell: ({ row }) => {
+      return (
+        <div className="flex space-x-2">
+          <span className="max-w-[300px] truncate font-medium">
+            {row.getValue("foodId")}
+          </span>
+        </div>
+      )
+    },
+  },
+  {
+    accessorKey: "quantity",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Quantity" />
+    ),
+    cell: ({ row }) => {
+      return (
+        <div className="flex space-x-2">
+          <span className="max-w-[300px] truncate font-medium">
+            {row.getValue("quantity")}
           </span>
         </div>
       )
