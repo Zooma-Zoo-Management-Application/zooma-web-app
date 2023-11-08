@@ -2,8 +2,6 @@
 
 import { ColumnDef } from "@tanstack/react-table"
 
-
-import { statuses } from "../data/data"
 import { Diet } from "../data/schema"
 import { DataTableColumnHeader } from "./data-table-column-header"
 import { format } from "date-fns"

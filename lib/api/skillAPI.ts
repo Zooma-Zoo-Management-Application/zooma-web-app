@@ -2,52 +2,41 @@ import { axiosClient, handleApiError } from "./axiosClient";
 
 interface IFormData {
     id: number,
-    yearOfExperience: number,
+    name: string,
     description: string,
     status: boolean,
-    userId: number,
-    skillId: number
 }
 
-export const createExperience = async (formData: IFormData) => {
+export const createSkill = async (formData: IFormData) => {
     try {
-        const { data } = await axiosClient.post(`/DietDetails`, formData);
+        const { data } = await axiosClient.post(`/skills`, formData);
         return { error: null, data };
     } catch (error) {
         return handleApiError(error);
     }
 };
 
-export const editDiet = async (id: number, formData: IFormData) => {
+export const editSkill = async (id: number, formData: IFormData) => {
     try {
-        const { data } = await axiosClient.put(`/Diets/${id}`, formData);
+        const { data } = await axiosClient.put(`/skills/${id}`, formData);
         return { error: null, data };
     } catch (error) {
         return handleApiError(error);
     }
 };
 
-export const getDietDetails = async () => {
+export const getSkills = async () => {
     try {
-        const { data } = await axiosClient.get(`/DietDetails`);
+        const { data } = await axiosClient.get(`/Skills`);
         return { error: null, data };
     } catch (error) {
         return handleApiError(error);
     }
 };
 
-export const getDietById = async (id: number) => {
+export const getSkillById = async (id: number) => {
     try {
-        const { data } = await axiosClient.get(`/Diets/${id}`);
-        return { error: null, data };
-    } catch (error) {
-        return handleApiError(error);
-    }
-};
-
-export const getDietDetailByDietId = async (dietId: number) => {
-    try {
-        const { data } = await axiosClient.get(`/DietDetails/${dietId}/getDietDetailsByDietId`);
+        const { data } = await axiosClient.get(`/Skills/${id}`);
         return { error: null, data };
     } catch (error) {
         return handleApiError(error);

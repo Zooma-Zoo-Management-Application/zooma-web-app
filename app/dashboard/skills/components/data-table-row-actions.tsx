@@ -12,7 +12,6 @@ import {
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
 import { toast } from "@/components/ui/use-toast"
-//import { deleteDietById} from "@/lib/api/dietAPI"
 import { useRouter } from "next/navigation"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { DialogClose } from "@radix-ui/react-dialog"
@@ -31,10 +30,7 @@ export function DataTableRowActions<TData>({
   const meta: TableMeta<TData> | undefined = table.options.meta;
 
   const handleEdit = () => {
-    router.push(`/dashboard/diets/${row.getValue("id")}/edit`)
-  }
-  const handleView = () => {
-    router.push(`/dashboard/diets/${row.getValue("id")}/view`)
+    router.push(`/dashboard/skills/${row.getValue("id")}/edit`)
   }
 
   // const handleDelete = () => {
@@ -70,7 +66,6 @@ export function DataTableRowActions<TData>({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-[160px]">
-          <DropdownMenuItem onClick={handleView}>View</DropdownMenuItem>
           <DropdownMenuItem onClick={handleEdit}>Edit</DropdownMenuItem>
           {/* <DropdownMenuSeparator />
           <DialogTrigger asChild>

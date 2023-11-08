@@ -18,25 +18,27 @@ import { ChangeEvent, useState } from "react"
 import { useRouter } from "next/navigation"
 import { toast } from "@/components/ui/use-toast"
 import { Textarea } from "@/components/ui/textarea"
-import { createSkill } from "@/lib/api/skillAPI"
+import { editSkill } from "@/lib/api/skillAPI"
 
 const formDetailSchema = z.object({
     name: z.string()
         .min(3, { message: 'Name must be at least 3 characters.' }),
     description: z.string()
-        .min(3, { message: 'Description must be at least 3 characters.' })
+        .min(3, { message: 'Description must be at least 3 characters.' }),
+    status: z.boolean()
 })
 
 
 type FormDetailValues = z.infer<typeof formDetailSchema>
 
-export function SkillDetailForm() {
+export function SkillDetailForm({ skillParam }: any) {
     const router = useRouter()
     const [date, setDate] = useState<Date>()
 
     const defaultValues: Partial<FormDetailValues> = {
-        name: "",
-        description: ""
+        name: skillParam.name,
+        description: skillParam.description,
+        status: skillParam.status
     }
 
     const form = useForm<FormDetailValues>({
@@ -50,13 +52,14 @@ export function SkillDetailForm() {
         let skillBody: any = {
             name: values.name,
             description: values.description,
+            status: true
         };
-        createSkill(skillBody)
+        editSkill(skillParam.id, skillBody)
         toast({
             variant: "default",
             description: (
                 <span className="text-l font-bold text-green-500">
-                    Create Successfully!
+                    Update Successfully!
                 </span>
             ),
         })
@@ -91,7 +94,7 @@ export function SkillDetailForm() {
                         </FormItem>
                     )}
                 />
-                <Button type="submit" className="w-full hover:shadow-primary-md">Create Diet</Button>
+                <Button type="submit" className="w-full hover:shadow-primary-md">Update Diet</Button>
             </form>
         </Form>
     )

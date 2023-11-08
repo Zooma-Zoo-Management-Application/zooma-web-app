@@ -52,7 +52,6 @@ const formNewSchema = z.object({
 type FormNewValues = z.infer<typeof formNewSchema>
 
 export function NewsForm({ dietParam }: any) {
-    const [files, setFiles] = useState<File[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const router = useRouter()
