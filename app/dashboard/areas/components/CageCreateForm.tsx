@@ -27,14 +27,14 @@ import { useEffect, useState } from "react"
 const formSignUpSchema = z.object({
     name: z.string().min(3, "Name must be at least 3 characters"),
     description: z.string().min(10, "Description must be at least 10 characters"),
-    imageUrl: z.string().url("Please enter a valid URL"),
+    animalLimit: z.number(),
     areaId: z.string(),
   })
   
 
 type SignUpFormValues = z.infer<typeof formSignUpSchema>
 
-export function CreateForm({setOpen, areaId}: {setOpen: (value: boolean) => void, areaId: number}) {
+export function CreateCageForm({setOpen, areaId, currentArea}: {setOpen: (value: boolean) => void, areaId: number, currentArea: any}) {
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [areas, setAreas] = useState<any>([])
 
@@ -51,12 +51,13 @@ export function CreateForm({setOpen, areaId}: {setOpen: (value: boolean) => void
     };
     initialize();
   }, [])
+  console.log("currentArea", currentArea)
 
   const defaultValues: Partial<SignUpFormValues> = {
     name: "",
     description: "",
-    imageUrl: "",
-    areaId: "1",
+    animalLimit: 1,
+    areaId: areaId.toString() || "1",
   }
 
   const form = useForm<SignUpFormValues>({
@@ -66,10 +67,10 @@ export function CreateForm({setOpen, areaId}: {setOpen: (value: boolean) => void
   })
 
   async function onSubmit(values: SignUpFormValues) {
-    createCage(areaId, {
+    createCage({
       "name": values.name,
       "description": values.description,
-      "imageUrl": values.imageUrl,
+      "animalLimit": values.animalLimit,
       "areaId": values.areaId,
     })
     .then((response) => {
@@ -86,8 +87,11 @@ export function CreateForm({setOpen, areaId}: {setOpen: (value: boolean) => void
           description: JSON.stringify(response.error),
         })
         setIsLoading(false);
-        values.imageUrl = "";
+        setOpen(false);
       }
+    })
+    .finally(() => {
+      refresh()
     })
   }
 
@@ -107,30 +111,53 @@ export function CreateForm({setOpen, areaId}: {setOpen: (value: boolean) => void
               </FormItem>
             )}
           />
+          <div className="grid grid-cols-2 gap-2">
           <FormField
             control={form.control}
             name="areaId"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Area</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value.toString()}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Area" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {
-                      areas && areas.map((area: any) => (
-                        <SelectItem key={area.id+area.name} value={area.id.toString()}>{area.id}. {area.name}</SelectItem>
-                      ))
-                    }
-                  </SelectContent>
-                </Select>
+                  <Select onValueChange={field.onChange} defaultValue={field.value.toString()}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Area" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {
+                        areas && areas.map((area: any) => (
+                          <SelectItem key={area.id+area.name} value={area.id.toString()}
+                          >{area.id.toString()}. {area.name}</SelectItem>
+                        ))
+                      }
+                    </SelectContent>
+                  </Select>
+                <FormMessage />
+                
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="animalLimit"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Animal Limit</FormLabel>
+                <FormControl>
+                  <Input type="number"  
+                    placeholder="Animal Limit" {...field} 
+                    min={1}
+                    max={100}
+                    {...field}
+                    onChange={event => field.onChange(+event.target.value)}
+                  />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
+          </div>
           <FormField
             control={form.control}
             name="description"

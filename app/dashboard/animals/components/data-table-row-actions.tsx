@@ -23,6 +23,7 @@ import { DialogClose } from "@radix-ui/react-dialog"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { UpdateForm } from "./UpdateForm"
+import { format } from "date-fns"
 
 
 interface DataTableRowActionsProps<TData> {
@@ -148,8 +149,8 @@ const ViewFormDialog = ({ open, setOpen, row, table, typeName }:{
       <DialogContent>
         <DialogHeader>View Animal</DialogHeader>
         <div className="w-full">
-          <div className="grid grid-cols-4 gap-4">
-            <div className="col-span-2">
+          <div className="grid grid-cols-3 gap-4">
+            <div className="col-span-1">
               <div className="text-sm font-semibold">Name</div>
               <div className="text-sm">{row.getValue("name")}</div>
             </div>
@@ -160,6 +161,38 @@ const ViewFormDialog = ({ open, setOpen, row, table, typeName }:{
             <div className="col-span-1">
               <div className="text-sm font-semibold">Weight</div>
               <div className="text-sm">{row.getValue("weight")}</div>
+            </div>
+          </div>
+        </div>
+        <div className="w-full mt-4">
+          <div className="grid grid-cols-3 gap-4">
+            <div className="col-span-1">
+              <div className="text-sm font-semibold">Date of Birth</div>
+              <div className="text-sm">{format(new Date(row.getValue("dateOfBirth")), "dd/MM/yyyy")}</div>
+            </div>
+            <div className="col-span-1">
+              <div className="text-sm font-semibold">Arrival Date</div>
+              <div className="text-sm">{format(new Date(row.getValue("arrivalDate")), "dd/MM/yyyy")}</div>
+            </div>
+            <div className="col-span-1">
+              <div className="text-sm font-semibold">Species</div>
+              <div className="text-sm">{species.find((species:any) => species.id == (row.getValue("speciesId") as number))?.name}</div>
+            </div>
+          </div>
+        </div>
+        <div className="w-full mt-4">
+          <div className="grid grid-cols-3 gap-4">
+            <div className="col-span-1">
+              <div className="text-sm font-semibold">Cage</div>
+              <div className="text-sm">{row.getValue("cageId")}</div>
+            </div>
+            <div className="col-span-1">
+              <div className="text-sm font-semibold">Diet</div>
+              <div className="text-sm">{row.getValue("dietId")}</div>
+            </div>
+            <div className="col-span-1">
+              <div className="text-sm font-semibold">Training Plan</div>
+              <div className="text-sm">{row.getValue("trainingPlanId")}</div>
             </div>
           </div>
         </div>
@@ -196,7 +229,7 @@ const UpdateFormDialog = ({ open, setOpen, row, table }:{
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
-        <DialogHeader>Update Species</DialogHeader>
+        <DialogHeader>Update Animal</DialogHeader>
         <UpdateForm id={row.getValue("id")} values={values} setOpen={setOpen}/>
       </DialogContent>
     </Dialog>

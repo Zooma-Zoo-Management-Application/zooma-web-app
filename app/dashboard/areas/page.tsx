@@ -11,10 +11,10 @@ import { ArrowDown, RefreshCcw } from "lucide-react";
 import { useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import DataTableSkeleton from '../components/DataTableSkeleton';
+import { CreateCageForm } from "./components/CageCreateForm";
 import { UpdateAreaForm } from "./components/UpdateAreaForm";
 import { columns } from "./components/columns";
 import { DataTable } from "./components/data-table";
-import { CreateForm } from "./components/CageCreateForm";
 const paths = [
   "M 435.4 44.91 438.14 34.62 466.95 22.27 520.46 11.98 588.38 10.6 630.23 14.03 644.64 25.7 629.55 30.5 604.16 42.16 562.31 45.59 536.24 64.8 526.64 94.99 438.83 92.24 435.4 44.91 Z",
   "M 582.9 56.57 600.05 77.15 632.29 117.62 645.33 149.87 635.72 158.79 587.01 156.04 556.14 153.3 546.53 128.6 543.1 88.81 552.71 66.17 582.9 56.57 Z",
@@ -42,7 +42,6 @@ function UserManagementPage() {
 
   const [accordionOpen, setAccordionOpen] = useState<boolean>(true)
   const [dialogUpdateAreaOpen, setDialogUpdateAreaOpen] = useState<boolean>(false)
-  console.log(accordionOpen)
 
   const getAreaName = async (id:number) => {
     try {
@@ -132,11 +131,11 @@ function UserManagementPage() {
                             <path
                             className={twMerge("area-path", (index+1==areaSelector) && " area-path-animal animate-pulse")}
                             onClick={() => {
-                              setAreaSelector(index+1)
                               setAccordionOpen(false)
+                              setAreaSelector(index+1)
                             }
                             }
-                            d={paths[index]} 
+                            d={path} 
                             key={index}
                             />
                           </>
@@ -164,7 +163,7 @@ function UserManagementPage() {
                   <Dialog open={dialogUpdateAreaOpen} onOpenChange={setDialogUpdateAreaOpen}>
                     <DialogContent>
                       <DialogHeader>Update Area Information</DialogHeader>
-                      <UpdateAreaForm id={currentArea.id} values={currentArea} setOpen={setOpen}/>
+                      <UpdateAreaForm id={currentArea.id} values={currentArea} setOpen={setDialogUpdateAreaOpen}/>
                     </DialogContent>
                   </Dialog>
                 </Card>
@@ -185,15 +184,16 @@ function UserManagementPage() {
           )
         }
       </div>
-      <CreateFormDialog open={open} setOpen={setOpen} areaId={currentArea}/>
+      <CreateFormDialog open={open} setOpen={setOpen} areaId={currentArea?.id || 1} currentArea={currentArea}/>
     </div>
   )
 }
 
-const CreateFormDialog = ({ open, setOpen, areaId }:{
+const CreateFormDialog = ({ open, setOpen, areaId = 1, currentArea }:{
   open: boolean,
   setOpen: (value: boolean) => void,
-  areaId: number
+  areaId: number,
+  currentArea: any
 }) => {
 
   const handleClose = () => {
@@ -214,7 +214,7 @@ const CreateFormDialog = ({ open, setOpen, areaId }:{
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
         <DialogHeader>Create Cage</DialogHeader>
-        <CreateForm setOpen={setOpen} areaId={areaId}/>
+        <CreateCageForm setOpen={setOpen} areaId={areaId} currentArea={currentArea}/>
       </DialogContent>
     </Dialog>
   )

@@ -31,6 +31,21 @@ export const columns: ColumnDef<Cages>[] = [
     },
   },
   {
+    accessorKey: "description",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Description" />
+    ),
+    cell: ({ row }) => {
+      return (
+        <div className="flex space-x-2">
+          <span className="max-w-[500px] truncate font-medium">
+            {row.getValue("description")}
+          </span>
+        </div>
+      )
+    },
+  },
+  {
     accessorKey: "animalCount",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Animal Count" />
@@ -48,7 +63,7 @@ export const columns: ColumnDef<Cages>[] = [
   {
     accessorKey: "animalLimit",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Animal Count" />
+      <DataTableColumnHeader column={column} title="Animal Limit" />
     ),
     cell: ({ row }) => {
       return (
@@ -70,6 +85,36 @@ export const columns: ColumnDef<Cages>[] = [
         <div className="flex space-x-2">
           <span className="max-w-[500px] truncate font-medium">
             {row.getValue("description")}
+          </span>
+        </div>
+      )
+    },
+  },
+  {
+    accessorKey: "areaId",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="area" />
+    ),
+    cell: ({ row }) => {
+      return (
+        <div className="flex space-x-2">
+          <span className="max-w-[500px] truncate font-medium">
+            {row.getValue("areaId")}
+          </span>
+        </div>
+      )
+    },
+  },
+  {
+    accessorKey: "animal",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="area" />
+    ),
+    cell: ({ row }) => {
+      return (
+        <div className="flex space-x-2">
+          <span className="max-w-[200px] truncate font-medium">
+            {JSON.stringify((row.getValue("animal") as any[]))}
           </span>
         </div>
       )

@@ -74,7 +74,10 @@ export function DataTable<TData, TValue>({
       columnVisibility: {
         ...columnVisibility,
         // description: false,
-        // typeId: false,
+        cageId: false,
+        dietId: false,
+        speciesId: false,
+        trainingPlanId: false,
       },
       rowSelection,
       columnFilters,
