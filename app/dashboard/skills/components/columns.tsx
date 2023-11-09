@@ -64,7 +64,7 @@ export const columns: ColumnDef<Diet>[] = [
     cell: ({ row }) => {
       return (
         <div className="flex space-x-2">
-          <span className="max-w-[300px] truncate font-medium">
+          <span className="max-w-[600px] truncate font-medium">
             {row.getValue("description")}
           </span>
         </div>
