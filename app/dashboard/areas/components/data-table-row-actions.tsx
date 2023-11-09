@@ -3,8 +3,8 @@
 import { DotsHorizontalIcon } from "@radix-ui/react-icons"
 import { Row, Table, TableMeta } from "@tanstack/react-table"
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
+import { DialogContent as FullWidthDialog } from "@/components/shared/full-width-dialog"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import {
   DropdownMenu,
@@ -14,12 +14,17 @@ import {
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
 import { toast } from "@/components/ui/use-toast"
-import { deleteSpecies } from "@/lib/api/speciesAPI"
+import { removeCage } from "@/lib/api/cageAPI"
 import useRefresh from "@/stores/refresh-store"
 import { DialogClose } from "@radix-ui/react-dialog"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { columns } from "../../animals/components/columns"
 import { UpdateForm } from "./UpdateForm"
+import { DataTable } from "../../animals/components/data-table"
+import { AddAnimalTable } from "./add-animal-table"
+import { animalColumns } from "./add-animal-column"
+import { getAnimalWithNoCage } from "@/lib/api/animalAPI"
 
 
 interface DataTableRowActionsProps<TData> {
@@ -36,6 +41,7 @@ export function DataTableRowActions<TData>({
 
   const [updateOpen, setUpdateOpen] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
+  const [viewOpen, setViewOpen] = useState(false)
 
   return (
     <DropdownMenu>
@@ -46,9 +52,9 @@ export function DataTableRowActions<TData>({
       </DropdownMenuTrigger>
       <DropdownMenuContent sideOffset={5} alignOffset={-5}>
         <DropdownMenuGroup>
-          {/* <DropdownMenuItem onSelect={() => setViewOpen(true)}>
+          <DropdownMenuItem onSelect={() => setViewOpen(true)}>
             View
-          </DropdownMenuItem> */}
+          </DropdownMenuItem>
           <DropdownMenuItem onSelect={() => setUpdateOpen(true)}>
             Update
           </DropdownMenuItem>
@@ -57,50 +63,127 @@ export function DataTableRowActions<TData>({
           </DropdownMenuItem>
         </DropdownMenuGroup>
       </DropdownMenuContent>
-      {/* <ViewFormDialog open={viewOpen} setOpen={setViewOpen} row={row} table={table}/> */}
+      <ViewFormDialog open={viewOpen} setOpen={setViewOpen} row={row} table={table}/>
       <UpdateFormDialog open={updateOpen} setOpen={setUpdateOpen} row={row} table={table}/>
       <DeleteFormDialog open={deleteOpen} setOpen={setDeleteOpen} row={row} />
     </DropdownMenu>
   )
 }
 
-const ViewFormDialog = ({ open, setOpen, row, table, typeName }:{
+const ViewFormDialog = ({ open, setOpen, row, table }:{
   open: boolean,
   setOpen: (value: boolean) => void,
   row: Row<any>,
   table: Table<any>,
-  typeName: string
 }) => {
 
-  const handleClose = () => {
-    setOpen(false)
-  }
+  const [animalOpen, setAnimalOpen] = useState(false)
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent>
-        <DialogHeader>View Species</DialogHeader>
-          <div className="flex flex-col items-center justify-center space-y-2">
-            <Avatar className="w-28 h-28">
-              <AvatarImage src={row.getValue("imageUrl")} className="bg-cover bg-center"/>
-              <AvatarFallback>{row.getValue("name")?.toString().slice(0,2)}</AvatarFallback>
-            </Avatar>
-            <div className="text-lg font-semibold">{row.getValue("name")}</div>
-            {/* <div className="text-sm">{row.getValue("description")}</div> */}
-          </div>
-          <div className="">
-            <div>
-              <div className="text-sm font-semibold">Animal Type</div>
-              <div className="text-sm">{typeName}</div>
+    <div>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <FullWidthDialog>
+          <DialogHeader>View Cage</DialogHeader>
+            <div className="space-y-2">
+              <div className="grid grid-cols-2">
+                <div>
+                  <div className="text-sm font-semibold">Name</div>
+                  <div className="text-sm">{row.getValue("name")}</div>
+                </div>
+                <div>
+                  <div className="text-sm font-semibold">Area</div>
+                  <div className="text-sm">{row.getValue("areaId")}</div>
+                </div>
+              </div>
+              <div className="grid grid-cols-2">
+                <div>
+                  <div className="text-sm font-semibold">Animal Count</div>
+                  <div className="text-sm">{row.getValue("animalCount")}</div>
+                </div>
+                <div>
+                  <div className="text-sm font-semibold">Animal Limit</div>
+                  <div className="text-sm">{row.getValue("animalLimit")}</div>
+                </div>
+              </div>
+              <div>
+                <div className="text-sm font-semibold">Description</div>
+                <div className="text-sm">{row.getValue("description")}</div>
+              </div>
             </div>
-            <div>
-              <div className="text-sm font-semibold">Description</div>
-              <div className="text-sm">{row.getValue("description")}</div>
+            <div className="space-y-2 mt-4">
+              <div className="flex">
+                <h5>Animals</h5>
+                <Button type="button" variant="default" className="ml-auto" onClick={() => setAnimalOpen(true)}>Add Animals</Button>
+              </div>
+              <div className="animal-list">
+                <DataTable columns={columns} data={row.getValue("animal") as any[]} />
+                {/* {(row.getValue("animal") as any[]).map((animal) => (
+                  <div className="animal-list-item" key={animal.id}>
+                    <div className="animal-list-item-name">{animal.name}</div>
+                  </div>
+                ))} */}
+              </div>
             </div>
-          </div>
-      </DialogContent>
-    </Dialog>
+        </FullWidthDialog>
+      </Dialog>
+      <AddAnimalTableDialog open={animalOpen} setOpen={setAnimalOpen} row={row} table={table}/>
+    </div>
   )
+}
+
+const AddAnimalTableDialog =({ open, setOpen, row, table }:{
+  open: boolean,
+  setOpen: (value: boolean) => void,
+  row: Row<any>,
+  table: Table<any>
+}) => {
+
+  const [animals, setAnimals] = useState<any>([])
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  // const [open, setOpen] = useState<boolean>(false)
+
+  const refresh = async () => {
+    try {
+      const res = await getAnimalWithNoCage();
+      const { data } = res;
+      setAnimals(data);
+    } catch (err:any) {
+      setError(`Error initializing the app: ${err.message}`);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+  const { setRefresh } = useRefresh()
+
+  useEffect(() => {
+    const initialize = async () => {
+      try {
+        const res = await getAnimalWithNoCage();
+        const { data } = res;
+        if(data == null) return;
+        setAnimals(data);
+        setRefresh(refresh)
+      } catch (err:any) {
+        setError(`Error initializing the app: ${err.message}`);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    initialize();
+  }, [error])
+
+  
+
+    return (
+      <Dialog open={open} onOpenChange={setOpen}>
+        <FullWidthDialog>
+          <DialogHeader>Add Animals</DialogHeader>
+          <AddAnimalTable columns={animalColumns} data={animals} cageId={row.getValue("id")}/>
+        </FullWidthDialog>
+      </Dialog>
+    )
+
 }
 
 const UpdateFormDialog = ({ open, setOpen, row, table }:{
@@ -115,15 +198,16 @@ const UpdateFormDialog = ({ open, setOpen, row, table }:{
   }
 
   const values = {
-    name: row.getValue("name"),
-    description: row.getValue("description"),
-    imageUrl: row.getValue("imageUrl"),
+    "name": row.getValue("name"),
+    "description": row.getValue("description"),
+    "animalLimit": row.getValue("animalLimit"),
+    "areaId": row.getValue("areaId") || "1",
   }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
-        <DialogHeader>Update Species</DialogHeader>
+        <DialogHeader>Update Cage</DialogHeader>
         <UpdateForm id={row.getValue("id")} values={values} setOpen={setOpen}/>
       </DialogContent>
     </Dialog>
@@ -139,24 +223,27 @@ const DeleteFormDialog = ({ open, setOpen, row }:{
   const { refresh } = useRefresh()
 
   const handleDelete = async () => {
-    deleteSpecies(row.getValue("id"))
+    removeCage(row.getValue("id"))
     .then(res => {
-      toast({
-        title: "Delete Success!",
-        description: "Species has been deleted."
-      })
-      
+      if(res.error != null) {
+        toast({
+          title: "Delete Failed!",
+          description: res.error,
+          variant: "destructive"
+        })
+      } else {
+        toast({
+          title: "Delete Success!",
+          description: "Cage has been deleted."
+        })
+      }
       setTimeout(() => {
         setOpen(false)
         refresh()
       }, 1000)
     })
     .catch(err => {
-      toast({
-        title: "Delete Failed!",
-        description: "Something went wrong.",
-        variant: "destructive"
-      })
+      
     })
   }
 

@@ -83,3 +83,21 @@ export const deleteAnimal = async (id:number) => {
     return handleApiError(error);
   }
 }
+
+export const getAnimalWithNoCage = async () => {
+  try {
+    const { data } = await axiosClient.get(`/animals/cageless`);
+    return { error: null, data };
+  } catch (error) {
+    return handleApiError(error);
+  }
+}
+
+export const assignAnimalsIntoCage = async (id: number, values: any[]) => {
+  try {
+    const { data } = await axiosClient.put(`/animals/cage/${id}`, values);
+    return { error: null, data };
+  } catch (error) {
+    return handleApiError(error);
+  }
+}

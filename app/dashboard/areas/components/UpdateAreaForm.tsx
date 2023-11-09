@@ -51,14 +51,14 @@ export function UpdateAreaForm({id, values, setOpen}: any) {
     })
     .then((res) => {
       toast({
-        title: "Animal type updated",
-        description: "Animal type has been updated successfully.",
+        title: "Area updated",
+        description: "Area has been updated successfully.",
       });
-      setOpen(false);
     })
     
     setTimeout(() => {
       refresh();
+      setOpen(false);
     }, 1000);
   }
 
@@ -85,7 +85,7 @@ export function UpdateAreaForm({id, values, setOpen}: any) {
               <FormItem>
                 <FormLabel>Description</FormLabel>
                 <FormControl>
-                  <Textarea rows={5} placeholder="Animal Types" {...field} />
+                  <Textarea rows={5} placeholder="Areas" {...field} />
                 </FormControl>
                 <FormDescription>
                   This is a description of area.
@@ -94,7 +94,7 @@ export function UpdateAreaForm({id, values, setOpen}: any) {
               </FormItem>
             )}
           />
-        <Button type="submit">Update type</Button>
+        <Button type="submit">Update</Button>
       </form>
     </Form>
   )

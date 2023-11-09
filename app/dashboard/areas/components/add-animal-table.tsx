@@ -1,10 +1,8 @@
 "use client"
 
-import * as React from "react"
 import {
   ColumnDef,
   ColumnFiltersState,
-  RowData,
   SortingState,
   VisibilityState,
   flexRender,
@@ -14,8 +12,9 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
-  useReactTable,
+  useReactTable
 } from "@tanstack/react-table"
+import * as React from "react"
 
 import {
   Table,
@@ -26,21 +25,23 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { DataTablePagination } from "./data-table-pagination"
-import { DataTableToolbar } from "./data-table-toolbar"
 import { DataTableRowActions } from "./data-table-row-actions"
-import { RefreshCcw } from "lucide-react"
+import { DataTableToolbar } from "./data-table-toolbar"
 import { Button } from "@/components/ui/button"
+import { assignAnimalsIntoCage } from "@/lib/api/animalAPI"
+import { toast } from "@/components/ui/use-toast"
 import useRefresh from "@/stores/refresh-store"
-import { getTypes } from "@/lib/api/typeAPI"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
-  data: TData[]
+  data: TData[],
+  cageId: string
 }
 
-export function DataTable<TData, TValue>({
+export function AddAnimalTable<TData, TValue>({
   columns,
   data,
+  cageId
 }: DataTableProps<TData, TValue>) {
   const [dataState, setDataState] = React.useState<TData[]>(data)
   const [rowSelection, setRowSelection] = React.useState({})
@@ -51,6 +52,23 @@ export function DataTable<TData, TValue>({
   )
   const [sorting, setSorting] = React.useState<SortingState>([])
 
+  const [types, setTypes] = React.useState<any>([])
+
+  const { refresh } = useRefresh()
+
+  // React.useEffect(() => {
+  //   const initialize = async () => {
+  //     try {
+  //       const res = await getTypes();
+  //       const { data } = res;
+  //       setTypes(data);
+  //     } catch (err:any) {
+  //     } finally {
+  //     }
+  //   };
+  //   initialize();
+  // }, [data])
+
   const table = useReactTable({
     data: data,
     columns,
@@ -59,7 +77,7 @@ export function DataTable<TData, TValue>({
       columnVisibility: {
         ...columnVisibility,
         // description: false,
-        areaId: false
+        // typeId: false,
       },
       rowSelection,
       columnFilters,
@@ -128,6 +146,30 @@ export function DataTable<TData, TValue>({
     }
   })
 
+  const handleAddAnimalIntoCage = () => {
+    // rowSelection
+    const selected = table.getRowModel().rows.filter((row) => row.getIsSelected()).map((row) => row.getValue("id"))
+    if(selected.length == 0){
+      toast({
+        title: "Error",
+        description: "Please select at least one animal",
+      })
+    } else {
+      assignAnimalsIntoCage(+cageId, selected).then((res) => {
+        toast({
+          title: "Success",
+          description: "Add animal into cage successfully",
+        })
+
+      })
+      .finally(() => {
+        setTimeout(() => {
+          refresh()
+        }, 1000)
+      })
+    }
+  }
+
   return (
     <div className="space-y-4">
       <DataTableToolbar table={table} />
@@ -148,7 +190,7 @@ export function DataTable<TData, TValue>({
                     </TableHead>
                   )
                 })}
-                <TableHead>Actions</TableHead>
+                {/* <TableHead>Actions</TableHead> */}
               </TableRow>
             ))}
           </TableHeader>
@@ -167,9 +209,14 @@ export function DataTable<TData, TValue>({
                       )}
                     </TableCell>
                   ))}
-                  <TableCell>
+                  {/* <TableCell>
+                    {
+                      handleTypeRow(row.getValue("typeId"))
+                    }
+                  </TableCell> */}
+                  {/* <TableCell>
                     <DataTableRowActions row={row} table={table} />
-                  </TableCell>
+                  </TableCell> */}
                 </TableRow>
               ))
             ) : (
@@ -186,6 +233,7 @@ export function DataTable<TData, TValue>({
         </Table>
       </div>
       <DataTablePagination table={table} />
+      <Button type="button" variant="default" className="ml-auto" onClick={() => handleAddAnimalIntoCage()}>Add animal</Button>
     </div>
   )
 }

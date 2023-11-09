@@ -167,6 +167,7 @@ export function UpdateForm({id, values, setOpen}: any) {
                   <FormControl>
                     <Input type="number" min={0} 
                       placeholder="Animal weight" {...field} 
+                      step={0.01}
                       onChange={event => field.onChange(+event.target.value)}
                     />
                   </FormControl>
@@ -184,6 +185,7 @@ export function UpdateForm({id, values, setOpen}: any) {
                     <Input type="number" min={0} 
                       {...field} 
                       placeholder="Animal height" 
+                      step={0.01}
                       onChange={event => field.onChange(+event.target.value)}
                     />
                   </FormControl>

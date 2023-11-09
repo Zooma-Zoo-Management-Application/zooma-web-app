@@ -7,8 +7,9 @@ export const cageSchema = z.object({
   name: z.string(),
   animalLimit: z.number().nullish(),
   animalCount: z.number().nullish(),
-  description: z.boolean().nullish(),
+  description: z.string().nullish(),
   animal: z.any().nullish(),
+  areaId: z.any().nullish(),
 })
 
 export type Cages = z.infer<typeof cageSchema>
