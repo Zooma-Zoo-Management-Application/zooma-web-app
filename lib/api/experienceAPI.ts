@@ -6,7 +6,7 @@ interface IFormData {
     description: string,
     status: boolean,
     userId: number,
-    skillId: number
+    skillId: number,
 }
 
 export const createExperience = async (formData: IFormData) => {
@@ -29,16 +29,7 @@ export const editExperience = async (id: number, formData: IFormData) => {
 
 export const getExperiencesByTrainerId = async (id: number) => {
     try {
-        const { data } = await axiosClient.get(`/TrainerExpByTrainerId/${id}`);
-        return { error: null, data };
-    } catch (error) {
-        return handleApiError(error);
-    }
-};
-
-export const getDietDetailByDietId = async (dietId: number) => {
-    try {
-        const { data } = await axiosClient.get(`/DietDetails/${dietId}/getDietDetailsByDietId`);
+        const { data } = await axiosClient.get(`/trainerExps/${id}/get-trainerexp-by-trainerId`);
         return { error: null, data };
     } catch (error) {
         return handleApiError(error);

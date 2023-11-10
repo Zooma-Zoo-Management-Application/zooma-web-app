@@ -32,17 +32,11 @@ import { createDiet } from "@/lib/api/dietAPI"
 const formDetailSchema = z.object({
     name: z.string()
         .min(3, { message: 'Name must be at least 3 characters.' }),
-    createAt: z.date(),
-    updateAt: z.date().nullish(),
-    scheduleAt: z.date({
-        required_error: "Please select a date"
-    }),
-    endAt: z.date({
-        required_error: "Please select a date"
-    }),
     description: z.string()
         .min(3, { message: 'Description must be at least 3 characters.' }),
-    goal: z.string().min(3, { message: 'Goal must be at least 3 characters.' }),
+    yearOfExperience: z.number().nullish(),
+    userId: z.number(),
+    skillId: z.number(),
 })
 
 

@@ -100,7 +100,6 @@ export function DietDetailForm() {
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [foods, setFoods] = useState<food[]>([])
-    const [value, setValue] = useState<string>()
 
     useEffect(() => {
         const initialize = async () => {
@@ -124,7 +123,7 @@ export function DietDetailForm() {
         feedingDate: [],
         status: true,
         dietId: Number(dietId),
-        foodId: -1
+        foodId: 0
     }
 
     const form = useForm<FormDetailValues>({
@@ -133,8 +132,7 @@ export function DietDetailForm() {
         mode: "onChange",
     })
 
-    async function onSubmit(values: FormDetailValues) {
-        console.log("submit")
+    async function onSubmit1(values: FormDetailValues) {
         let DietDetailBody: any = {
             name: values.name,
             feedingTime: Date.parse(values.feedingTime),
@@ -142,7 +140,7 @@ export function DietDetailForm() {
             endAt: values.endAt,
             description: values.description,
             updateAt: new Date(),
-            feedingDate: values.feedingDate,
+            feedingDate: values.feedingDate.toString(),
             quantity: Number(values.quantity),
             status: true,
             dietId: Number(dietId),
@@ -159,12 +157,12 @@ export function DietDetailForm() {
                         </span>
                     ),
                 })
-                router.push(`/dashboard/diets/${dietId}/view`);
             })
+        router.push(`/dashboard/diets/${dietId}/view`);
     }
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <form onSubmit={form.handleSubmit(onSubmit1)} className="space-y-4">
                 <FormField
                     control={form.control}
                     name="name"
@@ -289,7 +287,7 @@ export function DietDetailForm() {
                 <FormField
                     control={form.control}
                     name="feedingDate"
-                    render={() => (
+                    render={({ field }) => (
                         <FormItem>
                             <div className="mb-4">
                                 <FormLabel className="text-base">Feeding Date</FormLabel>
@@ -349,35 +347,41 @@ export function DietDetailForm() {
                                     </FormDescription>
                                     <Popover open={open} onOpenChange={setOpen}>
                                         <PopoverTrigger asChild>
-                                            <Button
-                                                variant="outline"
-                                                role="combobox"
-                                                aria-expanded={open}
-                                                className="w-[200px] justify-between font-normal"
-                                            >
-                                                {value ? foods.find((food: food) => food.id === Number(value))?.name
-                                                    : "Select food..."}
-                                                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                            </Button>
+                                            <FormControl>
+                                                <Button
+                                                    variant="outline"
+                                                    role="combobox"
+                                                    className={cn(
+                                                        "w-[200px] flex justify-between font-normal",
+                                                        !field.value && "text-muted-foreground"
+                                                    )}
+                                                >
+                                                    {field.value
+                                                        ? foods.find(
+                                                            (food) => food.id === field.value
+                                                        )?.name
+                                                        : "select food"}
+                                                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                                </Button>
+                                            </FormControl>
                                         </PopoverTrigger>
                                         <PopoverContent className="w-[200px] p-0">
                                             <Command>
                                                 <CommandInput placeholder="Search food..." />
-                                                <CommandEmpty>No framework found.</CommandEmpty>
+                                                <CommandEmpty>Not found.</CommandEmpty>
                                                 <CommandGroup>
                                                     {foods.map((food) => (
                                                         <CommandItem
                                                             key={food.id}
-                                                            value={food.id.toString()}
-                                                            onSelect={(currentValue) => {
-                                                                setValue(currentValue === value ? "" : currentValue)
-                                                                setOpen(false)
+                                                            value={food.name}
+                                                            onSelect={() => {
+                                                                form.setValue("foodId", food.id)
                                                             }}
                                                         >
                                                             <Check
                                                                 className={cn(
                                                                     "mr-2 h-4 w-4",
-                                                                    value === food.name ? "opacity-100" : "opacity-0"
+                                                                    food.id === field.value ? "opacity-100" : "opacity-0"
                                                                 )}
                                                             />
                                                             {food.name}
@@ -403,7 +407,7 @@ export function DietDetailForm() {
                                         in Kilogram(Kg)
                                     </FormDescription>
                                     <FormControl>
-                                        <Input type="number" placeholder="0" step={0.01} {...field} onChange={event => field.onChange(+event.target.value)} />
+                                        <Input type="number" min="0" placeholder="0" step={0.01} {...field} onChange={event => field.onChange(+event.target.value)} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>

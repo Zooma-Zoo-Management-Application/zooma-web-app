@@ -8,7 +8,8 @@ export const dietSchema = z.object({
   yearOfExperience: z.number().nullish(),
   status: z.boolean(),
   userId: z.number(),
-  skillId: z.number()
+  skillId: z.number(),
+  skill: z.string().array()
 })
 
 export type Diet = z.infer<typeof dietSchema>
