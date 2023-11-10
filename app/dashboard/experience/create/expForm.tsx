@@ -48,12 +48,7 @@ export function SkillDetailForm() {
 
     const defaultValues: Partial<FormDetailValues> = {
         name: "",
-        createAt: new Date(),
-        updateAt: new Date(),
-        scheduleAt: new Date(),
-        endAt: new Date(),
         description: "",
-        goal: ""
     }
 
     const form = useForm<FormDetailValues>({
@@ -66,12 +61,7 @@ export function SkillDetailForm() {
         console.log("submit")
         let dietBody: any = {
             name: values.name,
-            createAt: values.createAt,
-            updateAt: values.updateAt,
-            scheduleAt: values.scheduleAt,
-            endAt: values.endAt,
             description: values.description,
-            goal: values.goal
         };
         //createDiet(dietBody)
         toast({
@@ -95,109 +85,6 @@ export function SkillDetailForm() {
                             <FormLabel>Name</FormLabel>
                             <FormControl>
                                 <Input placeholder="Name of diet detail" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                <div className="flex justify-start">
-                    <div className="pr-44">
-                        <FormField
-                            control={form.control}
-                            name="scheduleAt"
-                            render={({ field }) => (
-                                <FormItem className="flex flex-col">
-                                    <FormLabel>Schedule at</FormLabel>
-                                    <FormDescription>
-                                        the scheduled date of this diet detail.
-                                    </FormDescription>
-                                    <Popover>
-                                        <PopoverTrigger asChild>
-                                            <FormControl>
-                                                <Button
-                                                    variant={"outline"}
-                                                    className={cn(
-                                                        "w-[240px] pl-3 text-left font-normal",
-                                                        !field.value && "text-muted-foreground"
-                                                    )}
-                                                >
-                                                    {field.value ? (
-                                                        format(field.value, "MMM dd, yyyy")
-                                                    ) : (
-                                                        <span>Pick a date</span>
-                                                    )}
-                                                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                                </Button>
-                                            </FormControl>
-                                        </PopoverTrigger>
-                                        <PopoverContent className="w-auto p-0" align="start">
-                                            <Calendar
-                                                mode="single"
-                                                selected={field.value}
-                                                onSelect={field.onChange}
-                                                disabled={{ before: new Date() }}
-                                                initialFocus
-                                            />
-                                        </PopoverContent>
-                                    </Popover>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                    </div>
-                    <div className="pr-44">
-                        <FormField
-                            control={form.control}
-                            name="endAt"
-                            render={({ field }) => (
-                                <FormItem className="flex flex-col">
-                                    <FormLabel>End at</FormLabel>
-                                    <FormDescription>
-                                        the ended date of this diet detail.
-                                    </FormDescription>
-                                    <Popover>
-                                        <PopoverTrigger asChild>
-                                            <FormControl>
-                                                <Button
-                                                    variant={"outline"}
-                                                    className={cn(
-                                                        "w-[240px] pl-3 text-left font-normal",
-                                                        !field.value && "text-muted-foreground"
-                                                    )}
-                                                >
-                                                    {field.value ? (
-                                                        format(field.value, "MMM dd, yyyy")
-                                                    ) : (
-                                                        <span>Pick a date</span>
-                                                    )}
-                                                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                                </Button>
-                                            </FormControl>
-                                        </PopoverTrigger>
-                                        <PopoverContent className="w-auto p-0" align="start">
-                                            <Calendar
-                                                mode="single"
-                                                selected={field.value}
-                                                onSelect={field.onChange}
-                                                disabled={{ before: new Date() }}
-                                                initialFocus
-                                            />
-                                        </PopoverContent>
-                                    </Popover>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                    </div>
-                </div>
-                <FormField
-                    control={form.control}
-                    name="goal"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Goal</FormLabel>
-                            <FormControl>
-                                <Input placeholder="Goal of diet to archive" {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
