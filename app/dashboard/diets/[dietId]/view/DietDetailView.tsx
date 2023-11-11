@@ -117,7 +117,11 @@ export default function DietDetailViewPage() {
                                         right: 'dayGridMonth,timeGridWeek'
                                     }}
                                     events={[
-                                        events
+                                        { // this object will be "parsed" into an Event Object
+                                            title: 'The Title', // a property!
+                                            start: '2023-11-12', // a property!
+
+                                        }
                                     ]}
                                     eventClick={(info) => {
                                         handleNavigate();
