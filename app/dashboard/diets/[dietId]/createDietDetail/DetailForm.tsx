@@ -51,9 +51,6 @@ const formDetailSchema = z.object({
     name: z.string()
         .min(3, { message: 'Name must be at least 3 characters.' }),
     feedingTime: z.string(),
-    createAt: z.date({
-        required_error: "Please select a date"
-    }),
     updateAt: z.date({
         required_error: "Please select a date"
     }),
@@ -132,7 +129,10 @@ export function DietDetailForm() {
         mode: "onChange",
     })
 
-    async function onSubmit1(values: FormDetailValues) {
+    console.log("error", form.formState.errors)
+
+    async function onSubmit(values: FormDetailValues) {
+        console.log("submit")
         let DietDetailBody: any = {
             name: values.name,
             feedingTime: Date.parse(values.feedingTime),
@@ -162,7 +162,7 @@ export function DietDetailForm() {
     }
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit1)} className="space-y-4">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                 <FormField
                     control={form.control}
                     name="name"
