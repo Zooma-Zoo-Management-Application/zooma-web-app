@@ -1,16 +1,7 @@
 "use client"
 
-import { Button } from '@/components/ui/button'
 import { useState } from 'react'
 import { SkillDetailForm } from './expForm'
-
-
-interface Event {
-    title: string;
-    start: Date | string;
-    allDay: boolean;
-    id: number;
-}
 
 export default function Home() {
     const [open, setOpen] = useState<boolean>(false)

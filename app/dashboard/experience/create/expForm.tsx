@@ -49,7 +49,6 @@ type FormDetailValues = z.infer<typeof formDetailSchema>
 export function SkillDetailForm() {
     const router = useRouter()
     const [skills, setSkills] = useState<Skill[]>([])
-    const [Exp, setExp] = useState<any>()
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
