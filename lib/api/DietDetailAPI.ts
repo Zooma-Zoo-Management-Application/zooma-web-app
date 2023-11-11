@@ -53,7 +53,7 @@ export const getDietById = async (id: number) => {
 
 export const getDietDetailByDietId = async (dietId: number) => {
     try {
-        const { data } = await axiosClient.get(`/DietDetails/${dietId}/getDietDetailsByDietId`);
+        const { data } = await axiosClient.get(`/dietDetails/diet-details/${dietId}`);
         return { error: null, data };
     } catch (error) {
         return handleApiError(error);

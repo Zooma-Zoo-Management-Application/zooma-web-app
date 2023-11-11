@@ -4,9 +4,15 @@ interface IFormData {
     id: number,
     yearOfExperience: number,
     description: string,
-    status: boolean,
+    status: number,
     userId: number,
     skillId: number,
+}
+
+interface IEditForm {
+    yearOfExperience: number,
+    description: string,
+    status: number
 }
 
 export const createExperience = async (formData: IFormData) => {
@@ -18,9 +24,9 @@ export const createExperience = async (formData: IFormData) => {
     }
 };
 
-export const editExperience = async (id: number, formData: IFormData) => {
+export const editExperience = async (id: number, formData: IEditForm) => {
     try {
-        const { data } = await axiosClient.put(`/TrainerExp/${id}`, formData);
+        const { data } = await axiosClient.put(`/TrainerExps/${id}`, formData);
         return { error: null, data };
     } catch (error) {
         return handleApiError(error);
@@ -29,18 +35,17 @@ export const editExperience = async (id: number, formData: IFormData) => {
 
 export const getExperiencesByTrainerId = async (id: number) => {
     try {
-        const { data } = await axiosClient.get(`/trainerExps/${id}/get-trainerexp-by-trainerId`);
+        const { data } = await axiosClient.get(`/TrainerExps/trainer/${id}`);
         return { error: null, data };
     } catch (error) {
         return handleApiError(error);
     }
 };
-
-// export const deleteDietById = async (id: number) => {
-//     try {
-//         const { data } = await axiosClient.delete(`/Diets/${id}`);
-//         return { error: null, data };
-//     } catch (error) {
-//         return handleApiError(error);
-//     }
-// };
+export const getExperiencesById = async (id: number) => {
+    try {
+        const { data } = await axiosClient.get(`/TrainerExps/${id}`);
+        return { error: null, data };
+    } catch (error) {
+        return handleApiError(error);
+    }
+};
