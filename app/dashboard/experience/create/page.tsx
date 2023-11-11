@@ -1,10 +1,6 @@
-"use client"
+import { SkillDetailForm } from "../components/expForm";
 
-import { useState } from 'react'
-import { SkillDetailForm } from './expForm'
-
-export default function Home() {
-    const [open, setOpen] = useState<boolean>(false)
+export default function CreateExperiencePage() {
     return (
         <div className="hidden flex-col md:flex w-full">
             <div className="flex-1 space-y-4 px-8">

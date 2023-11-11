@@ -71,7 +71,7 @@ export function SkillDetailForm() {
     const defaultValues: Partial<FormDetailValues> = {
         description: "",
         yearOfExperience: 0,
-        userId: currentUser.id,
+        userId: currentUser?.id || 1,
         skillId: 0,
     }
 

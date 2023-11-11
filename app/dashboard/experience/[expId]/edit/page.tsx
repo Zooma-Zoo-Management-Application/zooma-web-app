@@ -1,10 +1,10 @@
 "use client"
 
-import { useEffect, useState } from 'react'
-import { SkillDetailForm } from './expForm'
-import { useParams } from 'next/navigation';
 import TextSkeleton from '@/app/dashboard/components/TextSkeleton';
 import { getExperiencesById } from '@/lib/api/experienceAPI';
+import { useParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { SkillDetailForm } from '../../components/expFormWithParam';
 
 export default function Home() {
     const { expId } = useParams()
