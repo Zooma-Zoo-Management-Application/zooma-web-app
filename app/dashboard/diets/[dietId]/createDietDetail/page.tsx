@@ -1,9 +1,5 @@
 "use client"
-import FullCalendar from '@fullcalendar/react'
-import dayGridPlugin from '@fullcalendar/daygrid'
-import interactionPlugin, { Draggable, DropArg } from '@fullcalendar/interaction'
-import timeGridPlugin from '@fullcalendar/timegrid'
-import { Button } from '@/components/ui/button'
+
 import { useState } from 'react'
 import { DietDetailForm } from './DetailForm'
 

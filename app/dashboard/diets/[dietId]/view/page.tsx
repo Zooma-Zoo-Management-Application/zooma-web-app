@@ -14,7 +14,6 @@ function DietViewPage() {
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const router = useRouter()
-    const [create, setCreate] = useState<string>('/dashboard/diets/' + [dietId] + '/createDietDetail')
 
 
     useEffect(() => {
@@ -34,6 +33,10 @@ function DietViewPage() {
 
     const handleEdit = () => {
         router.push(`/dashboard/diets/${dietId}/edit`)
+    }
+
+    const handleDetailAdd = () => {
+        router.push(`/dashboard/diets/${dietId}/createDietDetail`);
     }
 
     return (
@@ -76,11 +79,9 @@ function DietViewPage() {
                             <div className='flex justify-between pt-5'>
                                 <h2 className="text-3xl font-bold tracking-tight">Diet&apos;s details:</h2>
                                 <div className=' my-auto'>
-                                    <a href={create}>
-                                        <Button variant="default">
-                                            Add Detail
-                                        </Button>
-                                    </a>
+                                    <Button variant="default" onClick={handleDetailAdd}>
+                                        Add Detail
+                                    </Button>
                                 </div>
                             </div>
                             <div className="w-full p-3" >
