@@ -14,41 +14,41 @@ import {
     FormMessage
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { ChangeEvent, useState } from "react"
+import { ChangeEvent, useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import { format } from "date-fns"
-import { CalendarIcon } from "lucide-react"
-import { cn } from "@/lib/utils"
-import { Calendar } from "@/components/ui/calendar"
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover"
 import { toast } from "@/components/ui/use-toast"
 import { Textarea } from "@/components/ui/textarea"
-import { createDiet } from "@/lib/api/dietAPI"
+import { editSkill, getSkills } from "@/lib/api/skillAPI"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { cn } from "@/lib/utils"
+import { Check, ChevronsUpDown } from "lucide-react"
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command"
+import useUserState from "@/stores/user-store"
+import { editExperience } from "@/lib/api/experienceAPI"
 
 const formDetailSchema = z.object({
-    name: z.string()
-        .min(3, { message: 'Name must be at least 3 characters.' }),
     description: z.string()
         .min(3, { message: 'Description must be at least 3 characters.' }),
-    yearOfExperience: z.number().nullish(),
-    userId: z.number(),
-    skillId: z.number(),
+    yearOfExperience: z.number(),
+    status: z.number()
 })
 
+interface Skill {
+    id: number,
+    name: string
+}
 
 type FormDetailValues = z.infer<typeof formDetailSchema>
 
-export function SkillDetailForm() {
+export function SkillDetailForm({ expParam }: any) {
     const router = useRouter()
-    const [date, setDate] = useState<Date>()
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
 
     const defaultValues: Partial<FormDetailValues> = {
-        name: "",
-        description: "",
+        description: expParam.description,
+        yearOfExperience: expParam.yearOfExperience,
+        status: 0
     }
 
     const form = useForm<FormDetailValues>({
@@ -59,32 +59,33 @@ export function SkillDetailForm() {
 
     async function onSubmit(values: FormDetailValues) {
         console.log("submit")
-        let dietBody: any = {
-            name: values.name,
+        let expBody: any = {
             description: values.description,
+            yearOfExperience: values.yearOfExperience,
+            status: 0
         };
-        //createDiet(dietBody)
+        editExperience(expParam.id, expBody)
         toast({
             variant: "default",
             description: (
                 <span className="text-l font-bold text-green-500">
-                    Create Successfully!
+                    Update Successfully!
                 </span>
             ),
         })
-        router.push("/dashboard/diets")
+        router.push("/dashboard/experience")
     }
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                 <FormField
                     control={form.control}
-                    name="name"
+                    name="yearOfExperience"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Name</FormLabel>
+                            <FormLabel>Year of Experience</FormLabel>
                             <FormControl>
-                                <Input placeholder="Name of diet detail" {...field} />
+                                <Input type="number" min="0" placeholder="0" step={0.01} {...field} onChange={event => field.onChange(+event.target.value)} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -103,8 +104,8 @@ export function SkillDetailForm() {
                         </FormItem>
                     )}
                 />
-                <Button type="submit" className="w-full hover:shadow-primary-md">Create Diet</Button>
-            </form >
-        </Form >
+                <Button type="submit" className="w-full hover:shadow-primary-md">Update Experience</Button>
+            </form>
+        </Form>
     )
 }

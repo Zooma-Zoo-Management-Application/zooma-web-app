@@ -43,7 +43,7 @@ const UpdateValidation = z.object({
     description: z.string().min(3, "Description must be at least 3 characters"),
     speciesId: z.string(),
     dietId: z.string().nullable(),
-    cageId: z.string().nullable(),
+    // cageId: z.string().nullable(),
     trainingPlanId: z.string().nullable(),
 });
 
@@ -90,10 +90,10 @@ export function UpdateForm({id, values, setOpen}: any) {
     height: values.height,
     weight: values.weight,
     description: values.description,
-    speciesId: values.speciesId,
-    dietId: values.dietId,
-    cageId: values.cageId,
-    trainingPlanId: values.trainingPlanId,
+    speciesId: values?.speciesId?.toString() || null,
+    dietId: values?.dietId?.toString() || null,
+    // cageId: values.cageId,
+    trainingPlanId: values?.trainingPlanId?.toString() || null,
   }
 
   const form = useForm<UpdateFormValues>({
@@ -115,7 +115,7 @@ export function UpdateForm({id, values, setOpen}: any) {
       "status": true,
       "speciesId": values.speciesId,
       "dietId": values.dietId,
-      "cageId": values.cageId,
+      "cageId": null,
       "trainingPlanId": values.trainingPlanId,
     })
     .then((response) => {
@@ -140,6 +140,8 @@ export function UpdateForm({id, values, setOpen}: any) {
       }, 1000);
     });
   }
+
+  console.log("d",form.formState.errors)
 
   return (
     <Form {...form}>

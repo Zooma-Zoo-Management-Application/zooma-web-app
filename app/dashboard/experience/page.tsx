@@ -11,10 +11,12 @@ import { DataTable } from "./components/data-table";
 import { columns } from "./components/columns";
 
 function UserManagementPage() {
-    const { currentUser } = useUserState();
     const [exps, setExps] = useState<any>([])
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+
+    const { currentUser } = useUserState();
+
     useEffect(() => {
         const initialize = async () => {
             try {

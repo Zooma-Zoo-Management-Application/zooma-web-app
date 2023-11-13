@@ -9,7 +9,7 @@ export const dietSchema = z.object({
   status: z.boolean(),
   userId: z.number(),
   skillId: z.number(),
-  skill: z.string().array()
+  skillName: z.string()
 })
 
 export type Diet = z.infer<typeof dietSchema>
