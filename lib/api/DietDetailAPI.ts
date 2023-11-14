@@ -42,9 +42,9 @@ export const getDietDetails = async () => {
     }
 };
 
-export const getDietById = async (id: number) => {
+export const getDietDetailById = async (id: number) => {
     try {
-        const { data } = await axiosClient.get(`/Diets/${id}`);
+        const { data } = await axiosClient.get(`/dietDetails/${id}`);
         return { error: null, data };
     } catch (error) {
         return handleApiError(error);

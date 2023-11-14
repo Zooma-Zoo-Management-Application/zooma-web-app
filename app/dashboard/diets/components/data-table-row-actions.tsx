@@ -36,6 +36,9 @@ export function DataTableRowActions<TData>({
   const handleView = () => {
     router.push(`/dashboard/diets/${row.getValue("id")}/view`)
   }
+  const handleDelete = () => {
+    router.push(`/dashboard/diets/${row.getValue("id")}/view`)
+  }
 
   // const handleDelete = () => {
   //   deleteNewById(row.getValue("id"))
@@ -72,6 +75,7 @@ export function DataTableRowActions<TData>({
         <DropdownMenuContent align="end" className="w-[160px]">
           <DropdownMenuItem onClick={handleView}>View</DropdownMenuItem>
           <DropdownMenuItem onClick={handleEdit}>Edit</DropdownMenuItem>
+          <DropdownMenuItem onClick={handleDelete}>Delete</DropdownMenuItem>
           {/* <DropdownMenuSeparator />
           <DialogTrigger asChild>
             <DropdownMenuItem>

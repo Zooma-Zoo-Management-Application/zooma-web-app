@@ -14,7 +14,11 @@ export const dietSchema = z.object({
   feedingTime: z.date(),
   quantity: z.number(),
   status: z.boolean(),
-  FoodId: z.number()
+  foodId: z.number(),
+  food: z.object({
+    name: z.string(),
+    imageUrl: z.string()
+  })
 })
 
 export type Diet = z.infer<typeof dietSchema>

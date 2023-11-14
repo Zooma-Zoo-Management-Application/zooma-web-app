@@ -5,8 +5,8 @@ import interactionPlugin from '@fullcalendar/interaction'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import { useEffect, useRef, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { getDietDetailByDietId } from '@/lib/api/DietDetailAPI';
-import ConfirmationDialog from './comfirm';
+import { getDietDetailByDietId, getDietDetailById } from '@/lib/api/DietDetailAPI';
+import ConfirmationDialog from './confirm';
 import {
     Card,
     CardContent,
@@ -20,13 +20,15 @@ import {
 import { DataTable } from '../component/data-table';
 import DataTableSkeleton from '@/app/dashboard/components/DataTableSkeleton';
 import { columns } from '../component/columns';
-
+import { getFoodById } from '@/lib/api/foodAPI';
 interface Event {
     title: string;
-    startTime: Date;
+    start: Date;
     allDay: boolean;
     id: number;
-    daysOfWeek: number[]
+    daysOfWeek: string[]
+    food: string,
+    quantity: number
 }
 interface DietDetail {
     id: number,
@@ -40,7 +42,11 @@ interface DietDetail {
     feedingTime: Date,
     quantity: number,
     status: boolean,
-    FoodId: number
+    foodId: number,
+    food: {
+        name: string,
+        imageUrl: string,
+    }
 }
 
 export default function DietDetailViewPage() {
@@ -50,6 +56,7 @@ export default function DietDetailViewPage() {
     const [error, setError] = useState<string | null>(null);
     const router = useRouter()
     const calendarRef = useRef<HTMLDivElement | null>(null);
+    const [target, setTarget] = useState<DietDetail>()
 
     useEffect(() => {
         const initialize = async () => {
@@ -66,11 +73,15 @@ export default function DietDetailViewPage() {
         };
         initialize();
     }, [dietId])
-
-    const handleNavigation = () => {
-        setIsDialogOpen(true);
-    };
-
+    const events = dietDetails.map((dietDetail: DietDetail) => (
+        {
+            id: dietDetail.id,
+            title: dietDetail.name,
+            start: dietDetail.scheduleAt,
+            daysOfWeek: dietDetail.feedingDateArray,
+            food: dietDetail.food.name
+        }
+    )) as Event[]
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
     const handleNavigate = () => {
@@ -79,20 +90,12 @@ export default function DietDetailViewPage() {
 
     const handleConfirm = () => {
         setIsDialogOpen(false);
-        router.push(`/dashboard/diets/1/edit`);
+        router.push(`/dashboard/diets/${id}/edit`)
     };
 
     const handleCancel = () => {
         setIsDialogOpen(false);
     };
-
-    const events = dietDetails.map((dietDetail: DietDetail) => (
-        {
-            id: dietDetail.id,
-            title: dietDetail.name,
-            startTime: dietDetail.scheduleAt,
-        }
-    ))
 
     return (
         <div>
@@ -105,40 +108,51 @@ export default function DietDetailViewPage() {
                     <Card>
                         <CardContent className="">
                             <div className="hidden flex-col md:flex w-full py-5">
-                                <FullCalendar
-                                    plugins={[
-                                        dayGridPlugin,
-                                        interactionPlugin,
-                                        timeGridPlugin
-                                    ]}
-                                    headerToolbar={{
-                                        left: 'prev,next today',
-                                        center: 'title',
-                                        right: 'dayGridMonth,timeGridWeek'
-                                    }}
-                                    events={[
-                                        { // this object will be "parsed" into an Event Object
-                                            title: 'The Title', // a property!
-                                            start: '2023-11-12', // a property!
-
-                                        }
-                                    ]}
-                                    eventClick={(info) => {
-                                        handleNavigate();
-                                    }}
-                                    aspectRatio={2.5}
-                                    slotMinTime={'04:00:00'}
-                                    slotMaxTime={'22:00:00'}
-                                    expandRows={true}
-                                    fixedWeekCount={false}
-                                    displayEventEnd={true}
-                                    nowIndicator={true}
-                                    editable={false}
-                                    droppable={true}
-                                    selectable={false}
-                                    selectMirror={false}
-                                    selectOverlap={true}
-                                />
+                                {
+                                    isLoading ? (
+                                        <DataTableSkeleton />
+                                    ) : (
+                                        <FullCalendar
+                                            plugins={[
+                                                dayGridPlugin,
+                                                interactionPlugin,
+                                                timeGridPlugin
+                                            ]}
+                                            headerToolbar={{
+                                                left: 'prev,next today',
+                                                center: 'title',
+                                                right: 'dayGridMonth,timeGridWeek'
+                                            }}
+                                            events={
+                                                function (info, successCallback, failureCallback) {
+                                                    successCallback(
+                                                        events.map(function (eventEl) {
+                                                            return {
+                                                                id: eventEl.id.toString(),
+                                                                title: eventEl.title,
+                                                                start: eventEl.start,
+                                                                daysOfWeek: eventEl.daysOfWeek
+                                                            }
+                                                        }))
+                                                }
+                                            }
+                                            eventClick={function (info) {
+                                                handleNavigate();
+                                                setTarget(dietDetails[Number(info.event.id)])
+                                            }}
+                                            aspectRatio={2.5}
+                                            slotMinTime={'04:00:00'}
+                                            slotMaxTime={'24:00:00'}
+                                            expandRows={true}
+                                            fixedWeekCount={false}
+                                            displayEventEnd={true}
+                                            nowIndicator={true}
+                                            editable={false}
+                                            droppable={true}
+                                            selectable={false}
+                                            selectMirror={false}
+                                            selectOverlap={true}
+                                        />)}
                             </div>
                         </CardContent>
                     </Card>
@@ -164,9 +178,10 @@ export default function DietDetailViewPage() {
                 </TabsContent>
             </Tabs>
             <ConfirmationDialog isOpen={isDialogOpen}
-                message="Are you sure you want to navigate away?"
+                message={target}
                 onConfirm={handleConfirm}
-                onCancel={handleCancel}></ConfirmationDialog>
+                onCancel={handleCancel}>
+            </ConfirmationDialog>
         </div>
     )
 }
