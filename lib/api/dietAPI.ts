@@ -13,9 +13,9 @@ interface IFormData {
     status: boolean,
 }
 
-export const createDiet = async (formData: IFormData) => {
+export const createDiet = async (formData: any) => {
     try {
-        const { data } = await axiosClient.post(`/Diets`, formData);
+        const { data } = await axiosClient.post(`/diets`, formData);
         return { error: null, data };
     } catch (error) {
         return handleApiError(error);
@@ -58,11 +58,11 @@ export const getDietDetailByDietId = async (dietId: number) => {
     }
 };
 
-// export const deleteDietById = async (id: number) => {
-//     try {
-//         const { data } = await axiosClient.delete(`/Diets/${id}`);
-//         return { error: null, data };
-//     } catch (error) {
-//         return handleApiError(error);
-//     }
-// };
+export const deleteDietById = async (id: number, status: boolean) => {
+    try {
+        const { data } = await axiosClient.put(`/diets/status/${id}`, status);
+        return { error: null, data };
+    } catch (error) {
+        return handleApiError(error);
+    }
+};

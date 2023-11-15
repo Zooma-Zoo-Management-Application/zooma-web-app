@@ -72,14 +72,14 @@ export function DietDetailForm() {
         console.log("submit")
         let dietBody: any = {
             name: values.name,
-            createAt: values.createAt,
-            updateAt: values.updateAt,
+            createAt: new Date(),
+            updateAt: new Date(),
             scheduleAt: values.scheduleAt,
             endAt: values.endAt,
             description: values.description,
             goal: values.goal
         };
-        //createDiet(dietBody)
+        createDiet(dietBody)
         toast({
             variant: "default",
             description: (

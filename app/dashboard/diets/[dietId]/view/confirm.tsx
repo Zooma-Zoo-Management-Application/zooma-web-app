@@ -1,6 +1,8 @@
 'use client'
 
+import { Pencil, Trash2, X } from "lucide-react";
 import { Diet } from "../data/schema";
+import { format } from "date-fns";
 interface DietDetail {
     id: number,
     name: string,
@@ -21,30 +23,65 @@ interface DietDetail {
 }
 interface ConfirmationDialogProps {
     isOpen: boolean;
-    onConfirm: () => void;
+    onEdit: () => void;
+    onDelete: () => void;
     onCancel: () => void;
     message?: DietDetail;
 }
 
-const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({ isOpen, onConfirm, onCancel, message }) => {
+const dates = [
+    { id: "0", label: "Sun", },
+    { id: "1", label: "Mon", },
+    { id: "2", label: "Tue", },
+    { id: "3", label: "Wed", },
+    { id: "4", label: "Thu", },
+    { id: "5", label: "Fri", },
+    { id: "6", label: "Sat", },
+    { id: "7", label: "Everyday" }
+] as const
+
+const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({ isOpen, onEdit, onDelete, onCancel, message }) => {
+    const detail = message
+    const handleDateRow = (feedingDateArray: string[]) => {
+        let str = "";
+        feedingDateArray?.map((date: string) => {
+            if (dates.find((date1) => date1.id === date)) {
+                str += (dates.find((date1) => date1.id === date)?.label) + ". "
+            }
+        })
+        if (str === "Sun. Mon. Tue. Wed. Thu. Fri. Sat. ") return dates.at(7)?.label
+        return str
+    }
+
     return (
         <div className={`fixed inset-0 flex items-center justify-center z-50 ${isOpen ? 'block' : 'hidden'}`}>
-            <div className="bg-gray-500 p-4 rounded-lg shadow-md">
-                <span className="text-3xl mb-8 font-bold">
-                    {message?.name} <br />
-                </span>
-                <span className="text-lg mb-8">
-                    {message?.food.name} <br />
-                </span>
-
-                <div className="text-center">
-                    <button className="bg-green-500 text-white px-4 py-2 mr-2" onClick={onConfirm}>
-                        Confirm
-                    </button>
-                    <button className="bg-red-500 text-white px-4 py-2" onClick={onCancel}>
-                        Cancel
-                    </button>
+            <div className="bg-gray-200 p-4 rounded-lg shadow-lg w-[max]-400px">
+                <div className="text-center flex justify-end">
+                    <span className="text-3xl mb-4 font-bold mr-20">
+                        {(message != null) ? (message?.name) : ("ERROR")}
+                    </span>
+                    {(message != null) ? (
+                        <><Pencil className="cursor-pointer to-black-500 m-2 border-black-500 border-2" onClick={onEdit} />
+                            <Trash2 className="cursor-pointer to-black-500 m-2  border-black-500 border-2" onClick={onDelete} />
+                            <X className="cursor-pointer to-black-500 m-2  border-black-500 border-2" onClick={onCancel} /></>
+                    ) : (
+                        <><X className="cursor-pointer to-black-500 m-2  border-black-500 border-2" onClick={onCancel} /></>
+                    )}
                 </div>
+                {(message != null) ?
+                    (<span className="text-lg mb-8">
+                        <span className="font-semibold">Schedule at:</span> {format(new Date(message.scheduleAt.toString()), "MMM dd, yyyy")} <br />
+                        <span className="font-semibold">End at:</span> {format(new Date(message.endAt.toString()), "MMM dd, yyyy")}
+                        <br />
+                        <span className="font-semibold">Feeding at:</span> {message.feedingTime.substring(0, 5)},&emsp; {handleDateRow(message?.feedingDateArray)} <br />
+                        <span className="font-semibold">Food:</span> {message?.quantity}kg {message.food.name}
+                    </span>) : (
+                        <span className="text-lg mb-8">
+                            No results
+                        </span>
+                    )
+                }
+
             </div>
         </div>
     );
