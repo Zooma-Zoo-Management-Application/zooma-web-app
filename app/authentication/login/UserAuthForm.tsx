@@ -54,20 +54,22 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
         data, error
       } = response;
       if(error != null) throw new Error(error)
+      
+      const { loginResponse } = data
 
       setCurrentUser(data.user);
-      localStorage.setItem("accessToken", data.accessToken);
+      localStorage.setItem("accessToken", loginResponse.accessToken);
 
       // amdin
-      if(data.user.roleId === 4 ){
+      if(loginResponse.user.roleId === 4 ){
         window.location.href = "/dashboard";
       }
       // staff
-      else if(data.user.roleId === 1){
+      else if(loginResponse.user.roleId === 1){
         window.location.href = "/dashboard";
       }
       // zookeeper
-      else if(data.user.roleId === 2){
+      else if(loginResponse.user.roleId === 2){
         window.location.href = "/dashboard";
       }else{
         router.push(callbackUrl);
