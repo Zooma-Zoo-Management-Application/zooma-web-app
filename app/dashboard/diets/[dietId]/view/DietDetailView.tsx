@@ -205,12 +205,12 @@ export default function DietDetailViewPage() {
                     </Card>
                 </TabsContent>
             </Tabs>
-            <ConfirmationDialog isOpen={isDialogOpen}
+            <ConfirmationDialog 
+                isOpen={isDialogOpen}
                 message={target}
                 onEdit={handleEdit}
                 onDelete={handleDelete}
-                onCancel={handleCancel}>
-            </ConfirmationDialog>
+                onCancel={handleCancel} />
         </div>
     )
 }

@@ -3,8 +3,8 @@
 import { DotsHorizontalIcon } from "@radix-ui/react-icons"
 import { Row, Table, TableMeta } from "@tanstack/react-table"
 
-import { Button } from "@/components/ui/button"
 import { DialogContent as FullWidthDialog } from "@/components/shared/full-width-dialog"
+import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import {
   DropdownMenu,
@@ -14,17 +14,17 @@ import {
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
 import { toast } from "@/components/ui/use-toast"
+import { getAnimalWithNoCage } from "@/lib/api/animalAPI"
 import { removeCage } from "@/lib/api/cageAPI"
 import useRefresh from "@/stores/refresh-store"
 import { DialogClose } from "@radix-ui/react-dialog"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
-import { columns } from "../../animals/components/columns"
-import { UpdateForm } from "./UpdateForm"
 import { DataTable } from "../../animals/components/data-table"
-import { AddAnimalTable } from "./add-animal-table"
+import { UpdateForm } from "./UpdateForm"
 import { animalColumns } from "./add-animal-column"
-import { getAnimalWithNoCage } from "@/lib/api/animalAPI"
+import { AddAnimalTable } from "./add-animal-table"
+import { UpdateAreaForm } from "./UpdateAreaForm"
 
 
 interface DataTableRowActionsProps<TData> {
@@ -57,9 +57,6 @@ export function DataTableRowActions<TData>({
           </DropdownMenuItem>
           <DropdownMenuItem onSelect={() => setUpdateOpen(true)}>
             Update
-          </DropdownMenuItem>
-          <DropdownMenuItem onSelect={() => setDeleteOpen(true)}>
-            Delete
           </DropdownMenuItem>
         </DropdownMenuGroup>
       </DropdownMenuContent>
@@ -116,7 +113,7 @@ const ViewFormDialog = ({ open, setOpen, row, table }:{
                 <Button type="button" variant="default" className="ml-auto" onClick={() => setAnimalOpen(true)}>Add Animals</Button>
               </div>
               <div className="animal-list">
-                <DataTable columns={columns} data={row.getValue("animal") as any[]} />
+                <DataTable columns={animalColumns} data={row.getValue("animal") as any[]}/>
                 {/* {(row.getValue("animal") as any[]).map((animal) => (
                   <div className="animal-list-item" key={animal.id}>
                     <div className="animal-list-item-name">{animal.name}</div>
@@ -143,7 +140,7 @@ const AddAnimalTableDialog =({ open, setOpen, row, table }:{
   const [error, setError] = useState<string | null>(null);
   // const [open, setOpen] = useState<boolean>(false)
 
-  const refresh = async () => {
+  const refreshAnimalWithNoCage = async () => {
     try {
       const res = await getAnimalWithNoCage();
       const { data } = res;
@@ -154,7 +151,6 @@ const AddAnimalTableDialog =({ open, setOpen, row, table }:{
       setIsLoading(false);
     }
   }
-  const { setRefresh } = useRefresh()
 
   useEffect(() => {
     const initialize = async () => {
@@ -163,7 +159,6 @@ const AddAnimalTableDialog =({ open, setOpen, row, table }:{
         const { data } = res;
         if(data == null) return;
         setAnimals(data);
-        setRefresh(refresh)
       } catch (err:any) {
         setError(`Error initializing the app: ${err.message}`);
       } finally {
@@ -200,15 +195,13 @@ const UpdateFormDialog = ({ open, setOpen, row, table }:{
   const values = {
     "name": row.getValue("name"),
     "description": row.getValue("description"),
-    "animalLimit": row.getValue("animalLimit"),
-    "areaId": row.getValue("areaId") || "1",
   }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
-        <DialogHeader>Update Cage</DialogHeader>
-        <UpdateForm id={row.getValue("id")} values={values} setOpen={setOpen}/>
+        <DialogHeader>Update Area Information</DialogHeader>
+        {/* <UpdateAreaForm id={row.getValue("areaId") || "1"} values={values} setOpen={setDialogUpdateAreaOpen}/> */}
       </DialogContent>
     </Dialog>
   )

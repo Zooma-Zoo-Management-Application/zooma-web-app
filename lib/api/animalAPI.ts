@@ -93,9 +93,27 @@ export const getAnimalWithNoCage = async () => {
   }
 }
 
+export const getAnimalWithCageId = async (id: number) => {
+  try {
+    const { data } = await axiosClient.get(`/animals/cage/${id}`);
+    return { error: null, data };
+  } catch (error) {
+    return handleApiError(error);
+  }
+}
+
 export const assignAnimalsIntoCage = async (id: number, values: any[]) => {
   try {
     const { data } = await axiosClient.put(`/animals/cage/${id}`, values);
+    return { error: null, data };
+  } catch (error) {
+    return handleApiError(error);
+  }
+}
+
+export const unassignAnimalsIntoCage = async (values: any[]) => {
+  try {
+    const { data } = await axiosClient.put(`/animals/id`, values);
     return { error: null, data };
   } catch (error) {
     return handleApiError(error);
