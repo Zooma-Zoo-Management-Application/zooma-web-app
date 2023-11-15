@@ -5,6 +5,8 @@ import { useForm } from "react-hook-form"
 import * as z from "zod"
 
 import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command"
 import {
     Form,
     FormControl,
@@ -15,24 +17,17 @@ import {
     FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { toast } from "@/components/ui/use-toast"
-import FirebaseService from "@/lib/FirebaseService"
-import { getTypes, updateType } from "@/lib/api/typeAPI"
-import { cn, isBase64Image } from "@/lib/utils"
-import { getDownloadURL, ref, uploadBytes, } from "firebase/storage"
-import Image from "next/image"
-import { ChangeEvent, useEffect, useState } from "react"
-import { updateSpecies } from "@/lib/api/speciesAPI"
-import useRefresh from "@/stores/refresh-store"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { editDietDetail } from "@/lib/api/DietDetailAPI"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { format } from "date-fns"
-import { Calendar, CalendarIcon, Check, ChevronsUpDown } from "lucide-react"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command"
+import { toast } from "@/components/ui/use-toast"
+import { editDietDetail } from "@/lib/api/DietDetailAPI"
 import { getFoods } from "@/lib/api/foodAPI"
+import { getTypes } from "@/lib/api/typeAPI"
+import { cn } from "@/lib/utils"
+import useRefresh from "@/stores/refresh-store"
+import { format } from "date-fns"
+import { CalendarIcon, Check, ChevronsUpDown } from "lucide-react"
+import { ChangeEvent, useEffect, useState } from "react"
+import { Calendar } from "@/components/ui/calendar"
 
 const items = [
     { id: "1", label: "Monday", },
@@ -361,7 +356,7 @@ export function UpdateForm({ id, values, setOpen }: any) {
                                     <FormDescription>
                                         select Food
                                     </FormDescription>
-                                    <Popover open={open} onOpenChange={setOpen}>
+                                    {/* <Popover open={open} onOpenChange={setOpen}>
                                         <PopoverTrigger asChild>
                                             <FormControl>
                                                 <Button
@@ -406,7 +401,7 @@ export function UpdateForm({ id, values, setOpen }: any) {
                                                 </CommandGroup>
                                             </Command>
                                         </PopoverContent>
-                                    </Popover>
+                                    </Popover> */}
                                     <FormMessage />
                                 </FormItem>
                             )}

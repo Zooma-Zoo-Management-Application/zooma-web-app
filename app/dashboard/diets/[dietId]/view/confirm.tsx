@@ -73,7 +73,7 @@ const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({ isOpen, onEdit,
                         <span className="font-semibold">Schedule at:</span> {format(new Date(message.scheduleAt.toString()), "MMM dd, yyyy")} <br />
                         <span className="font-semibold">End at:</span> {format(new Date(message.endAt.toString()), "MMM dd, yyyy")}
                         <br />
-                        <span className="font-semibold">Feeding at:</span> {message.feedingTime.substring(0, 5)},&emsp; {handleDateRow(message?.feedingDateArray)} <br />
+                        <span className="font-semibold">Feeding at:</span> {message.feedingTime.toString().substring(0, 5)},&emsp; {handleDateRow(message?.feedingDateArray)} <br />
                         <span className="font-semibold">Food:</span> {message?.quantity}kg {message.food.name}
                     </span>) : (
                         <span className="text-lg mb-8">

@@ -92,11 +92,33 @@ export default function DietDetailViewPage() {
     };
 
     const handleEdit = () => {
+        if(target == null){
+            toast({
+                title: "Edit Error",
+                description: (
+                    <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+                        <code className="text-light">Target is null</code>
+                    </pre>
+                )
+            })
+            return;
+        }
         setIsDialogOpen(false);
         router.push(`/dashboard/diets/${dietId}/${target.id}/edit`)
     };
     const handleDelete = () => {
         setIsDialogOpen(false);
+        if(target == null){
+            toast({
+                title: "Delete Error",
+                description: (
+                    <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+                        <code className="text-light">Target is null</code>
+                    </pre>
+                )
+            })
+            return;
+        }
         deleteDietDetailById(target.id)
             .then((response) => {
                 toast({
