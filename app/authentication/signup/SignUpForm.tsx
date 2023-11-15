@@ -45,7 +45,7 @@ const formSignUpSchema = z.object({
   dateOfBirth: z.date({
     required_error: "A date of birth is required.",
   }),
-  avatarUrl: z.string().url().nonempty(),
+  avatarUrl: z.string(),
   // phoneNumber: z.string(),
   newPassword: z.string({
     required_error: "New Password is required",
@@ -54,8 +54,9 @@ const formSignUpSchema = z.object({
   .max(30, {message: 'New Password must be max 30 characters'}),
   confirmNewPassword: z.string({}),
   })
-  .refine((data) => data.newPassword === data.confirmNewPassword, {
-    message: "Oops! New Password doesnt match",
+  .refine((data) => data.newPassword === data.confirmNewPassword,{
+    message: "Oops! Password does not match",
+    path: ["confirmNewPassword"],
   })
   
 
@@ -86,6 +87,9 @@ export function SignUpForm() {
     mode: "onChange",
   })
 
+  console.log("er", form.formState.errors)
+
+
   const handleImage = (e: ChangeEvent<HTMLInputElement>, fieldChange: (value: string) => void) => {
     e.preventDefault();
 
@@ -110,13 +114,14 @@ export function SignUpForm() {
   async function onSubmit(values: SignUpFormValues) {
     setIsLoading(true);
 
-    const blob = values.avatarUrl;
+    if(values.avatarUrl){
+      const blob = values.avatarUrl;
 
     const hasImageChanged = isBase64Image(blob);
 
     if(hasImageChanged) {
       // const imgRes = await startUpload(files);
-      const imageRef = ref(FirebaseService.storage, `images/${values.email}`);
+      const imageRef = ref(FirebaseService.storage, `images/${values.email}+${values.dateOfBirth.toISOString()}`);
       uploadBytes(imageRef, files[0]).then(() => {
         getDownloadURL(imageRef)
           .then((url) => {
@@ -124,7 +129,7 @@ export function SignUpForm() {
             registerUser({
               userInfo: {
                 username: values.username,
-                avatarUrl: values.avatarUrl,
+                avatarUrl: values.avatarUrl || "",
                 newPassword: values.newPassword,
                 confirmNewPassword: values.confirmNewPassword,
                 dateOfBirth: values.dateOfBirth.toISOString(),
@@ -135,8 +140,6 @@ export function SignUpForm() {
             .then((response) => {
               setIsLoading(false);
               let {data, error} = response;
-
-              console.log('res', response)
 
               if(error !== null){
                 toast({
@@ -176,7 +179,46 @@ export function SignUpForm() {
           });
       });
     }
-    
+    } else {
+      registerUser({
+        userInfo: {
+          username: values.username,
+          avatarUrl: values.avatarUrl || "",
+          newPassword: values.newPassword,
+          confirmNewPassword: values.confirmNewPassword,
+          dateOfBirth: values.dateOfBirth.toISOString(),
+          email: values.email,
+          gender: values.gender
+        }
+      })
+      .then((response) => {
+        setIsLoading(false);
+        let {data, error} = response;
+
+        if(error !== null){
+          toast({
+            title: "Sign Up Error",
+            description: (
+              <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+                <code className="text-light">{JSON.stringify(error, null, 2)}</code>
+              </pre>
+            )
+          })
+          setIsLoading(false);
+        } else {
+          setCurrentUser(data.user);
+          localStorage.setItem("accessToken", data.accessToken);
+          // if(user.role === "Admin"){
+          //   window.location.href = "/admin";
+          // }else if(user.role === "Staff"){
+          //   window.location.href = "/user";
+          // }else{
+          //   window.location.href = "/";
+          // }
+          router.push(callbackUrl);
+        }
+      })
+    }
   }
 
   return (

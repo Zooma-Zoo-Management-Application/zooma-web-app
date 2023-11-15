@@ -51,20 +51,23 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     loginUser(values.email, values.password)
     .then((response) => {
       let {
-        loginResponse, message
-      } = response.data;
-      setCurrentUser(loginResponse.user);
-      localStorage.setItem("accessToken", loginResponse.accessToken);
+        data, error
+      } = response;
+      if(error != null) throw new Error(error)
+
+      setCurrentUser(data.user);
+      localStorage.setItem("accessToken", data.accessToken);
+
       // amdin
-      if(loginResponse.user.roleId === 4 ){
+      if(data.user.roleId === 4 ){
         window.location.href = "/dashboard";
       }
       // staff
-      else if(loginResponse.user.roleId === 1){
+      else if(data.user.roleId === 1){
         window.location.href = "/dashboard";
       }
       // zookeeper
-      else if(loginResponse.user.roleId === 2){
+      else if(data.user.roleId === 2){
         window.location.href = "/dashboard";
       }else{
         router.push(callbackUrl);
