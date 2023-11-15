@@ -5,7 +5,7 @@ import interactionPlugin from '@fullcalendar/interaction'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import { useEffect, useRef, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { getDietDetailByDietId, getDietDetailById } from '@/lib/api/DietDetailAPI';
+import { deleteDietDetailById, getDietDetailByDietId, getDietDetailById } from '@/lib/api/DietDetailAPI';
 import ConfirmationDialog from './confirm';
 import {
     Card,
@@ -21,9 +21,11 @@ import { DataTable } from '../component/data-table';
 import DataTableSkeleton from '@/app/dashboard/components/DataTableSkeleton';
 import { columns } from '../component/columns';
 import { getFoodById } from '@/lib/api/foodAPI';
+import { toast } from '@/components/ui/use-toast';
 interface Event {
     title: string;
     start: Date;
+    startTime: string;
     allDay: boolean;
     id: number;
     daysOfWeek: string[]
@@ -78,6 +80,7 @@ export default function DietDetailViewPage() {
             id: dietDetail.id,
             title: dietDetail.name,
             start: dietDetail.scheduleAt,
+            startTime: dietDetail.feedingTime.toString(),
             daysOfWeek: dietDetail.feedingDateArray,
             food: dietDetail.food.name
         }
@@ -88,9 +91,33 @@ export default function DietDetailViewPage() {
         setIsDialogOpen(true);
     };
 
-    const handleConfirm = () => {
+    const handleEdit = () => {
         setIsDialogOpen(false);
-        // router.push(`/dashboard/diets/${id}/edit`)
+        router.push(`/dashboard/diets/${dietId}/${target.id}/edit`)
+    };
+    const handleDelete = () => {
+        setIsDialogOpen(false);
+        deleteDietDetailById(target.id)
+            .then((response) => {
+                toast({
+                    title: "Delete successfully",
+                })
+                setIsLoading(false);
+            })
+            .catch((error) => {
+                toast({
+                    title: "Delete Error",
+                    description: (
+                        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+                            <code className="text-light">{JSON.stringify(error.message, null, 2)}</code>
+                        </pre>
+                    )
+                })
+                setIsLoading(false);
+            })
+            .finally(() => {
+                setIsLoading(false);
+            })
     };
 
     const handleCancel = () => {
@@ -131,6 +158,7 @@ export default function DietDetailViewPage() {
                                                                 id: eventEl.id.toString(),
                                                                 title: eventEl.title,
                                                                 start: eventEl.start,
+                                                                startTime: eventEl.startTime,
                                                                 daysOfWeek: eventEl.daysOfWeek
                                                             }
                                                         }))
@@ -138,7 +166,7 @@ export default function DietDetailViewPage() {
                                             }
                                             eventClick={function (info) {
                                                 handleNavigate();
-                                                setTarget(dietDetails[Number(info.event.id)])
+                                                setTarget(dietDetails.find((detail) => detail.id == Number(info.event.id)))
                                             }}
                                             aspectRatio={2.5}
                                             slotMinTime={'04:00:00'}
@@ -180,9 +208,9 @@ export default function DietDetailViewPage() {
             <ConfirmationDialog 
                 isOpen={isDialogOpen}
                 message={target}
-                onConfirm={handleConfirm}
-                onCancel={handleCancel}
-            />
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+                onCancel={handleCancel} />
         </div>
     )
 }

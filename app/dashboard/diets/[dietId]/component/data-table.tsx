@@ -36,14 +36,14 @@ interface DataTableProps<TData, TValue> {
   data: TData[]
 }
 const dates = [
+  { id: "0", label: "Sun", },
   { id: "1", label: "Mon", },
   { id: "2", label: "Tue", },
   { id: "3", label: "Wed", },
   { id: "4", label: "Thu", },
   { id: "5", label: "Fri", },
   { id: "6", label: "Sat", },
-  { id: "7", label: "Sun", },
-  { id: "8", label: "Everyday", },
+  { id: "7", label: "Everyday" }
 ] as const
 
 interface food {
@@ -114,22 +114,19 @@ export function DataTable<TData, TValue>({
 
   const handleDateRow = (feedingDateArray: string[], feedingTime: string) => {
     let str = "";
-    if (feedingDateArray.includes("8")) {
-      return <>
-        <div className="flex space-x-2">
-          {/* {label && <Badge variant="outline">{label.label}</Badge>} */}
-          <span className="max-w-[300px] truncate font-medium">
-            At {feedingTime.substring(0, 5)}{<br />}{dates.at(7)?.label}
-          </span>
-        </div>
-      </>
-    } else {
-      feedingDateArray?.map((date: string) => {
-        if (dates.find((date1) => date1.id === date)) {
-          str += (dates.find((date1) => date1.id === date)?.label) + ". "
-        }
-      })
-    }
+    feedingDateArray?.map((date: string) => {
+      if (dates.find((date1) => date1.id === date)) {
+        str += (dates.find((date1) => date1.id === date)?.label) + ". "
+      }
+    })
+    if (str === "Sun. Mon. Tue. Wed. Thu. Fri. Sat. ") return <>
+      <div className="flex space-x-2">
+        {/* {label && <Badge variant="outline">{label.label}</Badge>} */}
+        <span className="max-w-[300px] truncate font-medium">
+          At {feedingTime.substring(0, 5)}{<br />}{dates.at(7)?.label}
+        </span>
+      </div>
+    </>
     return <>
       <div className="flex space-x-2">
         {/* {label && <Badge variant="outline">{label.label}</Badge>} */}

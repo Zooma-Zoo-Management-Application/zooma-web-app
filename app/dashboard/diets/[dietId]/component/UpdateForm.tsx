@@ -1,8 +1,10 @@
 "use client"
 
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import * as z from "zod"
+
 import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
-import { Checkbox } from "@/components/ui/checkbox"
 import {
     Form,
     FormControl,
@@ -10,32 +12,27 @@ import {
     FormField,
     FormItem,
     FormLabel,
-    FormMessage
+    FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover"
-import {
-    Command,
-    CommandEmpty,
-    CommandGroup,
-    CommandInput,
-    CommandItem,
-} from "@/components/ui/command"
-import { getFoods } from "@/lib/api/foodAPI"
-import { cn } from "@/lib/utils"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { format } from "date-fns"
-import { CalendarIcon, Check, ChevronsUpDown } from "lucide-react"
-import { useParams, useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
-import { useForm } from "react-hook-form"
-import * as z from "zod"
+import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/components/ui/use-toast"
-import { createDietDetail } from "@/lib/api/DietDetailAPI"
+import FirebaseService from "@/lib/FirebaseService"
+import { getTypes, updateType } from "@/lib/api/typeAPI"
+import { cn, isBase64Image } from "@/lib/utils"
+import { getDownloadURL, ref, uploadBytes, } from "firebase/storage"
+import Image from "next/image"
+import { ChangeEvent, useEffect, useState } from "react"
+import { updateSpecies } from "@/lib/api/speciesAPI"
+import useRefresh from "@/stores/refresh-store"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { editDietDetail } from "@/lib/api/DietDetailAPI"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { format } from "date-fns"
+import { Calendar, CalendarIcon, Check, ChevronsUpDown } from "lucide-react"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command"
+import { getFoods } from "@/lib/api/foodAPI"
 
 const items = [
     { id: "1", label: "Monday", },
@@ -88,93 +85,99 @@ interface food {
     imageUrl: string
 }
 
-type FormDetailValues = z.infer<typeof formDetailSchema>
+type UpdateFormValues = z.infer<typeof formDetailSchema>
 
-export function DietDetailForm() {
-    const { dietId } = useParams();
-    const router = useRouter()
-    const [open, setOpen] = useState(false)
-    const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
+export function UpdateForm({ id, values, setOpen }: any) {
+    const [files, setFiles] = useState<File[]>([]);
+    const [types, setTypes] = useState<any>([])
     const [foods, setFoods] = useState<food[]>([])
+
+    const { refresh } = useRefresh()
 
     useEffect(() => {
         const initialize = async () => {
             try {
-                const res = await getFoods();
-                setFoods(res.data);
+                const res = await getTypes();
+                const { data } = res;
+                setTypes(data);
+                const res1 = await getFoods();
+                setFoods(res1.data);
             } catch (err: any) {
-                setError(`Error initializing the app: ${err.message}`);
-            } finally {
-                setIsLoading(false);
             }
         };
         initialize();
     }, [])
-    const defaultValues: Partial<FormDetailValues> = {
-        name: "",
-        description: "",
+
+    const defaultValues: Partial<UpdateFormValues> = {
+        name: values.name || "",
+        description: values.description || "",
         updateAt: new Date(),
-        scheduleAt: new Date(),
-        endAt: new Date(),
-        feedingDate: [],
-        quantity: 0,
-        status: true,
-        dietId: Number(dietId),
-        foodId: 0,
-        feedingTime: ""
+        scheduleAt: new Date(values.scheduleAt),
+        endAt: new Date(values.endAt) || "",
+        feedingDate: values.feedingDate || [],
+        foodId: values.foodId,
+        quantity: values.quantity,
+        status: values.status,
+        feedingTime: values.feedingTime
     }
 
-    const form = useForm<FormDetailValues>({
+    const form = useForm<UpdateFormValues>({
         resolver: zodResolver(formDetailSchema),
         defaultValues,
         mode: "onChange",
     })
 
-    console.log("error", form.formState.errors)
+    const handleImage = (e: ChangeEvent<HTMLInputElement>, fieldChange: (value: string) => void) => {
+        e.preventDefault();
 
-    async function onSubmit(values: FormDetailValues) {
-        console.log("submit")
-        let schedule =
-            values.scheduleAt.setUTCHours(Number(values.feedingTime.substring(0, 2)),
-                Number(values.feedingTime.substring(3, 5)));
-        console.log(new Date(schedule))
+        const fileReader = new FileReader();
+
+        if (e.target.files && e.target.files.length > 0) {
+            const file = e.target.files[0];
+
+            setFiles(Array.from(e.target.files));
+
+            if (!file.type.includes("image")) return;
+
+            fileReader.onload = async (event) => {
+                const imageDataUrl = event.target?.result?.toString() || '';
+                fieldChange(imageDataUrl);
+            }
+
+            fileReader.readAsDataURL(file);
+        }
+    }
+
+    async function onSubmit(values: UpdateFormValues) {
+        let schedule = new Date(values.feedingTime)
+        schedule.setDate(values.scheduleAt.getDate())
+        schedule.setMonth(values.scheduleAt.getMonth())
+        schedule.setFullYear(values.scheduleAt.getFullYear())
         let DietDetailBody: any = {
             name: values.name,
             description: values.description,
             updateAt: new Date(),
-            scheduleAt: new Date(schedule),
+            scheduleAt: schedule,
             endAt: values.endAt,
             feedingDate: values.feedingDate,
             quantity: Number(values.quantity),
             status: true,
-            dietId: Number(dietId),
+            dietId: values.dietId,
             foodId: values.foodId
         };
-        createDietDetail(DietDetailBody)
-            .then((response) => {
+        editDietDetail(id, DietDetailBody)
+            .then((res) => {
                 toast({
-                    title: "Create successfully",
-                    description: response.toString()
-                })
-                setIsLoading(false);
+                    title: "Diet Detail updated",
+                    description: "Diet detail has been updated successfully.",
+                });
+                setOpen(false);
             })
-            .catch((error) => {
-                toast({
-                    title: "Delete Error",
-                    description: (
-                        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-                            <code className="text-light">{JSON.stringify(error.message, null, 2)}</code>
-                        </pre>
-                    )
-                })
-                setIsLoading(false);
-            })
-            .finally(() => {
-                setIsLoading(false);
-            })
-        router.push(`/dashboard/diets/${dietId}/view`);
+        setTimeout(() => {
+            refresh();
+        }, 1000);
     }
+
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -231,7 +234,7 @@ export function DietDetailForm() {
                                                     )}
                                                 >
                                                     {field.value ? (
-                                                        format(field.value, "MMM dd, yyyy")
+                                                        format(field.value, "MMM dd, yyyy H:mma")
                                                     ) : (
                                                         <span>Pick a date</span>
                                                     )}
@@ -244,7 +247,6 @@ export function DietDetailForm() {
                                                 mode="single"
                                                 selected={field.value}
                                                 onSelect={field.onChange}
-                                                disabled={{ before: new Date() }}
                                                 initialFocus
                                             />
                                         </PopoverContent>
@@ -288,7 +290,6 @@ export function DietDetailForm() {
                                                 mode="single"
                                                 selected={field.value}
                                                 onSelect={field.onChange}
-                                                disabled={{ before: new Date() }}
                                                 initialFocus
                                             />
                                         </PopoverContent>
@@ -307,7 +308,7 @@ export function DietDetailForm() {
                             <div className="mb-4">
                                 <FormLabel className="text-base">Feeding Date</FormLabel>
                                 <FormDescription>
-                                    Choose the feeding days in a week(apply for every week)
+                                    {/* the current feeding day: {field} */}
                                 </FormDescription>
                             </div>
                             <div className="flex justify-start">
@@ -443,7 +444,7 @@ export function DietDetailForm() {
                         </FormItem>
                     )}
                 />
-                <Button type="submit" className="w-full hover:shadow-primary-md">Create Diet Detail</Button>
+                <Button type="submit">Update Diet Information</Button>
             </form>
         </Form>
     )

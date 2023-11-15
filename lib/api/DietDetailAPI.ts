@@ -17,16 +17,16 @@ interface IFormData {
 
 export const createDietDetail = async (formData: IFormData) => {
     try {
-        const { data } = await axiosClient.post(`/DietDetails`, formData);
+        const { data } = await axiosClient.post(`/dietdetails`, formData);
         return { error: null, data };
     } catch (error) {
         return handleApiError(error);
     }
 };
 
-export const editDiet = async (id: number, formData: IFormData) => {
+export const editDietDetail = async (id: number, formData: IFormData) => {
     try {
-        const { data } = await axiosClient.put(`/Diets/${id}`, formData);
+        const { data } = await axiosClient.put(`/dietdetails/${id}`, formData);
         return { error: null, data };
     } catch (error) {
         return handleApiError(error);
@@ -60,11 +60,11 @@ export const getDietDetailByDietId = async (dietId: number) => {
     }
 };
 
-// export const deleteDietById = async (id: number) => {
-//     try {
-//         const { data } = await axiosClient.delete(`/Diets/${id}`);
-//         return { error: null, data };
-//     } catch (error) {
-//         return handleApiError(error);
-//     }
-// };
+export const deleteDietDetailById = async (id: number) => {
+    try {
+        const { data } = await axiosClient.delete(`/dietdetails/${id}`);
+        return { error: null, data };
+    } catch (error) {
+        return handleApiError(error);
+    }
+};
