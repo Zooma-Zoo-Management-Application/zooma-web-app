@@ -99,9 +99,6 @@ export function DataTableRowActions<TData>({
           <DropdownMenuItem onSelect={() => setUpdateOpen(true)}>
             Update
           </DropdownMenuItem>
-          <DropdownMenuItem onSelect={() => setDeleteOpen(true)}>
-            Delete
-          </DropdownMenuItem>
         </DropdownMenuGroup>
       </DropdownMenuContent>
       {/* <ViewFormDialog open={viewOpen} setOpen={setViewOpen} row={row} table={table} typeName={handleTypeRow(row.getValue("typeId"))}/> */}

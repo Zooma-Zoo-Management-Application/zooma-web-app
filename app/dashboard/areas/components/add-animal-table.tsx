@@ -35,13 +35,15 @@ import useRefresh from "@/stores/refresh-store"
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[],
-  cageId: string
+  cageId: string,
+  setOpen: any
 }
 
 export function AddAnimalTable<TData, TValue>({
   columns,
   data,
-  cageId
+  cageId,
+  setOpen
 }: DataTableProps<TData, TValue>) {
   const [dataState, setDataState] = React.useState<TData[]>(data)
   const [rowSelection, setRowSelection] = React.useState({})
@@ -82,6 +84,7 @@ export function AddAnimalTable<TData, TValue>({
       rowSelection,
       columnFilters,
     },
+    
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
@@ -145,6 +148,10 @@ export function AddAnimalTable<TData, TValue>({
       }
     }
   })
+  
+  React.useEffect(() => {
+    table.setPageSize(5)
+  }, [])
 
   const handleAddAnimalIntoCage = () => {
     // rowSelection
@@ -165,6 +172,7 @@ export function AddAnimalTable<TData, TValue>({
       .finally(() => {
         setTimeout(() => {
           refresh()
+          setOpen(false)
         }, 1000)
       })
     }

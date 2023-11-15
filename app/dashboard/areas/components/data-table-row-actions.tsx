@@ -63,18 +63,19 @@ export function DataTableRowActions<TData>({
           </DropdownMenuItem>
         </DropdownMenuGroup>
       </DropdownMenuContent>
-      <ViewFormDialog open={viewOpen} setOpen={setViewOpen} row={row} table={table}/>
+      <ViewFormDialog open={viewOpen} setOpen={setViewOpen} row={row} table={table} animals={row.getValue("animal") as any[]} />
       <UpdateFormDialog open={updateOpen} setOpen={setUpdateOpen} row={row} table={table}/>
       <DeleteFormDialog open={deleteOpen} setOpen={setDeleteOpen} row={row} />
     </DropdownMenu>
   )
 }
 
-const ViewFormDialog = ({ open, setOpen, row, table }:{
+const ViewFormDialog = ({ open, setOpen, row, table, animals }:{
   open: boolean,
   setOpen: (value: boolean) => void,
   row: Row<any>,
   table: Table<any>,
+  animals: any[]
 }) => {
 
   const [animalOpen, setAnimalOpen] = useState(false)
@@ -85,7 +86,7 @@ const ViewFormDialog = ({ open, setOpen, row, table }:{
         <FullWidthDialog>
           <DialogHeader>View Cage</DialogHeader>
             <div className="space-y-2">
-              <div className="grid grid-cols-2">
+              <div className="grid grid-cols-4">
                 <div>
                   <div className="text-sm font-semibold">Name</div>
                   <div className="text-sm">{row.getValue("name")}</div>
@@ -94,8 +95,6 @@ const ViewFormDialog = ({ open, setOpen, row, table }:{
                   <div className="text-sm font-semibold">Area</div>
                   <div className="text-sm">{row.getValue("areaId")}</div>
                 </div>
-              </div>
-              <div className="grid grid-cols-2">
                 <div>
                   <div className="text-sm font-semibold">Animal Count</div>
                   <div className="text-sm">{row.getValue("animalCount")}</div>
@@ -116,7 +115,7 @@ const ViewFormDialog = ({ open, setOpen, row, table }:{
                 <Button type="button" variant="default" className="ml-auto" onClick={() => setAnimalOpen(true)}>Add Animals</Button>
               </div>
               <div className="animal-list">
-                <DataTable columns={animalColumns} data={row.getValue("animal") as any[]}/>
+                <DataTable columns={animalColumns} data={animals}/>
                 {/* {(row.getValue("animal") as any[]).map((animal) => (
                   <div className="animal-list-item" key={animal.id}>
                     <div className="animal-list-item-name">{animal.name}</div>
@@ -169,7 +168,7 @@ const AddAnimalTableDialog =({ open, setOpen, row, table }:{
       }
     };
     initialize();
-  }, [error])
+  }, [])
 
   
 
@@ -177,7 +176,7 @@ const AddAnimalTableDialog =({ open, setOpen, row, table }:{
       <Dialog open={open} onOpenChange={setOpen}>
         <FullWidthDialog>
           <DialogHeader>Add Animals</DialogHeader>
-          <AddAnimalTable columns={animalColumns} data={animals} cageId={row.getValue("id")}/>
+          <AddAnimalTable columns={animalColumns} data={animals} cageId={row.getValue("id")} setOpen={setOpen}/>
         </FullWidthDialog>
       </Dialog>
     )

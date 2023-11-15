@@ -25,7 +25,7 @@ export const registerUser = async ({userInfo}:{
   }
 }) => {
   try {
-    const res = await axiosClient.post(`/users/sign-up`, {
+    const res = await axiosClient.post(`/accounts`, {
       "userName": userInfo?.username,
       "email": userInfo.email,
       "fullName": "",
@@ -58,7 +58,7 @@ export const registerUserBasedRole = async ({userInfo, roleId}:{
   roleId: number
 }) => {
   try {
-    const res = await axiosClient.post(`/Accounts/create-account`, {
+    const res = await axiosClient.post(`/accounts`, {
       "userName": userInfo?.username,
       "email": userInfo.email,
       "fullName": "",

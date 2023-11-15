@@ -34,7 +34,7 @@ const formSignUpSchema = z.object({
 
 type SignUpFormValues = z.infer<typeof formSignUpSchema>
 
-export function CreateCageForm({setOpen, areaId, currentArea}: {setOpen: (value: boolean) => void, areaId: number, currentArea: any}) {
+export function CreateCageForm({setOpen, areaId}: {setOpen: (value: boolean) => void, areaId: number}) {
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [areas, setAreas] = useState<any>([])
 
@@ -51,7 +51,6 @@ export function CreateCageForm({setOpen, areaId, currentArea}: {setOpen: (value:
     };
     initialize();
   }, [])
-  console.log("currentArea", currentArea)
 
   const defaultValues: Partial<SignUpFormValues> = {
     name: "",

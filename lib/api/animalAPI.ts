@@ -2,7 +2,7 @@ import { axiosClient, handleApiError } from "./axiosClient";
 
 export const getAnimals = async () => {
   try {
-    const { data } = await axiosClient.get(`/Animals`);
+    const { data } = await axiosClient.get(`/animals`);
     return { error: null, data };
   } catch (error) {
     return handleApiError(error);
@@ -23,7 +23,7 @@ export const updateAnimal = async (id:number, data:{
   "trainingPlanId": string | null
 }) => {
   try {
-    const response = await axiosClient.put(`/Animals/${id}`, {
+    const response = await axiosClient.put(`/animals/${id}`, {
       "name": data.name,
       "arrivalDate": data.arrivalDate,
       "dateOfBirth": data.dateOfBirth,
@@ -56,7 +56,7 @@ export const createAnimal = async (data:{
   "trainingPlanId": string | null
 }) => {
   try {
-    const response = await axiosClient.post(`/Animals`, {
+    const response = await axiosClient.post(`/animals`, {
       "name": data.name,
       "arrivalDate": data.arrivalDate,
       "dateOfBirth": data.dateOfBirth,
@@ -77,7 +77,7 @@ export const createAnimal = async (data:{
 
 export const deleteAnimal = async (id:number) => {
   try {
-    const response = await axiosClient.delete(`/Animals/${id}`);
+    const response = await axiosClient.delete(`/animals/${id}`);
     return { error: null, data: response.data };
   } catch (error) {
     return handleApiError(error);

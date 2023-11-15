@@ -6,15 +6,16 @@ import { Dialog, DialogContent, DialogHeader } from '@/components/ui/dialog'
 import { useParams, useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 import { UpdateAreaForm } from '../components/UpdateAreaForm'
-import { CreateCageForm } from '../components/CageCreateForm'
 import DataTableSkeleton from '../../components/DataTableSkeleton'
 import { DataTable } from '../components/data-table'
 import { columns } from '../components/columns'
 import { getAreaById, getCagesByAreaId } from '@/lib/api/areaAPI'
 import { Skeleton } from '@/components/ui/skeleton'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, RefreshCcw } from 'lucide-react'
 import Image from 'next/image'
 import { getSpeciesByAreaId } from '@/lib/api/speciesAPI'
+import useRefresh from '@/stores/refresh-store'
+import { CreateCageForm } from '../components/CageCreateForm'
 
 function AreaDetailPage() {
   const { areaId } = useParams()
@@ -29,30 +30,35 @@ function AreaDetailPage() {
 
   const [species, setSpecies] = useState<any>([])
 
+  const refresh = async () => {
+    try {
+      const resArea = await getAreaById(+areaId);
+      setCurrentArea(resArea.data)
+
+      const resSpecies = await getSpeciesByAreaId(+areaId);
+      if(resSpecies.data != null){
+        setSpecies(resSpecies.data.species)
+      }
+      const res = await getCagesByAreaId(+areaId);
+      const { data } = res;
+      if(data == null){
+        setCages([])
+        return;
+      }
+      setCages(data);
+    } catch (err:any) {
+      setError(`Error initializing the app: ${err.message}`);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  const { setRefresh } = useRefresh()
   
   useEffect(() => {
     const initialize = async () => {
-      try {
-        const resArea = await getAreaById(+areaId);
-        setCurrentArea(resArea.data)
-
-        const resSpecies = await getSpeciesByAreaId(+areaId);
-        if(resSpecies.data != null){
-          setSpecies(resSpecies.data.species)
-        }
-
-        const res = await getCagesByAreaId(+areaId);
-        const { data } = res;
-        if(data == null){
-          setCages([])
-          return;
-        }
-        setCages(data);
-      } catch (err:any) {
-        setError(`Error initializing the app: ${err.message}`);
-      } finally {
-        setIsLoading(false);
-      }
+      refresh()
+      setRefresh(refresh)
     };
     initialize();
   }, [])
@@ -99,9 +105,17 @@ function AreaDetailPage() {
                     }
                   </div>
                 </CardHeader>
-                <Button type="button" variant="default"
-                  onClick={() => setDialogUpdateAreaOpen(true)}
-                >Update</Button>
+                <div className="flex items-center justify-center gap-4">
+                  <Button type="button" variant="outline"
+                    onClick={() => setDialogUpdateAreaOpen(true)}
+                  >Update Area</Button>
+                  <Button variant="default" onClick={() => setOpen(true)}>
+                    Add Cage
+                  </Button>
+                  <Button onClick={refresh} variant={"outline"} size="icon" className="self-end">
+                    <RefreshCcw />
+                  </Button>
+                </div>
                 <Dialog open={dialogUpdateAreaOpen} onOpenChange={setDialogUpdateAreaOpen}>
                   <DialogContent>
                     <DialogHeader>Update Area Information</DialogHeader>
@@ -121,39 +135,30 @@ function AreaDetailPage() {
             )
           }
         </div>
+        <CreateFormDialog open={open} areaId={+areaId} setOpen={setOpen}/>
     </div>
   )
 }
 
 export default AreaDetailPage
 
-const CreateFormDialog = ({ open, setOpen, areaId = 1, currentArea }:{
+const CreateFormDialog = ({ open, setOpen, areaId = 1 }:{
   open: boolean,
   setOpen: (value: boolean) => void,
   areaId: number,
-  currentArea: any
 }) => {
 
   const handleClose = () => {
     setOpen(false)
   }
 
-  const values = {
-    userName: "",
-    email: "",
-    fullName: "",
-    gender: "",
-    dateOfBirth: new Date(),
-    avatarUrl: "",
-    phoneNumber: "",
-  }
-
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
         <DialogHeader>Create Cage</DialogHeader>
-        <CreateCageForm setOpen={setOpen} areaId={areaId} currentArea={currentArea}/>
+        <CreateCageForm setOpen={setOpen} areaId={areaId} />
       </DialogContent>
     </Dialog>
   )
 }
+
