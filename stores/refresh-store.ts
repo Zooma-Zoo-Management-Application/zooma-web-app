@@ -8,6 +8,7 @@ const useRefresh = create<RefreshState>((set) => {
   return {
       refresh: () => {},
       setRefresh: (refreshFunction) => {
+        refreshFunction()
           set(() => ({
               refresh: refreshFunction
           }));

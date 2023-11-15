@@ -15,6 +15,7 @@ import { CreateCageForm } from "./components/CageCreateForm";
 import { UpdateAreaForm } from "./components/UpdateAreaForm";
 import { columns } from "./components/columns";
 import { DataTable } from "./components/data-table";
+import { useRouter } from "next/navigation";
 const paths = [
   "M 435.4 44.91 438.14 34.62 466.95 22.27 520.46 11.98 588.38 10.6 630.23 14.03 644.64 25.7 629.55 30.5 604.16 42.16 562.31 45.59 536.24 64.8 526.64 94.99 438.83 92.24 435.4 44.91 Z",
   "M 582.9 56.57 600.05 77.15 632.29 117.62 645.33 149.87 635.72 158.79 587.01 156.04 556.14 153.3 546.53 128.6 543.1 88.81 552.71 66.17 582.9 56.57 Z",
@@ -77,6 +78,8 @@ function UserManagementPage() {
   }
   const { setRefresh } = useRefresh()
 
+  console.log('area', areaSelector)
+
   useEffect(() => {
     const initialize = async () => {
       try {
@@ -98,6 +101,8 @@ function UserManagementPage() {
     };
     initialize();
   }, [areaSelector])
+
+  const router = useRouter()
 
   return (
     <div className="hidden flex-col md:flex w-full">
@@ -121,6 +126,7 @@ function UserManagementPage() {
             >Map <ArrowDown className={accordionOpen ? "transform rotate-180" : ""}/>
             </h2>
             <div className={accordionOpen ? "" : "hidden"}>
+              <h5 className="underline cursor-pointer p-4" onClick={() => router.push("/dashboard/areas/list")}>View as List</h5>
               <div className='w-full zoo-map flex justify-center p-10 relative'>
                 <svg xmlns="http://www.w3.org/2000/svg" version="1.2" baseProfile="tiny" width="800" height="439" viewBox="0 0 800 439" stroke-linecap="round" stroke-linejoin="round">
                   <g id="zoo-map" className="aspect-video">

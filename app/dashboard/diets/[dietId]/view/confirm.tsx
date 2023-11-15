@@ -1,6 +1,5 @@
 'use client'
 
-import { Diet } from "../data/schema";
 interface DietDetail {
     id: number,
     name: string,

@@ -90,7 +90,7 @@ export default function DietDetailViewPage() {
 
     const handleConfirm = () => {
         setIsDialogOpen(false);
-        router.push(`/dashboard/diets/${id}/edit`)
+        // router.push(`/dashboard/diets/${id}/edit`)
     };
 
     const handleCancel = () => {
@@ -177,11 +177,12 @@ export default function DietDetailViewPage() {
                     </Card>
                 </TabsContent>
             </Tabs>
-            <ConfirmationDialog isOpen={isDialogOpen}
+            <ConfirmationDialog 
+                isOpen={isDialogOpen}
                 message={target}
                 onConfirm={handleConfirm}
-                onCancel={handleCancel}>
-            </ConfirmationDialog>
+                onCancel={handleCancel}
+            />
         </div>
     )
 }

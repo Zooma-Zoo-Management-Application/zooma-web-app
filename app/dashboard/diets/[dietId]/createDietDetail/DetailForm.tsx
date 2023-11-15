@@ -140,10 +140,10 @@ export function DietDetailForm() {
             endAt: values.endAt,
             description: values.description,
             updateAt: new Date(),
-            feedingDate: values.feedingDate.toString(),
-            quantity: Number(values.quantity),
+            feedingDate: values.feedingDate,
+            quantity: +values.quantity,
             status: true,
-            dietId: Number(dietId),
+            dietId: +dietId,
             foodId: values.foodId,
         };
         createDietDetail(DietDetailBody)

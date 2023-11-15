@@ -1,10 +1,8 @@
 "use client"
 
-import * as React from "react"
 import {
   ColumnDef,
   ColumnFiltersState,
-  RowData,
   SortingState,
   VisibilityState,
   flexRender,
@@ -14,8 +12,9 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
-  useReactTable,
+  useReactTable
 } from "@tanstack/react-table"
+import * as React from "react"
 
 import {
   Table,
@@ -25,26 +24,21 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { DataTablePagination } from "./data-table-pagination"
-import { DataTableToolbar } from "./data-table-toolbar"
-import { DataTableRowActions } from "./data-table-row-actions"
-import { RefreshCcw } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import useRefresh from "@/stores/refresh-store"
-import { getTypes } from "@/lib/api/typeAPI"
 import { toast } from "@/components/ui/use-toast"
-import { getAnimalWithCageId, unassignAnimalsIntoCage } from "@/lib/api/animalAPI"
+import { unassignAnimalsIntoCage } from "@/lib/api/animalAPI"
+import useRefresh from "@/stores/refresh-store"
+import { DataTablePagination } from "./data-table-pagination"
+import { DataTableRowActions } from "./data-table-row-actions"
+import { DataTableToolbar } from "./data-table-toolbar"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[],
-  cageId?: string
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
-  cageId,
 }: DataTableProps<TData, TValue>) {
   const [dataState, setDataState] = React.useState<TData[]>(data)
   const [rowSelection, setRowSelection] = React.useState({})
@@ -70,26 +64,13 @@ export function DataTable<TData, TValue>({
   //   initialize();
   // }, [data])
 
-  const refreshData = async () => {
-    if(cageId == null) return;
-    const res = await getAnimalWithCageId(+cageId);
-    const { data } = res;
-    setDataState(data);
-  }
-
   const table = useReactTable({
-    data: dataState,
+    data: data,
     columns,
     state: {
       sorting,
       columnVisibility: {
         ...columnVisibility,
-        // description: false,
-        cageId: false,
-        dietId: false,
-        speciesId: false,
-        trainingPlanId: false,
-        description: false,
       },
       rowSelection,
       columnFilters,
@@ -179,7 +160,6 @@ export function DataTable<TData, TValue>({
       .finally(() => {
         setTimeout(() => {
           refresh()
-          refreshData()
         }, 1000)
       })
     }
@@ -248,7 +228,6 @@ export function DataTable<TData, TValue>({
         </Table>
       </div>
       <DataTablePagination table={table} />
-      <Button type="button" variant="destructive" className="ml-auto" onClick={handleDeleteAnimalIntoCage}>Unassign Animals</Button>
     </div>
   )
 }
