@@ -14,7 +14,7 @@ import Link from 'next/link'
 import { checkoutTicket, getTickets } from '@/lib/api/ticketAPI';
 import { Skeleton } from '@/components/ui/skeleton';
 import useUserState from '@/stores/user-store';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import useOrder from '@/stores/order-store';
 import { withPublic } from '@/hooks/useAuth';
 
@@ -102,19 +102,22 @@ function TicketsPage() {
     nextStep();
   };
 
+  const router = useRouter()
 
   return (
     <div className='h-screen'>
       <section className='w-full h-full flex justify-center xl:grid xl:grid-cols-6'>
         <div className='w-full h-full wood-sand-texture flex flex-col justify-center items-center col-span-4 p-4'>
-          <Link href="/" className="hidden lg:flex relative self-start z-20 items-start text-lg font-medium ml-16">
+          <div className="hidden lg:flex relative self-start z-20 items-start text-lg font-medium ml-16">
             <Image
               src="/logos/Zooma_Black_Text.svg"
               alt="logo"
               width={150}
               height={150}
+              onClick={() => router.push("/")}
+              className='cursor-pointer'
             />
-          </Link>
+          </div>
           <div
             className={` flex justify-between w-11/12 max-w-4xl relative m-1 rounded-lg p-4`}
           >

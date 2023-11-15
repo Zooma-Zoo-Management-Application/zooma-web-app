@@ -44,7 +44,7 @@ const UserInfoForm = ({
                 Login
               </Button>
               Or
-              <Button type="button" onClick={() => router.push("/authentication/sign-up?callbackUrl=/tickets?step=3")}>
+              <Button type="button" onClick={() => router.push("/authentication/signup?callbackUrl=/tickets?step=3")}>
                 Sign Up
               </Button>
             </div>

@@ -85,10 +85,11 @@ const Header = () => {
           <ul className="hidden lg:flex col-start-4 col-end-9 text-white-500  items-center justify-center">
             {
               navLinks.map((navLink, index) => {
-                if(navLink.label == "Profile") return (<Fragment></Fragment>)
+                if(navLink.label == "Profile") return null
 
                 return (
-                  <Link key={navLink.label+navLink.route}
+                  <Link 
+                    key={navLink.label+navLink.route}
                     href={navLink.route}
                   >
                     <li

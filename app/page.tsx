@@ -2,19 +2,18 @@
 
 import BackgroundVideo from "@/app/components/BackgroundVideo";
 import Feature from "@/app/components/Feature";
-import Header from "@/components/shared/Header";
 import Hero from "@/app/components/Hero";
 import Pricing from "@/app/components/Pricing";
+import Footer from "@/components/shared/Footer";
+import Header from "@/components/shared/Header";
 import { Button } from "@/components/ui/button";
+import { withPublic } from "@/hooks/useAuth";
+import { getTickets } from "@/lib/api/ticketAPI";
 import useUIState from "@/stores/ui-store";
+import useUserState from "@/stores/user-store";
+import { RowData } from "@tanstack/react-table";
 import { Volume2, VolumeX } from "lucide-react";
 import { useEffect, useState } from "react";
-import { getTickets } from "@/lib/api/ticketAPI";
-import { getNews } from "@/lib/api/newAPI";
-import { RowData } from "@tanstack/react-table";
-import Footer from "@/components/shared/Footer";
-import { withPublic } from "@/hooks/useAuth";
-import useUserState from "@/stores/user-store";
 
 declare module '@tanstack/table-core' {
   interface TableMeta<TData extends RowData> {
@@ -30,7 +29,6 @@ function Home() {
   const [tickets, setTickets] = useState<any>([])
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const { currentUser } = useUserState()
 
   useEffect(() => {
     const initialize = async () => {

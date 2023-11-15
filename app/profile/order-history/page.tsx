@@ -60,11 +60,19 @@ function OrderHistory() {
                         <h3 className="flex items-center mb-1 text-lg font-semibold text-gray-900 dark:text-white">
                           Your order at Zooma
                           {
+                            order.orderDetails === null ? <h1>Empty</h1> : (
+                              <span className="bg-gray-200 text-black-600 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300 ml-3">{
+                                format(new Date(order.orderDetails[0].ticketDate), "dd MMM")
+                              }</span>
+                            )
+                          }
+                          {
                             index === 0 && <span className="bg-gray-200 text-black-600 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300 ml-3">Latest</span>
                           }
                           <span className={twMerge("text-sm font-medium mr-2 px-2.5 py-0.5 rounded ml-3", getStatus(order.status).color)}>{
                             getStatus(order.status).text
             }</span>
+            
                         </h3>
                         <time className="block text-left mb-2 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">
                           Order on {format(new Date(order.orderDate), 'MMMM dd, yyyy')}
