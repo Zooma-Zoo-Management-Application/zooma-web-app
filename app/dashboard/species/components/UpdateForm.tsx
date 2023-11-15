@@ -60,7 +60,7 @@ export function UpdateForm({id, values, setOpen}: any) {
     name: values?.name,
     description: values?.description,
     imageUrl: values?.imageUrl,
-    typeId: values?.typeId
+    typeId: values?.typeId.toString()
   }
 
   const form = useForm<UpdateFormValues>({
@@ -97,7 +97,7 @@ export function UpdateForm({id, values, setOpen}: any) {
 
     if(hasImageChanged) {
       // const imgRes = await startUpload(files);
-      const imageRef = ref(FirebaseService.storage, `images/animal-types/${id}`);
+      const imageRef = ref(FirebaseService.storage, `images/animal-species/${id}`);
       uploadBytes(imageRef, files[0]).then(() => {
         getDownloadURL(imageRef)
           .then((url) => {
@@ -110,8 +110,8 @@ export function UpdateForm({id, values, setOpen}: any) {
             })
             .then((res) => {
               toast({
-                title: "Animal type updated",
-                description: "Animal type has been updated successfully.",
+                title: "Species updated",
+                description: "Species has been updated successfully.",
               });
               setOpen(false);
             })
@@ -130,8 +130,8 @@ export function UpdateForm({id, values, setOpen}: any) {
       })
       .then((res) => {
         toast({
-          title: "Animal type updated",
-          description: "Animal type has been updated successfully.",
+          title: "Species updated",
+          description: "Species has been updated successfully.",
         });
         setOpen(false);
       })
@@ -233,10 +233,10 @@ export function UpdateForm({id, values, setOpen}: any) {
               <FormItem>
                 <FormLabel>Description</FormLabel>
                 <FormControl>
-                  <Textarea rows={5} placeholder="Animal Types" {...field} />
+                  <Textarea rows={5} placeholder="Speciess" {...field} />
                 </FormControl>
                 <FormDescription>
-                  This is animal type description.
+                  This is Species description.
                 </FormDescription>
                 <FormMessage />
               </FormItem>

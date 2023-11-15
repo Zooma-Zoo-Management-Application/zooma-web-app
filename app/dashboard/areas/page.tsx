@@ -137,8 +137,7 @@ function UserManagementPage() {
                             <path
                             className={twMerge("area-path", (index+1==areaSelector) && " area-path-animal animate-pulse")}
                             onClick={() => {
-                              setAccordionOpen(false)
-                              setAreaSelector(index+1)
+                              router.push(`/dashboard/areas/${index+1}`)
                             }
                             }
                             d={path} 
@@ -155,75 +154,11 @@ function UserManagementPage() {
           </AccordionItem>
         </Accordion>
         </div>
-        <div>
-          {
-            currentArea && (
-                <Card className="flex items-center w-full justify-between pr-4">
-                  <CardHeader>
-                    <CardTitle>{currentArea.name}</CardTitle>
-                    <CardDescription>{currentArea.description}</CardDescription>
-                  </CardHeader>
-                  <Button type="button" variant="default"
-                    onClick={() => setDialogUpdateAreaOpen(true)}
-                  >Update</Button>
-                  <Dialog open={dialogUpdateAreaOpen} onOpenChange={setDialogUpdateAreaOpen}>
-                    <DialogContent>
-                      <DialogHeader>Update Area Information</DialogHeader>
-                      <UpdateAreaForm id={currentArea.id} values={currentArea} setOpen={setDialogUpdateAreaOpen}/>
-                    </DialogContent>
-                  </Dialog>
-                </Card>
-            )
-          }
-        </div>
-        {
-          !accordionOpen && (
-            <div className="flex-1 space-y-4">
-              {
-                isLoading && cages.length == 0 ? (
-                  <DataTableSkeleton />
-                ) : (
-                  <DataTable columns={columns} data={cages} />
-                )
-              }
-            </div>
-          )
-        }
       </div>
-      <CreateFormDialog open={open} setOpen={setOpen} areaId={currentArea?.id || 1} currentArea={currentArea}/>
     </div>
   )
 }
 
-const CreateFormDialog = ({ open, setOpen, areaId = 1, currentArea }:{
-  open: boolean,
-  setOpen: (value: boolean) => void,
-  areaId: number,
-  currentArea: any
-}) => {
 
-  const handleClose = () => {
-    setOpen(false)
-  }
-
-  const values = {
-    userName: "",
-    email: "",
-    fullName: "",
-    gender: "",
-    dateOfBirth: new Date(),
-    avatarUrl: "",
-    phoneNumber: "",
-  }
-
-  return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent>
-        <DialogHeader>Create Cage</DialogHeader>
-        <CreateCageForm setOpen={setOpen} areaId={areaId} currentArea={currentArea}/>
-      </DialogContent>
-    </Dialog>
-  )
-}
 
 export default withProtected(UserManagementPage)

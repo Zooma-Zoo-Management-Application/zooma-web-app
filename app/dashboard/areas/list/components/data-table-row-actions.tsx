@@ -24,6 +24,7 @@ import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { UpdateForm } from "./UpdateForm"
 import { format } from "date-fns"
+import { UpdateAreaForm } from "../../components/UpdateAreaForm"
 
 
 interface DataTableRowActionsProps<TData> {
@@ -82,6 +83,7 @@ export function DataTableRowActions<TData>({
     return type?.name || typeId
   }
 
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -91,7 +93,7 @@ export function DataTableRowActions<TData>({
       </DropdownMenuTrigger>
       <DropdownMenuContent sideOffset={5} alignOffset={-5}>
         <DropdownMenuGroup>
-          <DropdownMenuItem onSelect={() => setViewOpen(true)}>
+          <DropdownMenuItem onSelect={() => router.push(`/dashboard/areas/${row.getValue("id") || ""}`)}>
             View
           </DropdownMenuItem>
           <DropdownMenuItem onSelect={() => setUpdateOpen(true)}>
@@ -102,9 +104,9 @@ export function DataTableRowActions<TData>({
           </DropdownMenuItem>
         </DropdownMenuGroup>
       </DropdownMenuContent>
-      {/* <ViewFormDialog open={viewOpen} setOpen={setViewOpen} row={row} table={table} typeName={handleTypeRow(row.getValue("typeId"))}/>
+      {/* <ViewFormDialog open={viewOpen} setOpen={setViewOpen} row={row} table={table} typeName={handleTypeRow(row.getValue("typeId"))}/> */}
       <UpdateFormDialog open={updateOpen} setOpen={setUpdateOpen} row={row} table={table}/>
-      <DeleteFormDialog open={deleteOpen} setOpen={setDeleteOpen} row={row} /> */}
+      {/* <DeleteFormDialog open={deleteOpen} setOpen={setDeleteOpen} row={row} /> */}
     </DropdownMenu>
   )
 }
@@ -214,23 +216,15 @@ const UpdateFormDialog = ({ open, setOpen, row, table }:{
   }
 
   const values = {
-    name: row.getValue("name"),
-    arrivalDate: new Date(row.getValue("arrivalDate")),
-    dateOfBirth: new Date(row.getValue("dateOfBirth")),
-    height: row.getValue("height"),
-    weight: row.getValue("weight"),
-    description: row.getValue("description"),
-    speciesId: row.getValue("speciesId"),
-    dietId: row.getValue("dietId"),
-    cageId: row.getValue("cageId"),
-    trainingPlanId: row.getValue("trainingPlanId"),
+    "name": row.getValue("name"),
+    "description": row.getValue("description"),
   }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
-        <DialogHeader>Update Animal</DialogHeader>
-        <UpdateForm id={row.getValue("id")} values={values} setOpen={setOpen}/>
+        <DialogHeader>Update Area Information</DialogHeader>
+        <UpdateAreaForm id={row.getValue("areaId") || "1"} values={values} setOpen={setOpen} />
       </DialogContent>
     </Dialog>
   )

@@ -5,12 +5,13 @@ import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
 import { withProtected } from "@/hooks/useAuth";
 import { getAreas } from "@/lib/api/areaAPI";
 import useRefresh from "@/stores/refresh-store";
-import { RefreshCcw } from "lucide-react";
+import { ArrowDown, RefreshCcw } from "lucide-react";
 import { useEffect, useState } from "react";
 import DataTableSkeleton from "../../components/DataTableSkeleton";
 import { UserCreateForm } from "./components/UserCreateForm";
 import { columns } from "./components/columns";
 import { DataTable } from "./components/data-table";
+import { useRouter } from "next/navigation";
 
 function UserManagementPage() {
   const [areas, setAreas] = useState<any>([])
@@ -48,17 +49,20 @@ function UserManagementPage() {
     initialize();
   }, [error])
 
+  const router = useRouter()
+
   return (
     <div className="hidden flex-col md:flex w-full">
       <div className="flex-1 space-y-4 p-8 pt-8">
         <div className="flex items-center justify-between space-y-2">
-          <h2 className="text-3xl font-bold tracking-tight">Area Management</h2>
+          <h2 className="text-3xl font-bold tracking-tight">Areas Management</h2>
             <div className="flex items-center justify-center gap-4">
               <Button onClick={refresh} variant={"outline"} size="icon" className="self-end">
                 <RefreshCcw />
               </Button>
             </div>
         </div>
+        <h5 className="underline cursor-pointer p-4" onClick={() => router.push("/dashboard/areas")}>View as Map</h5>
         <div className="flex-1 space-y-4">
           {
             isLoading && areas.length != 0 ? (

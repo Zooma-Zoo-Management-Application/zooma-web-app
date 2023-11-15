@@ -58,6 +58,9 @@ export function DataTableRowActions<TData>({
           <DropdownMenuItem onSelect={() => setUpdateOpen(true)}>
             Update
           </DropdownMenuItem>
+          <DropdownMenuItem onSelect={() => setDeleteOpen(true)}>
+            Delete
+          </DropdownMenuItem>
         </DropdownMenuGroup>
       </DropdownMenuContent>
       <ViewFormDialog open={viewOpen} setOpen={setViewOpen} row={row} table={table}/>
@@ -201,7 +204,7 @@ const UpdateFormDialog = ({ open, setOpen, row, table }:{
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
         <DialogHeader>Update Area Information</DialogHeader>
-        {/* <UpdateAreaForm id={row.getValue("areaId") || "1"} values={values} setOpen={setDialogUpdateAreaOpen}/> */}
+        <UpdateAreaForm id={row.getValue("areaId") || "1"} values={values} />
       </DialogContent>
     </Dialog>
   )
