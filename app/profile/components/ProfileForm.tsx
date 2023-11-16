@@ -35,10 +35,8 @@ type ProfileFormValues = z.infer<typeof ProfileValidation>
 // This can come from your database or API.
 
 
-export function ProfileForm() {
+export function ProfileForm({currentUser}: {currentUser: any}) {
   const [files, setFiles] = useState<File[]>([]);
-
-  const { currentUser } = useUserState();
 
   const defaultValues: Partial<ProfileFormValues> = {
     username: currentUser?.userName,

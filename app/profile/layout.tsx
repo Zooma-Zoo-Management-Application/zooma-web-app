@@ -12,11 +12,6 @@ const sidebarNavItems = [
     href: "/profile",
   },
   {
-    icon: <UserCog className="h-4 w-4 mr-2" />,
-    title: "Account Settings",
-    href: "/profile/account-settings",
-  },
-  {
     icon: <Ticket className="h-4 w-4 mr-2" />,
     title: "Your ticket",
     href: "/profile/order-history",
