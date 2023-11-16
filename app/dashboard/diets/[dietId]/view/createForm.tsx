@@ -172,6 +172,7 @@ export function CreateDetailForm() {
             .finally(() => {
                 setIsLoading(false);
             })
+        setIsLoading(false);
         router.push(`/dashboard/diets/${dietId}/view`);
     }
     return (
