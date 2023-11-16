@@ -74,11 +74,19 @@ export function UpdateForm({id, values, setOpen}: any) {
       "areaId": values?.areaId || "1",
     })
     .then((res) => {
-      toast({
-        title: "Area updated",
-        description: "Area has been updated successfully.",
-      });
-      setOpen(false);
+      if(res.error != null){
+        toast({
+          title: "Cage updated failed",
+          description: JSON.stringify(res.error),
+        });
+      } else {
+        toast({
+          title: "Cage updated",
+          description: "Cage has been updated successfully.",
+        });
+        setOpen(false);
+        refresh();
+      }
     })
   }
 

@@ -94,7 +94,7 @@ export function SkillDetailForm({ skillParam }: any) {
                         </FormItem>
                     )}
                 />
-                <Button type="submit" className="w-full hover:shadow-primary-md">Update Diet</Button>
+                <Button type="submit" className="w-full hover:shadow-primary-md">Update Skill</Button>
             </form>
         </Form>
     )

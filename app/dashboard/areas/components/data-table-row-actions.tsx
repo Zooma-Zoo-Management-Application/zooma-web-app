@@ -197,13 +197,15 @@ const UpdateFormDialog = ({ open, setOpen, row, table }:{
   const values = {
     "name": row.getValue("name"),
     "description": row.getValue("description"),
+    "animalLimit":row.getValue("animalLimit"),
+    "areaId": row.getValue("areaId"),
   }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
-        <DialogHeader>Update Area Information</DialogHeader>
-        <UpdateAreaForm id={row.getValue("areaId") || "1"} values={values} />
+        <DialogHeader>Update Cage Information</DialogHeader>
+        <UpdateForm values={values} setOpen={setOpen} id={row.getValue("id")}/>
       </DialogContent>
     </Dialog>
   )
