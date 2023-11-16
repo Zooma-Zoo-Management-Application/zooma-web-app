@@ -43,15 +43,36 @@ const dates = [
 const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({ isOpen, onEdit, onDelete, onCancel, message }) => {
     const detail = message
     const handleDateRow = (feedingDateArray: string[]) => {
-        let str = "";
-        feedingDateArray?.map((date: string) => {
-            if (dates.find((date1) => date1.id === date)) {
-                str += (dates.find((date1) => date1.id === date)?.label) + ". "
-            }
-        })
-        if (str === "Sun. Mon. Tue. Wed. Thu. Fri. Sat. ") return dates.at(7)?.label
+        let str = "every ";
+        for (let i = 0; i < 7; i++) {
+            feedingDateArray?.map((date: string) => {
+                if (date === i.toString()) {
+                    str += (dates.find((date1) => date1.id === date)?.label) + ". "
+                }
+            })
+        }
+        if (str === "every Sun. Mon. Tue. Wed. Thu. Fri. Sat. ") return dates.at(7)?.label
         return str
     }
+    // const handleDateRow = (feedingDateArray: string[]) => {
+    //     let str = "";
+    //     if (str === "Sun. Mon. Tue. Wed. Thu. Fri. Sat. ") return <>
+    //         <div className="flex space-x-2">
+    //             {/* {label && <Badge variant="outline">{label.label}</Badge>} */}
+    //             <span className="max-w-[300px] truncate font-medium">
+    //                 {dates[7].label}
+    //             </span>
+    //         </div>
+    //     </>
+    //     return <>
+    //         <div className="flex space-x-2">
+    //             {/* {label && <Badge variant="outline">{label.label}</Badge>} */}
+    //             <span className="max-w-[300px] truncate font-medium">
+    //                 At {feedingTime.substring(0, 5)}{<br />}{str}
+    //             </span>
+    //         </div>
+    //     </>;
+    // }
 
     return (
         <>

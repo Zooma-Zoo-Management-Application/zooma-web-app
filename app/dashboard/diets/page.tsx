@@ -9,6 +9,7 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react'
 import { withProtected } from "@/hooks/useAuth";
 import useRefresh from "@/stores/refresh-store";
+import { RefreshCcw } from "lucide-react";
 
 function UserManagementPage() {
   const [diets, setDiets] = useState<any>([])
@@ -48,11 +49,16 @@ function UserManagementPage() {
       <div className="flex-1 space-y-4 p-8 pt-8">
         <div className="flex items-center justify-between space-y-2">
           <h2 className="text-3xl font-bold tracking-tight">Diet Management</h2>
-          <Link href="/dashboard/diets/create">
-            <Button variant="default">
-              Create
-            </Button>
-          </Link>
+          <div className="flex items-center justify-center gap-4">
+            <Link href="/dashboard/diets/create">
+              <Button variant="default">
+                Create
+              </Button>
+            </Link>
+            {/* <Button onClick={refresh} variant={"outline"} size="icon" className="self-end">
+              <RefreshCcw />
+            </Button> */}
+          </div>
         </div>
         <div className="flex-1 space-y-4">
           {

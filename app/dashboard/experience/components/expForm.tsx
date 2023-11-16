@@ -34,7 +34,9 @@ const formDetailSchema = z.object({
     description: z.string()
         .min(3, { message: 'Description must be at least 3 characters.' }),
     yearOfExperience: z.number(),
-    skillId: z.number(),
+    skillId: z.number({
+        required_error: "required",
+    }),
     userId: z.number()
 })
 
@@ -80,7 +82,7 @@ export function SkillDetailForm() {
         defaultValues,
         mode: "onChange",
     })
-
+    console.log(error)
     async function onSubmit(values: FormDetailValues) {
         console.log("submit")
         let expBody: any = {
@@ -89,15 +91,29 @@ export function SkillDetailForm() {
             skillId: values.skillId,
             userId: currentUser.id
         };
+        console.log(expBody)
         createExperience(expBody)
-        toast({
-            variant: "default",
-            description: (
-                <span className="text-l font-bold text-green-500">
-                    Update Successfully!
-                </span>
-            ),
-        })
+            .then((response) => {
+                toast({
+                    title: "Create successfully",
+                    description: response.error
+                })
+                setIsLoading(false);
+            })
+            .catch((error) => {
+                toast({
+                    title: "Delete Error",
+                    description: (
+                        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+                            <code className="text-light">{JSON.stringify(error.message, null, 2)}</code>
+                        </pre>
+                    )
+                })
+                setIsLoading(false);
+            })
+            .finally(() => {
+                setIsLoading(false);
+            })
         router.push("/dashboard/experience")
     }
     return (
@@ -175,7 +191,7 @@ export function SkillDetailForm() {
                                 <FormItem>
                                     <FormLabel>Year of Experience</FormLabel>
                                     <FormControl>
-                                        <Input type="number" min="0" placeholder="0" step={0.01} {...field} onChange={event => field.onChange(+event.target.value)} />
+                                        <Input type="number" min="1" placeholder="0" {...field} onChange={event => field.onChange(+event.target.value)} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>

@@ -135,7 +135,7 @@ const UpdateFormDialog = ({ open, setOpen, row, table }: {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
         <DialogHeader>Update Diet</DialogHeader>
-        <UpdateForm id={row.getValue("id")} values={values} setOpen={setOpen} />
+        <UpdateForm id={row.getValue("id")} data={values} setOpen={setOpen} />
       </DialogContent>
     </Dialog>
   )

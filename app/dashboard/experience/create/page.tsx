@@ -1,6 +1,8 @@
+"use client"
+import { withProtected } from "@/hooks/useAuth";
 import { SkillDetailForm } from "../components/expForm";
 
-export default function CreateExperiencePage() {
+function CreateExperiencePage() {
     return (
         <div className="hidden flex-col md:flex w-full">
             <div className="flex-1 space-y-4 px-8">
@@ -12,3 +14,4 @@ export default function CreateExperiencePage() {
         </div>
     )
 }
+export default withProtected(CreateExperiencePage)
