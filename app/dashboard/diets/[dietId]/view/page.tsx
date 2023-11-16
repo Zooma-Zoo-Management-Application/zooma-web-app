@@ -108,7 +108,7 @@ function DietViewPage() {
                                 <div className='flex-1'>
                                     <span className='text-base font-semibold'>Total Energy: <br /></span>
                                     <span className='text-base pl-2'>{diet?.totalEnergyValue} Kcal/
-                                        {dateConverter(diet.scheduleAt, diet.endAt)}day(s) (about {diet?.totalEnergyValue / dateConverter(diet.scheduleAt, diet.endAt)} Kcal/day) <br /></span>
+                                        {dateConverter(diet.scheduleAt, diet.endAt)}day(s) (about {(diet?.totalEnergyValue / dateConverter(diet.scheduleAt, diet.endAt)).toFixed(2)} Kcal/day) <br /></span>
                                     <span className='text-base font-semibold'>Ended Date: <br /></span>
                                     <span className='text-base pl-2'>{format(new Date(diet?.endAt), "MMM dd, yyyy")}<br /></span>
                                 </div>
