@@ -107,7 +107,9 @@ function Page() {
                 return (
                   <>
                     <path className={twMerge("area-path", isHave && " area-path-animal animate-pulse")} d={paths[index]} 
-                    key={index}/>
+                    key={index}
+                    onClick={() => router.push(`/map/${index+1}`)}
+                    />
                   </>
                 )
               })
