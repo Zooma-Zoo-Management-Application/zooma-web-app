@@ -32,9 +32,9 @@ const formNewSchema = z.object({
   title: z.string()
   .min(3, {message: 'Name must be at least 3 characters.'}),
   description: z.string()
-  .min(3, {message: 'Name must be at least 3 characters.'}),
+  .min(3, {message: 'Description must be at least 3 characters.'}),
   content: z.string()
-  .min(3, {message: 'Name must be at least 3 characters.'}),
+  .min(3, {message: 'Content must be at least 3 characters.'}),
   image: z.string().url().nonempty(),
   })
   

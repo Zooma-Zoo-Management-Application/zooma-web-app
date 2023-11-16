@@ -1,4 +1,5 @@
 import Header from "@/components/shared/Header"
+import { Toaster } from "@/components/ui/toaster"
 
 export default function RootLayout({
   children,
@@ -12,6 +13,7 @@ export default function RootLayout({
       <body>
         {children}
       </body>
+      <Toaster />
     </html>
   )
 }

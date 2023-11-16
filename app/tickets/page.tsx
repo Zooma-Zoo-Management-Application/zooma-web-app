@@ -6,6 +6,7 @@ import SideBar from '@/app/tickets/components/form/SidebarStep';
 import TicketChooseForm from '@/app/tickets/components/form/TicketChooseForm';
 import UserInfoForm from '@/app/tickets/components/form/UserInfoForm';
 import { Button } from '@/components/ui/button';
+import { toast } from '@/components/ui/use-toast';
 import { withPublic } from '@/hooks/useAuth';
 import { useMultiplestepForm } from '@/hooks/useMultiplestepForm';
 import { checkoutTicket, getTickets } from '@/lib/api/ticketAPI';
@@ -86,6 +87,44 @@ function TicketsPage() {
   const handleOnSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if(isLastStep){
+
+      if(order.currentUser == null){
+        toast({
+          title: "Failed to checkout",
+          description: "You need to login or sign up to continue",
+        })
+        return;
+      }
+      let isHaveParent = false;
+      let isHaveTickets = false;
+
+      order.tickets.forEach((ticket) => {
+        if(ticket.id == 1 && ticket.quantity > 0){
+          isHaveParent = order.tickets.find((ticket) => ticket.id == 2)!.quantity != 0 || order.tickets.find((ticket) => ticket.id == 3)!.quantity != 0
+        }
+        if(ticket.quantity > 0){
+          isHaveTickets = true;
+        }
+      })
+
+      if(!isHaveTickets){
+        toast({
+          title: "Failed to checkout",
+          description: "You need to buy at least 1 ticket",
+        })
+        return;
+      }
+
+      if(!isHaveParent){
+        toast({
+          title: "Failed to checkout",
+          description: "You need to buy at least 1 parent ticket with child ticket",
+        })
+        return;
+      }
+
+      
+
       checkoutTicket(order)
       .then((res) => {
         const { data } = res;

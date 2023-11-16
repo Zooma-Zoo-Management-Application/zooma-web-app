@@ -17,9 +17,9 @@ export default function RootLayout({
           <div>
             {children}
           </div>
-          <ScrollToTopButton />
-          <Toaster />
         </body>
+        <ScrollToTopButton />
+        <Toaster />
     </html>
   )
 }

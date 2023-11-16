@@ -68,7 +68,7 @@ const router = useRouter()
         }
       </div>
       <div className='w-full zoo-map flex justify-center p-10 relative'>
-          <svg xmlns="http://www.w3.org/2000/svg" version="1.2" baseProfile="tiny" width="800" height="439" viewBox="0 0 800 439" stroke-linecap="round" strokeLinejoin="round">
+          <svg xmlns="http://www.w3.org/2000/svg" version="1.2" baseProfile="tiny" width="800" height="439" viewBox="0 0 800 439" strokeLinecap="round" strokeLinejoin="round">
           <g id="zoo-map" className="aspect-video">
             {
               paths.map((path:any, index:number) => (

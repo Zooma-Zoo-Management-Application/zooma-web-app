@@ -3,7 +3,7 @@
 import Header from '@/components/shared/Header';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { withProtected } from '@/hooks/useAuth';
+import { withProtected, withPublic } from '@/hooks/useAuth';
 import { returnVNPay } from '@/lib/api/orderAPI';
 import { ArrowLeft, XCircle } from 'lucide-react';
 import Link from 'next/link';
@@ -110,4 +110,4 @@ function Page() {
   )
 }
 
-export default withProtected(Page)
+export default withPublic(Page)
