@@ -23,6 +23,7 @@ import { getDownloadURL, ref, uploadBytes, } from "firebase/storage"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { ChangeEvent, useState } from "react"
+import useUserState from "@/stores/user-store"
 
 // This can come from your database or API.
 
@@ -44,6 +45,7 @@ export function NewsForm({ newParam } : any) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const router = useRouter()
+  const { currentUser } = useUserState();
 
   const defaultValues: Partial<FormNewValues> = {
     title: newParam.title || "",
@@ -103,7 +105,7 @@ export function NewsForm({ newParam } : any) {
               description: values.description,
               content: values.content,
               image: values.image,
-              userId: 1
+              userId: +currentUser?.id || 1,
             };
             editNew(newParam.id, newsbody)
           })
@@ -123,7 +125,7 @@ export function NewsForm({ newParam } : any) {
         description: values.description,
         content: values.content,
         image: values.image,
-        userId: 1
+        userId: +currentUser?.id || 1,
       };
       editNew(newParam.id, newsbody)
       .finally(() => {

@@ -3,7 +3,9 @@ import ImageWithTextSkeleton from '@/app/dashboard/components/ImageWithTextSkele
 import TipTap from '@/components/tiptap/TipTap';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import { withProtected } from '@/hooks/useAuth';
 import { getNewById } from '@/lib/api/newAPI';
+import { differenceInHours, format } from 'date-fns';
 import Image from 'next/image';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -68,17 +70,21 @@ function NewViewPage() {
             </div>
             <h1 className='my-4'>{news?.title}</h1>
             <span className='text-base'>{news?.description}</span>
-            <div className="flex items-center space-x-4 my-4 mt-8">
-              <Avatar>
-                <AvatarImage src="/peguin.jpg" />
-                <AvatarFallback>JL</AvatarFallback>
-              </Avatar>
-              <div className='flex flex-col'>
-                <span className="text-sm font-medium leading-none">Jackson Lee</span>
-                <span className="text-sm text-muted-foreground">span@example.com</span>
-              </div>
-              {/* <span className='text-gray-600 text-sm self-center my-1 pl-10'>Create at {format(new Date(news.date), "HH:mm:ss dd/LL/yyyy")} - {differenceInHours(new Date(), new Date(news.date))} hours ago</span> */}
-            </div>
+            {
+              news?.user && (
+                <div className="flex items-center space-x-4 my-4 mt-8">
+                  <Avatar>
+                    <AvatarImage src={news?.user?.avatarUrl} />
+                    <AvatarFallback>{news?.user?.userName}</AvatarFallback>
+                  </Avatar>
+                  <div className='flex flex-col'>
+                    <span className="text-sm font-medium leading-none">{news?.user?.userName}</span>
+                    <span className="text-sm text-muted-foreground">{news?.user?.email}</span>
+                  </div>
+                  <span className='text-gray-600 text-sm self-center my-1 pl-10'>Create at {format(new Date(news.date), "HH:mm:ss dd/LL/yyyy")} - {differenceInHours(new Date(), new Date(news.date))} hours ago</span>
+                </div>
+              )
+            }
             <TipTap content={news?.content} editable={false} />
           </>
         ) : (
@@ -89,4 +95,4 @@ function NewViewPage() {
   )
 }
 
-export default NewViewPage
+export default withProtected(NewViewPage)

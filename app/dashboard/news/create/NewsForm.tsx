@@ -24,6 +24,7 @@ import Image from "next/image"
 import { ChangeEvent, useState } from "react"
 import { createNew } from "@/lib/api/newAPI"
 import { useRouter } from "next/navigation"
+import useUserState from "@/stores/user-store"
 
 // This can come from your database or API.
 
@@ -43,6 +44,7 @@ type FormNewValues = z.infer<typeof formNewSchema>
 export function NewsForm() {
   const [files, setFiles] = useState<File[]>([]);
   const router = useRouter()
+  const { currentUser } = useUserState();
 
   const defaultValues: Partial<FormNewValues> = {
     title: "",
@@ -100,7 +102,7 @@ export function NewsForm() {
               description: values.description,
               content: values.content,
               image: values.image,
-              userId: 1
+              userId: +currentUser?.id || 1,
             };
             createNew(newsbody)
           })
@@ -196,7 +198,7 @@ export function NewsForm() {
               <FormItem>
                 <FormLabel>Content</FormLabel>
                 <FormControl>
-                  <Tiptap content={field.value}/>
+                  <Tiptap content={field.value} handleUpdate={(html) => field.onChange(html)}/>
                 </FormControl>
                 <FormMessage />
               </FormItem>
