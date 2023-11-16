@@ -45,7 +45,7 @@ export function ProfileForm({userId, values, setOpen}: any) {
     gender: values?.gender,
     //Datetime to date
     dateOfBirth: values?.dateOfBirth ? new Date(values?.dateOfBirth) : new Date(),
-    avatarUrl: values?.avatarUrl,
+    avatarUrl: values?.avatarUrl || "",
     phoneNumber: values?.phoneNumber,
   }
 

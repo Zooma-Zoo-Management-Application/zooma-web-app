@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
+import { Icons } from "@/components/shared/Icons"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import {
@@ -16,21 +17,17 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { BASE_URL } from "@/constants/appInfos"
+import { toast } from "@/components/ui/use-toast"
 import FirebaseService from "@/lib/FirebaseService"
+import { registerUserBasedRole } from "@/lib/api/userAPI"
 import { cn, isBase64Image } from "@/lib/utils"
-import axios from "axios"
+import useRefresh from "@/stores/refresh-store"
 import { format } from "date-fns"
 import { getDownloadURL, ref, uploadBytes, } from "firebase/storage"
 import { CalendarIcon, ChevronDownIcon } from "lucide-react"
 import Image from "next/image"
+import { useSearchParams } from "next/navigation"
 import { ChangeEvent, useState } from "react"
-import { Icons } from "@/components/shared/Icons"
-import { useRouter, useSearchParams } from "next/navigation"
-import useUserState from "@/stores/user-store"
-import { registerUser, registerUserBasedRole } from "@/lib/api/userAPI"
-import { toast } from "@/components/ui/use-toast"
-import useRefresh from "@/stores/refresh-store"
 
 // This can come from your database or API.
 
@@ -46,7 +43,7 @@ const formSignUpSchema = z.object({
   dateOfBirth: z.date({
     required_error: "A date of birth is required.",
   }),
-  avatarUrl: z.string().url().nonempty(),
+  avatarUrl: z.string(),
   // phoneNumber: z.string(),
   newPassword: z.string({
     required_error: "New Password is required",
@@ -55,8 +52,9 @@ const formSignUpSchema = z.object({
   .max(30, {message: 'New Password must be max 30 characters'}),
   confirmNewPassword: z.string({}),
   })
-  .refine((data) => data.newPassword === data.confirmNewPassword, {
-    message: "Oops! New Password doesnt match",
+  .refine((data) => data.newPassword === data.confirmNewPassword,{
+    message: "Oops! Password does not match",
+    path: ["confirmNewPassword"],
   })
   
 
@@ -168,8 +166,42 @@ export function UserCreateForm({setOpen}: {setOpen: (value: boolean) => void}) {
             }, 1000);
           })
       });
+    } else{
+      registerUserBasedRole({
+        userInfo: {
+          username: values.username,
+          avatarUrl: values.avatarUrl,
+          newPassword: values.newPassword,
+          confirmNewPassword: values.confirmNewPassword,
+          dateOfBirth: values.dateOfBirth.toISOString(),
+          email: values.email,
+          gender: values.gender
+        },
+        roleId: 1
+      })
+      .then((response) => {
+        console.log("responseasdasd", response);
+        if(response.data !== null) {
+          toast({
+            title: "Create User Success",
+            description: "Create User Success",
+          })
+          setIsLoading(false);
+          setOpen(false);
+        } else {
+          toast({
+            title: "Create User Failed",
+            description: JSON.stringify(response.error),
+          })
+          setIsLoading(false);
+          values.avatarUrl = "";
+        }
+      }).finally(() => {
+        setTimeout(() => {
+          refresh()
+        }, 1000);
+      })
     }
-    
   }
 
   return (

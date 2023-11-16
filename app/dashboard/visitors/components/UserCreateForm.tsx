@@ -46,7 +46,7 @@ const formSignUpSchema = z.object({
   dateOfBirth: z.date({
     required_error: "A date of birth is required.",
   }),
-  avatarUrl: z.string().url().nonempty(),
+  avatarUrl: z.string(),
   // phoneNumber: z.string(),
   newPassword: z.string({
     required_error: "New Password is required",
@@ -55,8 +55,9 @@ const formSignUpSchema = z.object({
   .max(30, {message: 'New Password must be max 30 characters'}),
   confirmNewPassword: z.string({}),
   })
-  .refine((data) => data.newPassword === data.confirmNewPassword, {
-    message: "Oops! New Password doesnt match",
+  .refine((data) => data.newPassword === data.confirmNewPassword,{
+    message: "Oops! Password does not match",
+    path: ["confirmNewPassword"],
   })
   
 
@@ -109,7 +110,7 @@ export function UserCreateForm({setOpen}: {setOpen: (value: boolean) => void}) {
   async function onSubmit(values: SignUpFormValues) {
     setIsLoading(true);
 
-    const blob = values.avatarUrl;
+      const blob = values.avatarUrl;
 
     const hasImageChanged = isBase64Image(blob);
 
@@ -169,9 +170,39 @@ export function UserCreateForm({setOpen}: {setOpen: (value: boolean) => void}) {
           })
       });
     }
-    
+  else {
+    registerUserBasedRole({
+      userInfo: {
+        username: values.username,
+        avatarUrl: "",
+        newPassword: values.newPassword,
+        confirmNewPassword: values.confirmNewPassword,
+        dateOfBirth: values.dateOfBirth.toISOString(),
+        email: values.email,
+        gender: values.gender
+      },
+      roleId: 3
+    })
+    .then((response) => {
+      console.log("responseasdasd", response);
+      if(response.data !== null) {
+        toast({
+          title: "Create User Success",
+          description: "Create User Success",
+        })
+        setIsLoading(false);
+        setOpen(false);
+      } else {
+        toast({
+          title: "Create User Failed",
+          description: JSON.stringify(response.error),
+        })
+        setIsLoading(false);
+        values.avatarUrl = "";
+      }
+    })
   }
-
+  }
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">

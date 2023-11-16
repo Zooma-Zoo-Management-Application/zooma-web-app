@@ -6,17 +6,16 @@ import SideBar from '@/app/tickets/components/form/SidebarStep';
 import TicketChooseForm from '@/app/tickets/components/form/TicketChooseForm';
 import UserInfoForm from '@/app/tickets/components/form/UserInfoForm';
 import { Button } from '@/components/ui/button';
+import { withPublic } from '@/hooks/useAuth';
 import { useMultiplestepForm } from '@/hooks/useMultiplestepForm';
+import { checkoutTicket, getTickets } from '@/lib/api/ticketAPI';
+import useOrder from '@/stores/order-store';
+import useUserState from '@/stores/user-store';
 import { AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
-import Link from 'next/link'
-import { checkoutTicket, getTickets } from '@/lib/api/ticketAPI';
-import { Skeleton } from '@/components/ui/skeleton';
-import useUserState from '@/stores/user-store';
+import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import useOrder from '@/stores/order-store';
-import { withPublic } from '@/hooks/useAuth';
+import { useEffect, useState } from 'react';
 
 interface Tickets {
   id: number;
