@@ -13,6 +13,7 @@ import { checkoutTicket, getTickets } from '@/lib/api/ticketAPI';
 import useOrder from '@/stores/order-store';
 import useUserState from '@/stores/user-store';
 import { AnimatePresence } from 'framer-motion';
+import { Map, Newspaper, Rabbit, Ticket, UserSquare2 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -31,7 +32,33 @@ export type FormItems = {
   date: Date;
   tickets: Tickets[];
 };
-
+const navLinks = [
+  {
+    route: "/animals",
+    label: "Animals",
+    icon: <Rabbit className="w-6 h-6" />,
+  },
+  {
+    route: "/news",
+    label: "News",
+    icon: <Newspaper className="w-6 h-6" />,
+  },
+  {
+    route: "/tickets",
+    label: "Tickets",
+    icon: <Ticket className="w-6 h-6" />,
+  },
+  {
+    route: "/map",
+    label: "Map",
+    icon: <Map className="w-6 h-6" />,
+  },
+  {
+    route: "/profile",
+    label: "Profile",
+    icon: <UserSquare2 className="w-6 h-6" />,
+  },
+]
 
 function TicketsPage() {
   const { order, setOrder, setTickets, setCurrentUser } = useOrder();
@@ -258,6 +285,30 @@ function TicketsPage() {
           />
         </div>
       </section>
+      <nav className="fixed lg:hidden bottom-0 left-0 right-0 z-20 px-4 sm:px-8 shadow-t ">
+        <div className="bg-white-500 sm:px-3">
+          <ul className="flex w-full justify-between items-center text-black-500">
+            {
+              navLinks.map((navLink, index) => {
+
+                return (
+                  <div
+                    key={navLink.label}
+                    onClick={() => router.push(navLink.route)}
+                    className={
+                      "mx-1 sm:mx-2 px-3 sm:px-4 py-2 flex flex-col items-center text-xs border-t-2 transition-all cursor-pointer" +
+                        + " border-transparent "
+                    }
+                  >
+                    {navLink.icon}
+                    {navLink.label}
+                  </div>
+                )
+              })
+            }
+          </ul>
+        </div>
+      </nav>
     </div>
   )
 }

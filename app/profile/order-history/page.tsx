@@ -82,11 +82,11 @@ function OrderHistory() {
                           <Calendar className="w-6 h-6"/>
                         </span>
                         <h3 className="flex items-center mb-1 text-lg font-semibold text-gray-900 dark:text-white">
-                          Your order at Zooma
-                          {
+                        {
                             order.orderDetails === null ? <h1>Empty</h1> : (
-                              <span className="bg-gray-200 text-black-600 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300 ml-3">{
-                                format(new Date(order.orderDetails[0].ticketDate), "dd MMM")
+                              <span className="text-sm font-medium mr-2 px-2.5 py-0.5 rounded bg-green-500 text-green-100 ml-3 ">
+                              {
+                                "Go on " + format(new Date(order.orderDetails[0].ticketDate), "dd MMMM")
                               }</span>
                             )
                           }

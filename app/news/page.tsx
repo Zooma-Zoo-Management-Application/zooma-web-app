@@ -176,7 +176,7 @@ function NewsPage() {
                 </div>
               </div>
             ) : (
-              <div className='grid grid-cols-3 gap-4'>
+              <div className='grid grid-cols-2 gap-4'>
                 {listOldNews?.map((listNew:any, index:any) => (
                   <Card  key={listNew.title} className="p-0 border-2 border-gray-500 hover:border-primary transition-all rounded-lg flex flex-col justify-between">
                     <CardHeader className="p-0">
