@@ -22,6 +22,17 @@ import {
 import { DialogClose } from '@radix-ui/react-dialog';
 import { withProtected } from '@/hooks/useAuth';
 
+const dateConverter = (startDate: Date, timeEnd: Date) => {
+    const newStartDate = new Date(startDate);
+    const newEndDate = new Date(timeEnd);
+    const one_day = 1000 * 60 * 60 * 24;
+    let result
+    result = Math.ceil((newEndDate.getTime() - newStartDate.getTime()) / (one_day))
+    console.log('date Converter result', result)
+    if (result < 0) { return 0 }
+    return result
+}
+
 function DietViewPage() {
     const { dietId } = useParams();
     const [diet, setDiet] = useState<any>(null)
@@ -96,7 +107,8 @@ function DietViewPage() {
                                 </div>
                                 <div className='flex-1'>
                                     <span className='text-base font-semibold'>Total Energy: <br /></span>
-                                    <span className='text-base pl-2'>{diet?.totalEnergyValue} <br /></span>
+                                    <span className='text-base pl-2'>{diet?.totalEnergyValue} Kcal/
+                                        {dateConverter(diet.scheduleAt, diet.endAt)}day(s) (about {diet?.totalEnergyValue / dateConverter(diet.scheduleAt, diet.endAt)} Kcal/day) <br /></span>
                                     <span className='text-base font-semibold'>Ended Date: <br /></span>
                                     <span className='text-base pl-2'>{format(new Date(diet?.endAt), "MMM dd, yyyy")}<br /></span>
                                 </div>
