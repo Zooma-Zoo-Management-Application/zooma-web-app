@@ -68,17 +68,21 @@ function NewViewPage() {
                   </div>
                   <h1 className='my-4'>{newData.title}</h1>
                   <span className='text-base'>{newData.description}</span>
-                  <div className="flex items-center space-x-4 my-4 mt-8">
-                    <Avatar>
-                      <AvatarImage src="/peguin.jpg" />
-                      <AvatarFallback>JL</AvatarFallback>
-                    </Avatar>
-                    <div className='flex flex-col'>
-                      <span className="text-sm font-medium leading-none">Jackson Lee</span>
-                      <span className="text-sm text-muted-foreground">span@example.com</span>
-                    </div>
-                    <span className='text-gray-600 text-sm self-center my-1 pl-10'>Create at {format(new Date(newData.date), "HH:mm:ss dd/LL/yyyy")} - {differenceInHours(new Date(), new Date(newData.date))} hours ago</span>
-                  </div>
+                  {
+                    newData?.user && (
+                      <div className="flex items-center space-x-4 my-4 mt-8">
+                        <Avatar>
+                          <AvatarImage src={newData?.user?.avatarUrl} />
+                          <AvatarFallback>{newData?.user?.userName}</AvatarFallback>
+                        </Avatar>
+                        <div className='flex flex-col'>
+                          <span className="text-sm font-medium leading-none">{newData?.user?.userName}</span>
+                          <span className="text-sm text-muted-foreground">{newData?.user?.email}</span>
+                        </div>
+                        <span className='text-gray-600 text-sm self-center my-1 pl-10'>Create at {format(new Date(newData.date), "HH:mm:ss dd/LL/yyyy")} - {differenceInHours(new Date(), new Date(newData.date))} hours ago</span>
+                      </div>
+                    )
+                  }
                   <TipTap content={newData.content} editable={false}/>
                 </>
               )
