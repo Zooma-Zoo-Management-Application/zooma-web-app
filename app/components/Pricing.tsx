@@ -3,44 +3,46 @@
 import getScrollAnimation, { formatVND } from "@/lib/utils";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import NewSlider from "@/app/components/NewSlider";
 import ScrollAnimationWrapper from "@/components/framer-motion/ScrollAnimationWrapper";
 import { Button } from "@/components/ui/button";
 import ImageWithTextSkeleton from "../dashboard/components/ImageWithTextSkeleton";
 import { useRouter } from "next/navigation";
+import { getNews } from "@/lib/api/newAPI";
+import MapChart from "../map/components/MapChart";
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 
 interface IProps {
   tickets: any[];
 }
 
 const Pricing = ({tickets}: IProps) => {
+  const [news, setNews] = useState<any>([])
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
   const scrollAnimation = useMemo(() => getScrollAnimation(), []);
 
   const router = useRouter()
 
-  if(!tickets) return (
-    <ImageWithTextSkeleton />
-  );
-  let ticketModifed:any[] = [];
-
-  tickets.forEach((ticket, index) => {
-    switch (ticket.name) {
-      case "Child Ticket":
-        ticket.image = "/icon/child.svg";
-        ticketModifed[0] = ticket;
-        break;
-      case "Adult Ticket":
-        ticket.image = "/icon/adult.svg";
-        ticketModifed[1] = ticket;
-        break;
-      case "Senior Ticket":
-      default:
-        ticket.image = "/icon/senior.svg";
-        ticketModifed[2] = ticket;
-        break;
+  const refresh = async () => {
+    try {
+      const res = await getNews();
+      const { data } = res;
+      setNews(data);
+    } catch (err: any) {
+      setError(`Error initializing the app: ${err.message}`);
+    } finally {
+      setIsLoading(false);
     }
-  })
+  }
+
+  useEffect(() => {
+    const initialize = async () => {
+      refresh()
+    };
+    initialize();
+  }, [])
 
   return (
     <div
@@ -65,7 +67,19 @@ const Pricing = ({tickets}: IProps) => {
           </ScrollAnimationWrapper>
           <div className="grid grid-flow-row sm:grid-flow-col grid-cols-1 sm:grid-cols-3 gap-4 lg:gap-12 py-8 lg:py-12 px-6 sm:px-0 lg:px-6">
             {
-              ticketModifed && ticketModifed.map((ticket, index) => (
+              tickets.length == 0 ?
+                  <>
+                    <div className="col-span-1">
+                      <ImageWithTextSkeleton/>
+                    </div>
+                    <div className="col-span-1">
+                      <ImageWithTextSkeleton/>
+                    </div>
+                    <div className="col-span-1">
+                      <ImageWithTextSkeleton/>
+                    </div>
+                  </>
+              : tickets.map((ticket, index) => (
                 <ScrollAnimationWrapper key={index} className="flex justify-center">
                   <motion.div
                     variants={scrollAnimation}
@@ -96,7 +110,7 @@ const Pricing = ({tickets}: IProps) => {
                       <p className="text-2xl text-black-600 text-center mb-4 ">
                         {formatVND(ticket.price)}
                       </p>
-                      <Button>Select</Button>
+                      <Button onClick={() => router.push("/tickets")}>Select</Button>
                     </div>
                   </motion.div>
                 </ScrollAnimationWrapper>
@@ -118,13 +132,7 @@ const Pricing = ({tickets}: IProps) => {
           <ScrollAnimationWrapper>
             <motion.div className="py-4 w-full px-8 mt-12" variants={scrollAnimation}> 
               <div className="relative w-full sm:w-[70%] mx-auto aspect-video">
-                <Image
-                  src="/HugeGlobal.svg" 
-                  // className="w-full h-auto" 
-                  layout='fill'
-                  objectFit='contain'
-                  alt="Huge Global"
-                />
+                <MapChart />
               </div>
             </motion.div>
           </ScrollAnimationWrapper>
@@ -146,7 +154,51 @@ const Pricing = ({tickets}: IProps) => {
           </ScrollAnimationWrapper>
           <ScrollAnimationWrapper className="w-full flex flex-col py-12">
             <motion.div variants={scrollAnimation}>
-              <NewSlider />
+              <div className="grid grid-cols-3 gap-4">
+                {
+                  isLoading ? (
+                    <>
+                      <ImageWithTextSkeleton/>
+                      <ImageWithTextSkeleton/>
+                      <ImageWithTextSkeleton/>
+                    </>
+                  ) : (
+                    <>
+                      {news?.map((listNew:any, index:any) => (
+                      <div className="px-3 flex items-stretch" key={listNew.title}>
+                        <Card  key={listNew.title} className="p-0 border-2 border-gray-500 hover:border-primary transition-all rounded-lg flex flex-col justify-between">
+                          <CardHeader className="p-0">
+                            <div className="relative w-full h-32 mx-auto">
+                              <Image
+                                src={listNew.image}
+                                layout='fill'
+                                className="rounded-t-md"
+                                objectFit='cover'
+                                alt="News"
+                              />
+                            </div>
+                          </CardHeader>
+                          <CardContent className="py-4 px-8 flex flex-col justify-start items-start">
+                            <h4 className="font-bold text-left mb-4 text-lg">{listNew.title || "Title"}</h4>
+                            <p className="text-justify text-ellipsis">
+                            {listNew.description || "Description"}
+                            </p>
+                          </CardContent>
+                          <CardFooter className="flex justify-between flex-row-reverse">
+                            <Button
+                            className="hover:shadow-primary-md"
+                            onClick={() => router.push(`/news/${listNew.id}`)}
+                            >
+                              View more
+                            </Button>
+                          </CardFooter>
+                        </Card>
+                      </div>
+                    ))}
+                    </>
+                  )
+                }
+              </div>
             </motion.div>
           </ScrollAnimationWrapper>
           <ScrollAnimationWrapper className="relative w-full mt-16">

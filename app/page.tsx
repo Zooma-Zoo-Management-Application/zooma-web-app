@@ -33,8 +33,28 @@ function Home() {
   useEffect(() => {
     const initialize = async () => {
       try {
-        const tickets = await getTickets();
-        setTickets(tickets);
+        const { data } = await getTickets();
+        let ticketModifed:any[] = [];
+        if(data != null){
+          data.forEach((ticket:any, index:any) => {
+            switch (ticket.name) {
+              case "Child Ticket":
+                ticket.image = "/icon/child.svg";
+                ticketModifed[0] = ticket;
+                break;
+              case "Adult Ticket":
+                ticket.image = "/icon/adult.svg";
+                ticketModifed[1] = ticket;
+                break;
+              case "Senior Ticket":
+              default:
+                ticket.image = "/icon/senior.svg";
+                ticketModifed[2] = ticket;
+                break;
+            }
+          })
+        }
+        setTickets(ticketModifed);
       } catch (err:any) {
         setError(`Error initializing the app: ${err.message}`);
       } finally {
@@ -58,7 +78,7 @@ function Home() {
       <Header />
       <Hero />
       <Feature />
-      <Pricing tickets={tickets.data}/>
+      <Pricing tickets={tickets}/>
       <BackgroundVideo />
       <Footer />
     </div>

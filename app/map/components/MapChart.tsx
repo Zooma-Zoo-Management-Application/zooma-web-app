@@ -59,10 +59,10 @@ const router = useRouter()
         {
           // open && 
           currentArea && (
-            <div className="border-2 border-dotted py-3 px-6 mx-10">
-              <div>AreaId: {currentArea.id || "id"}</div>
-              <div>Name: {currentArea.name || "Name"}</div>
-              <div>Description: {currentArea.description || "Description"}</div>
+            <div className="border-2 border-dotted py-3 px-6 mx-10 background-texture">
+              {/* <div>AreaId: {currentArea.id || "id"}</div> */}
+              <div className="font-medium text-xl">{currentArea.name || "Name"}</div>
+              <div>{currentArea.description || "Description"}</div>
             </div>
           )
         }

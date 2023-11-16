@@ -221,7 +221,7 @@ const UpdateFormDialog = ({ open, setOpen, row, table }:{
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
         <DialogHeader>Update Area Information</DialogHeader>
-        <UpdateAreaForm id={row.getValue("areaId") || "1"} values={values} setOpen={setOpen} />
+        <UpdateAreaForm id={row.getValue("id") || "1"} values={values} setOpen={setOpen} />
       </DialogContent>
     </Dialog>
   )
