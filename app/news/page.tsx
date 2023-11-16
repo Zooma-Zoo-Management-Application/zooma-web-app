@@ -110,7 +110,7 @@ function NewsPage() {
                     <div className="col-start-1 col-end-7 row-start-6 row-span-2 text-xl text-white-500 pt-3 px-1 flex flex-col justify-end">
                       <h5>{listNews[0]?.date}</h5>
                       <h2 className='text-xl sm:text-2xl'>{listNews[0]?.title}</h2>
-                      <span className='text-sm sm:text-base'>{listNews[0]?.description?.slice(0, 50)+"..."}</span>
+                      <span className='text-sm sm:text-base'>{(listNews[0]?.description?.slice(0, 50) || "loading") + "..."}</span>
                     </div>
                   </div>
                 </div>
@@ -176,44 +176,37 @@ function NewsPage() {
                 </div>
               </div>
             ) : (
-              <Slider
-                {...settings}
-                arrows={false}
-                ref={setSliderRef}
-                className="h-fit"
-              >
-                {listNews?.map((listNew:any, index:any) => (
-                  <div className="px-3 flex items-stretch" key={listNew.title}>
-                    <Card  key={listNew.title} className="p-0 border-2 border-gray-500 hover:border-primary transition-all rounded-lg flex flex-col">
-                      <CardHeader className="p-0">
-                        <div className="relative w-full h-32 mx-auto">
-                          <Image
-                            src={listNew.image}
-                            layout='fill'
-                            className="rounded-t-md"
-                            objectFit='cover'
-                            alt="News"
-                          />
-                        </div>
-                      </CardHeader>
-                      <CardContent className="py-4 px-8 flex flex-col justify-start">
-                        <h4 className="font-bold text-left mb-4 text-lg">{listNew.title || "Title"}</h4>
-                        <p className="text-justify">
-                        {listNew.description || "Description"}
-                        </p>
-                      </CardContent>
-                      <CardFooter className="flex justify-between flex-row-reverse">
-                        <Button
-                        className="hover:shadow-primary-md"
-                        onClick={() => router.push(`/news/${listNew.id}`)}
-                        >
-                          View more
-                        </Button>
-                      </CardFooter>
-                    </Card>
-                  </div>
+              <div className='grid grid-cols-3 gap-4'>
+                {listOldNews?.map((listNew:any, index:any) => (
+                  <Card  key={listNew.title} className="p-0 border-2 border-gray-500 hover:border-primary transition-all rounded-lg flex flex-col justify-between">
+                    <CardHeader className="p-0">
+                      <div className="relative w-full h-32 mx-auto">
+                        <Image
+                          src={listNew.image}
+                          layout='fill'
+                          className="rounded-t-md"
+                          objectFit='cover'
+                          alt="News"
+                        />
+                      </div>
+                    </CardHeader>
+                    <CardContent className="py-4 px-8 flex flex-col justify-start items-start">
+                      <h4 className="font-bold text-left mb-4 text-lg">{listNew.title || "Title"}</h4>
+                      <p className="text-justify text-ellipsis">
+                      {listNew.description || "Description"}
+                      </p>
+                    </CardContent>
+                    <CardFooter className="flex justify-between flex-row-reverse">
+                      <Button
+                      className="hover:shadow-primary-md"
+                      onClick={() => router.push(`/news/${listNew.id}`)}
+                      >
+                        View more
+                      </Button>
+                    </CardFooter>
+                  </Card>
                 ))}
-                </Slider>
+              </div>
             )
           }
       
