@@ -4,6 +4,7 @@ import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { NewsForm } from './NewsForm';
 import ImageWithTextSkeleton from '@/app/dashboard/components/ImageWithTextSkeleton';
+import { withProtected } from '@/hooks/useAuth';
 
 function NewViewPage() {
   const { newId } = useParams();
@@ -44,4 +45,4 @@ function NewViewPage() {
   )
 }
 
-export default NewViewPage
+export default withProtected(NewViewPage)

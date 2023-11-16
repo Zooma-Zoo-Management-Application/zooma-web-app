@@ -53,9 +53,9 @@ function UserManagementPage() {
         <div className="flex items-center justify-between space-y-2">
           <h2 className="text-3xl font-bold tracking-tight">Visitor Management</h2>
             <div className="flex items-center justify-center gap-4">
-              <Button variant="default" onClick={() => setOpen(true)}>
+              {/* <Button variant="default" onClick={() => setOpen(true)}>
                 Create
-              </Button>
+              </Button> */}
               <Button onClick={refresh} variant={"outline"} size="icon" className="self-end">
                 <RefreshCcw />
               </Button>

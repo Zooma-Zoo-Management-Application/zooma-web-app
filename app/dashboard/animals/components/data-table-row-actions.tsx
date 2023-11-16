@@ -155,11 +155,11 @@ const ViewFormDialog = ({ open, setOpen, row, table, typeName }:{
               <div className="text-sm">{row.getValue("name")}</div>
             </div>
             <div className="col-span-1">
-              <div className="text-sm font-semibold">Height</div>
+              <div className="text-sm font-semibold">Height-cm</div>
               <div className="text-sm">{row.getValue("height")}</div>
             </div>
             <div className="col-span-1">
-              <div className="text-sm font-semibold">Weight</div>
+              <div className="text-sm font-semibold">Weight-kg</div>
               <div className="text-sm">{row.getValue("weight")}</div>
             </div>
           </div>

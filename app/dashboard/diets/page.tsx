@@ -55,9 +55,9 @@ function UserManagementPage() {
                 Create
               </Button>
             </Link>
-            {/* <Button onClick={refresh} variant={"outline"} size="icon" className="self-end">
+            <Button onClick={refresh} variant={"outline"} size="icon" className="self-end">
               <RefreshCcw />
-            </Button> */}
+            </Button>
           </div>
         </div>
         <div className="flex-1 space-y-4">

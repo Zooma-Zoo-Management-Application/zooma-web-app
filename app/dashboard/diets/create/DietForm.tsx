@@ -80,15 +80,20 @@ export function DietDetailForm() {
             goal: values.goal
         };
         createDiet(dietBody)
-        toast({
-            variant: "default",
-            description: (
-                <span className="text-l font-bold text-green-500">
-                    Create Successfully!
-                </span>
-            ),
+        .then(res => {
+            if(res.error != null){
+                toast({
+                    title: "Create diet failed",
+                    description: JSON.stringify(res.error),
+                })
+            }else{
+                toast({
+                    title: "Create diet successfully",
+                    description: "You have created a diet",
+                })
+                router.push("/dashboard/diets")
+            }
         })
-        router.push("/dashboard/diets")
     }
     return (
         <Form {...form}>

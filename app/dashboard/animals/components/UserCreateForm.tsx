@@ -47,6 +47,15 @@ const formSignUpSchema = z.object({
     cageId: z.string().nullable(),
     trainingPlanId: z.string().nullable(),
   })
+  .refine((data) => {
+    if (data.dateOfBirth > data.arrivalDate) {
+      return false
+    }
+    return true
+  }, {
+    message: "Date of birth must be before arrival date",
+    path: ["dateOfBirth"],
+  })
   
 
 type SignUpFormValues = z.infer<typeof formSignUpSchema>
@@ -166,7 +175,7 @@ export function UserCreateForm({setOpen}: {setOpen: (value: boolean) => void}) {
               name="weight"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Weight</FormLabel>
+                  <FormLabel>Weight-kg</FormLabel>
                   <FormControl>
                     <Input type="number" min={0} 
                       placeholder="Animal weight" {...field} 
@@ -182,7 +191,7 @@ export function UserCreateForm({setOpen}: {setOpen: (value: boolean) => void}) {
               name="height"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Height</FormLabel>
+                  <FormLabel>Height-cm</FormLabel>
                   <FormControl>
                     <Input type="number" min={0} 
                       {...field} 

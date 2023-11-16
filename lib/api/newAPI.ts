@@ -70,3 +70,21 @@ export const unpinNews = async (id : number) => {
     return handleApiError(error);
   }
 }
+
+export const getPinNews = async () => {
+  try {
+    const { data } = await axiosClient.get(`/news/pin-news`);
+    return { error: null, data };
+  } catch (error) {
+    return handleApiError(error);
+  }
+}
+
+export const getUnpinNews = async () => {
+  try {
+    const { data } = await axiosClient.get(`/news/unpin-news`);
+    return { error: null, data };
+  } catch (error) {
+    return handleApiError(error);
+  }
+}

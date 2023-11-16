@@ -165,7 +165,7 @@ export function UpdateForm({id, values, setOpen}: any) {
               name="weight"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Weight</FormLabel>
+                  <FormLabel>Weigh-kg</FormLabel>
                   <FormControl>
                     <Input type="number" min={0} 
                       placeholder="Animal weight" {...field} 
@@ -182,7 +182,7 @@ export function UpdateForm({id, values, setOpen}: any) {
               name="height"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Height</FormLabel>
+                  <FormLabel>Height-cm</FormLabel>
                   <FormControl>
                     <Input type="number" min={0} 
                       {...field} 

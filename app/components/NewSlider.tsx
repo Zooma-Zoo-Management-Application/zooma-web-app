@@ -11,30 +11,7 @@ import Slider from "react-slick";
 import { Button } from "../../components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "../../components/ui/card";
 
-const NewSlider = () => {
-  const [listNews, setListNews] = useState<any>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-
-  useEffect(() => {
-    // init
-    const initialize = async () => {
-      try {
-        getNews()
-        .then((response) => {
-          const { data } = response;
-          setListNews(data);
-          setIsLoading(false);
-        })
-      } catch (err:any) {
-        console.log(err.message);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    initialize();
-  }, [])
-
-
+const NewSlider = (listNews: any, isLoading:any) => {
   const settings = {
     dots: true,
     customPaging: function (i:any) {
@@ -72,7 +49,7 @@ const NewSlider = () => {
   const router = useRouter();
 
   return (
-    <Fragment>
+    <div>
           {
             isLoading ? (
               <div>
@@ -157,7 +134,7 @@ const NewSlider = () => {
           </div>
         </div>
       </div>
-    </Fragment>
+    </div>
   );
 };
 
