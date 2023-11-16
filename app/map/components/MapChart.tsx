@@ -2,6 +2,8 @@
 
 import { toast } from "@/components/ui/use-toast"
 import { getAreas } from "@/lib/api/areaAPI"
+import { useRouter } from "next/navigation"
+import { Router } from "next/router"
 import { useEffect, useState } from "react"
 
 function MapChart() {
@@ -50,7 +52,7 @@ function MapChart() {
     "M 9.92 380.37 39.42 372.83 70.98 363.22 84.01 339.21 108.71 303.54 133.41 299.42 179.37 301.48 219.16 302.85 276.79 294.62 316.58 291.88 324.81 309.71 319.33 337.15 341.28 361.16 344.71 395.47 338.54 427.02 261.7 430.45 197.21 428.4 135.47 419.48 114.88 433.2 70.98 438 27.76 435.26 14.72 409.87 9.92 380.37 Z",
     "M 275.42 119.68 338.54 113.51 415.37 109.39 435.95 119 437.33 158.1 424.29 189.66 389.99 241.8 379.01 267.18 353.63 263.06 325.5 231.51 317.95 204.75 296.69 181.43 261.01 169.08 234.94 148.5 256.9 134.09 275.42 119.68 Z",
 ]
-
+const router = useRouter()
   return (
     <div className="flex flex-col">
       <div className="relative">
@@ -73,7 +75,8 @@ function MapChart() {
                 <>
                     <path className="area-path" d={paths[index]} 
                     onMouseOver={() => handleMoverOver(index+1)} 
-                    onMouseOut={() => setOpen(false)} 
+                    onMouseOut={() => setOpen(false)}
+                    onClick={() => router.push(`/map/${index+1}`)}
                     key={index}/>
                 </>
               ))
