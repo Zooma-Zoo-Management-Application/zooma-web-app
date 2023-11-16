@@ -141,9 +141,9 @@ function TicketsPage() {
                         Thank you for your order!
                       </h1>
                       <div className="text-lg text-center">
-                        Please 
-                         <Link href={link} className='font-bold underline'> checkout </Link>
-                        to complete your order.
+                        Please&nbsp;
+                         <Link href={link} className='font-bold underline'>checkout</Link>
+                        &nbsp;to complete your order.
                       </div>
                       <Link href={link}>
                         <Button variant={"default"}>
