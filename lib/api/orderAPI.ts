@@ -48,3 +48,12 @@ export const returnVNPay = async (params: any) => {
     return handleApiError(error);
   }
 }
+
+export const repayOrder = async (id: number) => {
+  try {
+    const { data } = await axiosClient.post(`/Payment/repay/${id}`);
+    return { error: null, data };
+  } catch (error) {
+    return handleApiError(error);
+  }
+} 

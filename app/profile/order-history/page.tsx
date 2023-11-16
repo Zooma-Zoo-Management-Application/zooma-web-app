@@ -1,15 +1,18 @@
 "use client"
 
 import ImageWithTextSkeleton from '@/app/dashboard/components/ImageWithTextSkeleton';
+import { Button } from '@/components/ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { toast } from '@/components/ui/use-toast';
 import { withProtected } from '@/hooks/useAuth';
-import { getOrders, getOrdersByUserId } from '@/lib/api/orderAPI';
+import { getOrders, getOrdersByUserId, repayOrder } from '@/lib/api/orderAPI';
 import { formatVND, getImageOfTicket, getImageOfTicketById, getStatus } from '@/lib/utils';
 import useUserState from '@/stores/user-store';
 import { Order } from '@/types/Order';
 import { format } from 'date-fns';
 import { Calendar } from 'lucide-react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { Fragment, useEffect, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 
@@ -34,6 +37,27 @@ function OrderHistory() {
     }
     fetchOrders()
   }, [currentUser])
+
+  const router = useRouter()
+
+  const handleRepay = async (orderId: number) => {
+    repayOrder(orderId)
+    .then((response) => {
+      let {
+        data, error
+      } = response;
+      if(error != null){
+        toast({
+          title: "Repay failed",
+          description: JSON.stringify(error),
+        })
+      }
+      router.push(data?.url || "/profile/order-history")
+    })
+    .catch((error) => {
+      
+    })
+  }
 
   return (
     <div className='min-h-[50vh]'>
@@ -82,6 +106,18 @@ function OrderHistory() {
                           Total: {formatVND(order.totalPrice)}
                         </p>
                       </CollapsibleTrigger>
+                      {
+                        (order.status === 0 || order.status === 1) && (
+                          <div className="flex justify-end">
+                            <Button
+                              onClick={() => handleRepay(order.id)}
+                              variant="outline"
+                            >
+                              Repay
+                            </Button>
+                          </div>
+                        )
+                      }
                       <CollapsibleContent className='space-y-4'>
                         {
                           order.orderDetails === null ? (

@@ -78,6 +78,11 @@ const zooTrainerSidebarLinks = [
     label: 'Skills'
   },
   {
+    icon: <LandPlot className="w-6 h-6" />,
+    route: '/dashboard/areas',
+    label: 'Areas'
+  },
+  {
     icon: <PawPrint className="w-6 h-6" />,
     route: '/dashboard/types',
     label: 'Animal Types'
