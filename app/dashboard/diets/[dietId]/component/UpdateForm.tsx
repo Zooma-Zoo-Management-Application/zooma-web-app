@@ -248,7 +248,7 @@ export function UpdateForm({ id, valuesParam, setOpen }: any) {
                                                     )}
                                                 >
                                                     {field.value ? (
-                                                        format(field.value, "MMM dd, yyyy H:mma")
+                                                        format(field.value, "PPP")
                                                     ) : (
                                                         <span>Pick a date</span>
                                                     )}
