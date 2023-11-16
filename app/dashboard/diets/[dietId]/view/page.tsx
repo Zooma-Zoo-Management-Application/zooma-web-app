@@ -1,12 +1,26 @@
 "use client"
 import ImageWithTextSkeleton from '@/app/dashboard/components/ImageWithTextSkeleton';
+import { DialogContent as FullWidthDialog } from "@/components/shared/full-width-dialog"
 import { Button } from '@/components/ui/button';
-import { getDietById, getDietDetailByDietId } from '@/lib/api/dietAPI';
+import { getDietById } from '@/lib/api/dietAPI';
 import { format } from 'date-fns';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Separator } from '@/components/ui/separator';
 import DietDetailViewPage from './DietDetailView';
+import useRefresh from '@/stores/refresh-store';
+import { CreateDetailForm } from './createForm';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
+import { DialogClose } from '@radix-ui/react-dialog';
+import { withProtected } from '@/hooks/useAuth';
 
 function DietViewPage() {
     const { dietId } = useParams();
@@ -15,6 +29,18 @@ function DietViewPage() {
     const [error, setError] = useState<string | null>(null);
     const router = useRouter()
 
+    const refresh = async () => {
+        try {
+            const res = await getDietById(+dietId);
+            const { data } = res;
+            setDiet(data);
+        } catch (err: any) {
+            setError(`Error initializing the app: ${err.message}`);
+        } finally {
+            setIsLoading(false);
+        }
+    }
+    const { setRefresh } = useRefresh()
 
     useEffect(() => {
         const initialize = async () => {
@@ -22,6 +48,7 @@ function DietViewPage() {
                 const res = await getDietById(+dietId);
                 const { data } = res;
                 setDiet(data);
+                setRefresh(refresh)
             } catch (err: any) {
                 setError(`Error initializing the app: ${err.message}`);
             } finally {
@@ -78,15 +105,24 @@ function DietViewPage() {
                         <div className=' bg-green-50'>
                             <div className='flex justify-between pt-5'>
                                 <h2 className="text-3xl font-bold tracking-tight">Diet&apos;s details:</h2>
-                                <div className=' my-auto'>
-                                    <Button variant="default" onClick={handleDetailAdd}>
-                                        Add Detail
-                                    </Button>
+                                <div className='my-auto mr-3'>
+                                    <Dialog>
+                                        <DialogTrigger asChild>
+                                            <Button variant="default">Create Detail</Button>
+                                        </DialogTrigger>
+                                        <FullWidthDialog>
+                                            <DialogHeader>
+                                                <DialogTitle>Create Diet Detail</DialogTitle>
+                                            </DialogHeader>
+                                            <CreateDetailForm></CreateDetailForm>
+                                            <DialogFooter className="sm:justify-start">
+                                            </DialogFooter>
+                                        </FullWidthDialog>
+                                    </Dialog>
                                 </div>
                             </div>
                             <div className="w-full p-3" >
                                 <DietDetailViewPage />
-
                             </div >
                         </div>
                     </>
@@ -98,4 +134,4 @@ function DietViewPage() {
     )
 }
 
-export default DietViewPage
+export default withProtected(DietViewPage)

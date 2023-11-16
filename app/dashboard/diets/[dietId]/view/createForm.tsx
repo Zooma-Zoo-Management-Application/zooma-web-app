@@ -1,12 +1,8 @@
 "use client"
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import * as z from "zod"
-
 import { Button } from "@/components/ui/button"
+import { Calendar } from "@/components/ui/calendar"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command"
 import {
     Form,
     FormControl,
@@ -14,20 +10,32 @@ import {
     FormField,
     FormItem,
     FormLabel,
-    FormMessage,
+    FormMessage
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { toast } from "@/components/ui/use-toast"
-import { editDietDetail } from "@/lib/api/DietDetailAPI"
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover"
+import {
+    Command,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+} from "@/components/ui/command"
 import { getFoods } from "@/lib/api/foodAPI"
-import { getTypes } from "@/lib/api/typeAPI"
 import { cn } from "@/lib/utils"
-import useRefresh from "@/stores/refresh-store"
+import { zodResolver } from "@hookform/resolvers/zod"
 import { format } from "date-fns"
 import { CalendarIcon, Check, ChevronsUpDown } from "lucide-react"
-import { ChangeEvent, useEffect, useState } from "react"
-import { Calendar } from "@/components/ui/calendar"
+import { useParams, useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
+import { useForm } from "react-hook-form"
+import * as z from "zod"
+import { toast } from "@/components/ui/use-toast"
+import { createDietDetail } from "@/lib/api/DietDetailAPI"
 
 const items = [
     { id: "1", label: "Monday", },
@@ -36,20 +44,8 @@ const items = [
     { id: "4", label: "Thursday", },
     { id: "5", label: "Friday", },
     { id: "6", label: "Saturday", },
-    { id: "0", label: "Sunday", },
+    { id: "7", label: "Sunday", },
 ] as const
-
-function start(date: Date, time: any) {
-    date.setDate(date.getDate() + 1)
-    let dateStr = date.toISOString()
-    return `${dateStr.split("T")[0]}T${time}Z`;
-}
-
-function localZoneToUTC(date: Date) {
-    date.setDate(date.getDate() + 1)
-    let dateStr = date.toLocaleString()
-    return `${dateStr}`;
-}
 
 const formDetailSchema = z.object({
     name: z.string()
@@ -74,6 +70,10 @@ const formDetailSchema = z.object({
         required_error: "required",
         invalid_type_error: "must be a number",
     }),
+    dietId: z.number({
+        required_error: "required",
+        invalid_type_error: "must be a number",
+    }),
     foodId: z.number({
         required_error: "required",
         invalid_type_error: "must be a number",
@@ -88,110 +88,92 @@ interface food {
     imageUrl: string
 }
 
-type UpdateFormValues = z.infer<typeof formDetailSchema>
+type FormDetailValues = z.infer<typeof formDetailSchema>
 
-export function UpdateForm({ id, valuesParam, setOpen }: any) {
-    const [files, setFiles] = useState<File[]>([]);
-    const [types, setTypes] = useState<any>([])
+export function CreateDetailForm() {
+    const { dietId } = useParams();
+    const router = useRouter()
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
     const [foods, setFoods] = useState<food[]>([])
-
-    const { refresh } = useRefresh()
 
     useEffect(() => {
         const initialize = async () => {
             try {
-                const res = await getTypes();
-                const { data } = res;
-                setTypes(data);
-                const res1 = await getFoods();
-                setFoods(res1.data);
+                const res = await getFoods();
+                setFoods(res.data);
             } catch (err: any) {
+                setError(`Error initializing the app: ${err.message}`);
+            } finally {
+                setIsLoading(false);
             }
         };
         initialize();
     }, [])
-
-    const defaultValues: Partial<UpdateFormValues> = {
-        name: valuesParam.name || "",
-        description: valuesParam.description || "",
+    const defaultValues: Partial<FormDetailValues> = {
+        name: "",
+        description: "",
         updateAt: new Date(),
-        scheduleAt: new Date(valuesParam.scheduleAt),
-        endAt: new Date(valuesParam.endAt) || "",
-        feedingDate: valuesParam.feedingDate || [],
-        foodId: valuesParam.foodId,
-        quantity: valuesParam.quantity,
-        status: valuesParam.status,
-        feedingTime: valuesParam.feedingTime
+        scheduleAt: new Date(),
+        endAt: new Date(),
+        feedingDate: [],
+        quantity: 0,
+        status: true,
+        dietId: Number(dietId),
+        foodId: 0,
+        feedingTime: ""
     }
 
-    const form = useForm<UpdateFormValues>({
+    const form = useForm<FormDetailValues>({
         resolver: zodResolver(formDetailSchema),
         defaultValues,
         mode: "onChange",
     })
 
+    console.log("error", form.formState.errors)
 
-    const handleImage = (e: ChangeEvent<HTMLInputElement>, fieldChange: (value: string) => void) => {
-        e.preventDefault();
-
-        const fileReader = new FileReader();
-
-        if (e.target.files && e.target.files.length > 0) {
-            const file = e.target.files[0];
-
-            setFiles(Array.from(e.target.files));
-
-            if (!file.type.includes("image")) return;
-
-            fileReader.onload = async (event) => {
-                const imageDataUrl = event.target?.result?.toString() || '';
-                fieldChange(imageDataUrl);
-            }
-
-            fileReader.readAsDataURL(file);
-        }
-    }
-
-    async function onSubmit(values: UpdateFormValues) {
-        let schedule = new Date(start(values.scheduleAt, values.feedingTime))
-
-        console.log(localZoneToUTC(values.endAt))
+    async function onSubmit(values: FormDetailValues) {
+        console.log("submit")
+        let schedule =
+            values.scheduleAt.setUTCHours(Number(values.feedingTime.substring(0, 2)),
+                Number(values.feedingTime.substring(3, 5)));
+        console.log(new Date(schedule))
         let DietDetailBody: any = {
             name: values.name,
             description: values.description,
             updateAt: new Date(),
-            scheduleAt: schedule,
-            endAt: new Date(values.endAt),
+            scheduleAt: new Date(schedule),
+            endAt: values.endAt,
             feedingDate: values.feedingDate,
             quantity: Number(values.quantity),
             status: true,
-            foodId: values.foodId,
-            dietId: valuesParam.dietId
+            dietId: Number(dietId),
+            foodId: values.foodId
         };
-        console.log(DietDetailBody)
-        editDietDetail(id, DietDetailBody)
-            .then((res) => {
-                {
-                    (res.error) ? (
-                        toast({
-                            variant: "destructive",
-                            title: "Diet Detail updated fail",
-                            description: res.error,
-                        })
-                    ) : (
-                        toast({
-                            title: "Diet Detail updated",
-                        })
-                    )
-                }
-                setOpen(false);
+        createDietDetail(DietDetailBody)
+            .then((response) => {
+                toast({
+                    title: "Create successfully",
+                    description: response.toString()
+                })
+                setIsLoading(false);
             })
-
-        setTimeout(() => {
-            refresh();
-        }, 1000);
+            .catch((error) => {
+                toast({
+                    title: "Delete Error",
+                    description: (
+                        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+                            <code className="text-light">{JSON.stringify(error.message, null, 2)}</code>
+                        </pre>
+                    )
+                })
+                setIsLoading(false);
+            })
+            .finally(() => {
+                setIsLoading(false);
+            })
+        router.push(`/dashboard/diets/${dietId}/view`);
     }
-
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -248,7 +230,7 @@ export function UpdateForm({ id, valuesParam, setOpen }: any) {
                                                     )}
                                                 >
                                                     {field.value ? (
-                                                        format(field.value, "MMM dd, yyyy H:mma")
+                                                        format(field.value, "MMM dd, yyyy")
                                                     ) : (
                                                         <span>Pick a date</span>
                                                     )}
@@ -261,6 +243,7 @@ export function UpdateForm({ id, valuesParam, setOpen }: any) {
                                                 mode="single"
                                                 selected={field.value}
                                                 onSelect={field.onChange}
+                                                disabled={{ before: new Date() }}
                                                 initialFocus
                                             />
                                         </PopoverContent>
@@ -270,7 +253,7 @@ export function UpdateForm({ id, valuesParam, setOpen }: any) {
                             )}
                         />
                     </div>
-                    <div className="">
+                    <div>
                         <FormField
                             control={form.control}
                             name="endAt"
@@ -304,6 +287,7 @@ export function UpdateForm({ id, valuesParam, setOpen }: any) {
                                                 mode="single"
                                                 selected={field.value}
                                                 onSelect={field.onChange}
+                                                disabled={{ before: new Date() }}
                                                 initialFocus
                                             />
                                         </PopoverContent>
@@ -322,7 +306,7 @@ export function UpdateForm({ id, valuesParam, setOpen }: any) {
                             <div className="mb-4">
                                 <FormLabel className="text-base">Feeding Date</FormLabel>
                                 <FormDescription>
-                                    {/* the current feeding day: {field} */}
+                                    Choose the feeding days in a week(apply for every week)
                                 </FormDescription>
                             </div>
                             <div className="flex justify-start">
@@ -458,7 +442,7 @@ export function UpdateForm({ id, valuesParam, setOpen }: any) {
                         </FormItem>
                     )}
                 />
-                <Button type="submit">Update Diet Information</Button>
+                <Button type="submit" className="w-full hover:shadow-primary-md">Create Diet Detail</Button>
             </form>
         </Form>
     )

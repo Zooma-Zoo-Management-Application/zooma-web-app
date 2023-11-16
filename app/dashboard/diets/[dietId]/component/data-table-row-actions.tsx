@@ -1,9 +1,6 @@
 "use client"
 
-import { DotsHorizontalIcon } from "@radix-ui/react-icons"
-import { Row, Table, TableMeta } from "@tanstack/react-table"
-
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { DialogContent as FullWidthDialog } from "@/components/shared/full-width-dialog"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import {
@@ -14,15 +11,15 @@ import {
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
 import { toast } from "@/components/ui/use-toast"
-import { deleteNewById } from "@/lib/api/newAPI"
+import { deleteDietDetailById } from "@/lib/api/DietDetailAPI"
 import { getTypes } from "@/lib/api/typeAPI"
-import { useRouter } from "next/navigation"
+import useRefresh from "@/stores/refresh-store"
+import { DialogClose } from "@radix-ui/react-dialog"
+import { DotsHorizontalIcon } from "@radix-ui/react-icons"
+import { Row, Table, TableMeta } from "@tanstack/react-table"
+import { useParams, useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { UpdateForm } from "./UpdateForm"
-import { DialogClose } from "@radix-ui/react-dialog"
-import { deleteSpecies } from "@/lib/api/speciesAPI"
-import useRefresh from "@/stores/refresh-store"
-import { deleteDietDetailById } from "@/lib/api/DietDetailAPI"
 
 
 interface DataTableRowActionsProps<TData> {
@@ -36,11 +33,11 @@ export function DataTableRowActions<TData>({
 }: DataTableRowActionsProps<TData>) {
   const router = useRouter();
   const meta: TableMeta<TData> | undefined = table.options.meta;
-
-  const [viewOpen, setViewOpen] = useState(false)
   const [updateOpen, setUpdateOpen] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
   const [types, setTypes] = useState<any>([])
+
+  const { refresh } = useRefresh()
 
   useEffect(() => {
     const initialize = async () => {
@@ -115,26 +112,27 @@ const UpdateFormDialog = ({ open, setOpen, row, table }: {
   const handleClose = () => {
     setOpen(false)
   }
-
+  const { dietId } = useParams()
   const values = {
     name: row.getValue("name"),
     description: row.getValue("description"),
     updateAt: row.getValue("updateAt"),
     scheduleAt: row.getValue("scheduleAt"),
     endAt: row.getValue("endAt"),
-    feedingDate: row.getValue("feedingDate"),
+    feedingDate: row.getValue("feedingDateArray"),
     foodId: row.getValue("foodId"),
     quantity: row.getValue("quantity"),
     status: true,
-    feedingTime: row.getValue("feedingTIme"),
+    feedingTime: row.getValue("feedingTime"),
+    dietId: dietId
   }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent>
-        <DialogHeader>Update Species</DialogHeader>
-        <UpdateForm id={row.getValue("id")} values={values} setOpen={setOpen} />
-      </DialogContent>
+      <FullWidthDialog>
+        <DialogHeader>Update Diet Detail</DialogHeader>
+        <UpdateForm id={row.getValue("id")} valuesParam={values} setOpen={setOpen} />
+      </FullWidthDialog>
     </Dialog>
   )
 }
