@@ -33,7 +33,12 @@ import useUserState from "@/stores/user-store"
 const formDetailSchema = z.object({
     description: z.string()
         .min(3, { message: 'Description must be at least 3 characters.' }),
-    yearOfExperience: z.number(),
+    yearOfExperience: z.number({
+        required_error: "required",
+    })
+        .int({ message: "must an integer" })
+        .gt(0, { message: "must greater than 0" })
+        .lte(50, { message: "must equal or less than 50" }),
     skillId: z.number({
         required_error: "required",
     }),
