@@ -5,8 +5,9 @@ import { getExperiencesById } from '@/lib/api/experienceAPI';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { SkillDetailForm } from '../../components/expFormWithParam';
+import { withProtected } from '@/hooks/useAuth';
 
-export default function Home() {
+function Home() {
     const { expId } = useParams()
     const [exp, setExp] = useState<any>()
     const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -47,3 +48,5 @@ export default function Home() {
         </div>
     )
 }
+
+export default withProtected(Home)

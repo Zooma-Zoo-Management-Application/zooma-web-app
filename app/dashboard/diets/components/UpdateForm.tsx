@@ -54,7 +54,7 @@ const formNewSchema = z.object({
 
 type UpdateFormValues = z.infer<typeof formNewSchema>
 
-export function UpdateForm({ id, values, setOpen }: any) {
+export function UpdateForm({ id, data, setOpen }: any) {
     const [files, setFiles] = useState<File[]>([]);
     const [types, setTypes] = useState<any>([])
 
@@ -73,13 +73,13 @@ export function UpdateForm({ id, values, setOpen }: any) {
     }, [])
 
     const defaultValues: Partial<UpdateFormValues> = {
-        name: values.name || "",
-        description: values.description || "",
-        goal: values.goal || "Not specific",
+        name: data.name || "",
+        description: data.description || "",
+        goal: data.goal || "Not specific",
         updateAt: new Date(),
-        scheduleAt: new Date(values.scheduleAt),
-        endAt: new Date(values.endAt) || "",
-        status: values.status
+        scheduleAt: new Date(data.scheduleAt),
+        endAt: new Date(data.endAt) || "",
+        status: data.status
     }
 
     const form = useForm<UpdateFormValues>({

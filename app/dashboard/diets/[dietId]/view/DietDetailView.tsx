@@ -189,7 +189,7 @@ export default function DietDetailViewPage() {
                                                 handleNavigate();
                                                 setTarget(dietDetails.find((detail) => detail.id == Number(info.event.id)))
                                             }}
-                                            aspectRatio={2.5}
+                                            aspectRatio={1.5}
                                             slotMinTime={'04:00:00'}
                                             slotMaxTime={'24:00:00'}
                                             expandRows={true}

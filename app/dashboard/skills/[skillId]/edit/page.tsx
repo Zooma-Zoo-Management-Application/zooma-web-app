@@ -5,8 +5,9 @@ import { SkillDetailForm } from './skillForm'
 import { useParams } from 'next/navigation';
 import { getSkillById } from '@/lib/api/skillAPI';
 import TextSkeleton from '@/app/dashboard/components/TextSkeleton';
+import { withProtected } from '@/hooks/useAuth';
 
-export default function Home() {
+function Home() {
     const { skillId } = useParams()
     const [skill, setSkill] = useState<any>([])
     const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -43,3 +44,4 @@ export default function Home() {
         </div>
     )
 }
+export default withProtected(Home)
