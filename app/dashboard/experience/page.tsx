@@ -20,8 +20,7 @@ function UserManagementPage() {
     useEffect(() => {
         const initialize = async () => {
             try {
-                let id = currentUser.id
-                const res = await getExperiencesByTrainerId(id);
+                const res = await getExperiencesByTrainerId(currentUser.id);
                 setExps(res.data);
             } catch (err: any) {
                 setError(`Error initializing the app: ${err.message}`);
