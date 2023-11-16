@@ -20,7 +20,6 @@ import {
 import { DataTable } from '../component/data-table';
 import DataTableSkeleton from '@/app/dashboard/components/DataTableSkeleton';
 import { columns } from '../component/columns';
-import { getFoodById } from '@/lib/api/foodAPI';
 import { toast } from '@/components/ui/use-toast';
 interface Event {
     title: string;
@@ -92,7 +91,7 @@ export default function DietDetailViewPage() {
     };
 
     const handleEdit = () => {
-        if(target == null){
+        if (target == null) {
             toast({
                 title: "Edit Error",
                 description: (
@@ -108,7 +107,7 @@ export default function DietDetailViewPage() {
     };
     const handleDelete = () => {
         setIsDialogOpen(false);
-        if(target == null){
+        if (target == null) {
             toast({
                 title: "Delete Error",
                 description: (
@@ -227,7 +226,7 @@ export default function DietDetailViewPage() {
                     </Card>
                 </TabsContent>
             </Tabs>
-            <ConfirmationDialog 
+            <ConfirmationDialog
                 isOpen={isDialogOpen}
                 message={target}
                 onEdit={handleEdit}

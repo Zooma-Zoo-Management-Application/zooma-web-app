@@ -4,13 +4,42 @@ import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { NewsForm } from './DietForm';
 import TextSkeleton from '@/app/dashboard/components/TextSkeleton';
+import useRefresh from '@/stores/refresh-store';
+import { withProtected } from '@/hooks/useAuth';
 
 function NewViewPage() {
     const { dietId } = useParams();
     const [diet, setDiet] = useState<any>([])
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+    const refresh = async () => {
+        try {
+            const res = await getDietById(+dietId);
+            const { data } = res;
+            setDiet(data);
+        } catch (err: any) {
+            setError(`Error initializing the app: ${err.message}`);
+        } finally {
+            setIsLoading(false);
+        }
+    }
+    const { setRefresh } = useRefresh()
 
+    useEffect(() => {
+        const initialize = async () => {
+            try {
+                const res = await getDietById(+dietId);
+                const { data } = res;
+                setDiet(data);
+                setRefresh(refresh)
+            } catch (err: any) {
+                setError(`Error initializing the app: ${err.message}`);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        initialize();
+    }, [dietId])
     useEffect(() => {
         const initialize = async () => {
             try {
@@ -46,4 +75,4 @@ function NewViewPage() {
     )
 }
 
-export default NewViewPage
+export default withProtected(NewViewPage) 

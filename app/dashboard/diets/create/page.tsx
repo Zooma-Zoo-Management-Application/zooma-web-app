@@ -6,6 +6,7 @@ import timeGridPlugin from '@fullcalendar/timegrid'
 import { Button } from '@/components/ui/button'
 import { useState } from 'react'
 import { DietDetailForm } from './DietForm'
+import { withProtected } from '@/hooks/useAuth'
 
 
 interface Event {
@@ -15,7 +16,7 @@ interface Event {
     id: number;
 }
 
-export default function Home() {
+function Home() {
     const [open, setOpen] = useState<boolean>(false)
     return (
         <div className="hidden flex-col md:flex w-full">
@@ -28,3 +29,4 @@ export default function Home() {
         </div>
     )
 }
+export default withProtected(Home)

@@ -54,36 +54,37 @@ const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({ isOpen, onEdit,
     }
 
     return (
-        <div className={`fixed inset-0 flex items-center justify-center z-50 ${isOpen ? 'block' : 'hidden'}`}>
-            <div className="bg-gray-200 p-4 rounded-lg shadow-lg w-[max]-400px">
-                <div className="text-center flex justify-end">
-                    <span className="text-3xl mb-4 font-bold mr-20">
-                        {(message != null) ? (message?.name) : ("ERROR")}
-                    </span>
-                    {(message != null) ? (
-                        <><Pencil className="cursor-pointer to-black-500 m-2 border-black-500 border-2" onClick={onEdit} />
-                            <Trash2 className="cursor-pointer to-black-500 m-2  border-black-500 border-2" onClick={onDelete} />
-                            <X className="cursor-pointer to-black-500 m-2  border-black-500 border-2" onClick={onCancel} /></>
-                    ) : (
-                        <><X className="cursor-pointer to-black-500 m-2  border-black-500 border-2" onClick={onCancel} /></>
-                    )}
-                </div>
-                {(message != null) ?
-                    (<span className="text-lg mb-8">
-                        <span className="font-semibold">Schedule at:</span> {format(new Date(message.scheduleAt.toString()), "MMM dd, yyyy")} <br />
-                        <span className="font-semibold">End at:</span> {format(new Date(message.endAt.toString()), "MMM dd, yyyy")}
-                        <br />
-                        <span className="font-semibold">Feeding at:</span> {message.feedingTime.toString().substring(0, 5)},&emsp; {handleDateRow(message?.feedingDateArray)} <br />
-                        <span className="font-semibold">Food:</span> {message?.quantity}kg {message.food.name}
-                    </span>) : (
-                        <span className="text-lg mb-8">
-                            No results
+        <>
+            <div className={`backdrop-blur-sm fixed inset-0 flex items-center justify-center z-50 ${isOpen ? 'block' : 'hidden'}`}>
+                <div className="bg-white-500 p-4 rounded-lg shadow-lg w-[max]-400px">
+                    <div className="text-center flex justify-end">
+                        <span className="text-3xl mb-4 font-bold mr-20">
+                            {(message != null) ? (message?.name) : ("ERROR")}
                         </span>
-                    )
-                }
+                        {(message != null) ? (
+                            <>
+                                <X className="cursor-pointer to-black-500 my-2 ml-12 mr-2 border-black-500 border-2" onClick={onCancel} /></>
+                        ) : (
+                            <><X className="cursor-pointer to-black-500 m-2  border-black-500 border-2" onClick={onCancel} /></>
+                        )}
+                    </div>
+                    {(message != null) ?
+                        (<span className="text-lg mb-8">
+                            <span className="font-semibold">Schedule at:</span> {format(new Date(message.scheduleAt.toString()), "MMM dd, yyyy")} <br />
+                            <span className="font-semibold">End at:</span> {format(new Date(message.endAt.toString()), "MMM dd, yyyy")}
+                            <br />
+                            <span className="font-semibold">Feeding at:</span> {message.feedingTime.toString().substring(0, 5)},&emsp; {handleDateRow(message?.feedingDateArray)} <br />
+                            <span className="font-semibold">Food:</span> {message?.quantity}kg {message.food.name}
+                        </span>) : (
+                            <span className="text-lg mb-8">
+                                No results
+                            </span>
+                        )
+                    }
 
+                </div>
             </div>
-        </div>
+        </>
     );
 };
 

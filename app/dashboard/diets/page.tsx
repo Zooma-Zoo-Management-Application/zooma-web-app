@@ -8,17 +8,32 @@ import DataTableSkeleton from '../components/DataTableSkeleton'
 import Link from 'next/link';
 import { useState, useEffect } from 'react'
 import { withProtected } from "@/hooks/useAuth";
+import useRefresh from "@/stores/refresh-store";
 
 function UserManagementPage() {
   const [diets, setDiets] = useState<any>([])
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
+  const refresh = async () => {
+    try {
+      const res = await getDiets();
+      const { data } = res;
+      setDiets(data);
+    } catch (err: any) {
+      setError(`Error initializing the app: ${err.message}`);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+  const { setRefresh } = useRefresh()
+
   useEffect(() => {
     const initialize = async () => {
       try {
         const res = await getDiets();
         setDiets(res.data);
+        setRefresh(refresh)
       } catch (err: any) {
         setError(`Error initializing the app: ${err.message}`);
       } finally {
