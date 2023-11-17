@@ -44,7 +44,7 @@ const items = [
     { id: "4", label: "Thursday", },
     { id: "5", label: "Friday", },
     { id: "6", label: "Saturday", },
-    { id: "7", label: "Sunday", },
+    { id: "0", label: "Sunday", },
 ] as const
 
 const formDetailSchema = z.object({
