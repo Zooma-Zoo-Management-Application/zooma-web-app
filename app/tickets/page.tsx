@@ -126,13 +126,24 @@ function TicketsPage() {
       let isHaveTickets = false;
 
       order.tickets.forEach((ticket) => {
-        if(ticket.id == 1 && ticket.quantity > 0){
-          isHaveParent = order.tickets.find((ticket) => ticket.id == 2)!.quantity != 0 || order.tickets.find((ticket) => ticket.id == 3)!.quantity != 0
+        if(ticket.id == 1){
+          if(ticket.quantity > 0) isHaveParent = order.tickets.find((ticket) => ticket.id == 2)!.quantity != 0 || order.tickets.find((ticket) => ticket.id == 3)!.quantity != 0
         }
-        if(ticket.quantity > 0){
+        if(ticket.id != 1 && ticket.quantity > 0){
           isHaveTickets = true;
+          isHaveParent = true
         }
       })
+
+      let isAllTicketZero = order.tickets.every((ticket) => ticket.quantity == 0)
+
+      if(!isHaveParent && !isAllTicketZero){
+        toast({
+          title: "Failed to checkout",
+          description: "You need to buy at least 1 parent ticket with child ticket",
+        })
+        return;
+      }
 
       if(!isHaveTickets){
         toast({
@@ -142,13 +153,11 @@ function TicketsPage() {
         return;
       }
 
-      if(!isHaveParent){
-        toast({
-          title: "Failed to checkout",
-          description: "You need to buy at least 1 parent ticket with child ticket",
-        })
-        return;
-      }
+      
+
+      
+
+      
 
       
 
